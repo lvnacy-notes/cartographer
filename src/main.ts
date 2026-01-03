@@ -1,99 +1,77 @@
-import {App, Editor, MarkdownView, Modal, Notice, Plugin} from 'obsidian';
-import {DEFAULT_SETTINGS, MyPluginSettings, SampleSettingTab} from "./settings";
+import { Plugin } from 'obsidian';
+import { DatacoreSettings } from './types/settings';
+import { SettingsManager } from './config/settingsManager';
+import { DatacoreSettingsTab } from './config/settingsTab';
+import { StatusDashboardView, STATUS_DASHBOARD_VIEW_TYPE } from './components/StatusDashboardView';
+import { WorksTableView, WORKS_TABLE_VIEW_TYPE } from './components/WorksTableView';
 
-// Remember to rename these classes and interfaces!
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+export default class DatacorePlugin extends Plugin {
+	settings: DatacoreSettings;
+	settingsManager: SettingsManager;
 
 	async onload() {
-		await this.loadSettings();
+		this.settingsManager = new SettingsManager(this);
+		this.settings = await this.settingsManager.loadSettings();
 
-		// This creates an icon in the left ribbon.
-		this.addRibbonIcon('dice', 'Sample', (evt: MouseEvent) => {
-			// Called when the user clicks the icon.
-			new Notice('This is a notice!');
-		});
+		// Register view types
+		this.registerView(
+			STATUS_DASHBOARD_VIEW_TYPE,
+			(leaf) => new StatusDashboardView(leaf, this.settings)
+		);
 
-		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
-		const statusBarItemEl = this.addStatusBarItem();
-		statusBarItemEl.setText('Status bar text');
+		this.registerView(
+			WORKS_TABLE_VIEW_TYPE,
+			(leaf) => new WorksTableView(leaf, this.settings)
+		);
 
-		// This adds a simple command that can be triggered anywhere
+		// Add settings tab
+		this.addSettingTab(new DatacoreSettingsTab(this.app, this, this.settingsManager));
+
+		// Add commands to open views
 		this.addCommand({
-			id: 'open-modal-simple',
-			name: 'Open modal (simple)',
+			id: 'datacore-open-status-dashboard',
+			name: 'Open status dashboard',
 			callback: () => {
-				new SampleModal(this.app).open();
+				void this.activateView(STATUS_DASHBOARD_VIEW_TYPE);
 			}
 		});
-		// This adds an editor command that can perform some operation on the current editor instance
+
 		this.addCommand({
-			id: 'replace-selected',
-			name: 'Replace selected content',
-			editorCallback: (editor: Editor, view: MarkdownView) => {
-				editor.replaceSelection('Sample editor command');
-			}
-		});
-		// This adds a complex command that can check whether the current state of the app allows execution of the command
-		this.addCommand({
-			id: 'open-modal-complex',
-			name: 'Open modal (complex)',
-			checkCallback: (checking: boolean) => {
-				// Conditions to check
-				const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (markdownView) {
-					// If checking is true, we're simply "checking" if the command can be run.
-					// If checking is false, then we want to actually perform the operation.
-					if (!checking) {
-						new SampleModal(this.app).open();
-					}
-
-					// This command will only show up in Command Palette when the check function returns true
-					return true;
-				}
-				return false;
+			id: 'datacore-open-works-table',
+			name: 'Open works table',
+			callback: () => {
+				void this.activateView(WORKS_TABLE_VIEW_TYPE);
 			}
 		});
 
-		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
-
-		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// Using this function will automatically remove the event listener when this plugin is disabled.
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			new Notice("Click");
+		// Add ribbon icon
+		this.addRibbonIcon('database', 'Datacore catalog', () => {
+			void this.activateView(STATUS_DASHBOARD_VIEW_TYPE);
 		});
-
-		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
-
 	}
 
 	onunload() {
+		// Plugin cleanup happens automatically
 	}
 
-	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData() as Partial<MyPluginSettings>);
-	}
+	private async activateView(viewType: string) {
+		const { workspace } = this.app;
 
-	async saveSettings() {
-		await this.saveData(this.settings);
-	}
-}
+		const leaves = workspace.getLeavesOfType(viewType);
+		const leaf = leaves.length > 0
+			? leaves[0]
+			: workspace.getLeaf('tab');
 
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
+		if (!leaf) {return;}
 
-	onOpen() {
-		let {contentEl} = this;
-		contentEl.setText('Woah!');
-	}
+		await leaf.setViewState({
+			type: viewType,
+			active: true,
+		});
 
-	onClose() {
-		const {contentEl} = this;
-		contentEl.empty();
+		workspace.revealLeaf(leaf).catch(error => {
+			console.error('Error revealing leaf:', error);
+		});
 	}
 }

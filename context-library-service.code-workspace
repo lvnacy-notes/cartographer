@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"workbench.preferredDarkColorTheme": "Gothic Victorian Mourning",
+		"workbench.preferredLightColorTheme": "Sunset Beach Light"
+	}
+}
