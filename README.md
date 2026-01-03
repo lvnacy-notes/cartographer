@@ -1,90 +1,283 @@
-# Obsidian Sample Plugin
+# Datacore Plugin - Portable Query System for Obsidian Catalogs
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+A configuration-driven, multi-vault query and dashboard system for Obsidian that transforms static Dataview queries into interactive, real-time dashboards.
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+## Features
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open modal (simple)" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+- **Configuration-Driven**: Define your catalog structure once, use it everywhere
+- **Portable Across Vaults**: Ship with sensible defaults, customize per vault
+- **Real-Time Updates**: Dashboards refresh automatically as your vault changes
+- **Multiple Presets**: Bundled configurations for Pulp Fiction, General Library, and Manuscripts
+- **Customizable Schemas**: Add/remove fields and configure component visibility
+- **Mobile-Ready**: Responsive design works on iOS, Android, and desktop
 
-## First time developing plugins?
+## Quick Start
 
-Quick starting guide for new plugin devs:
+### 1. Install the Plugin
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+Copy the entire plugin folder to your Obsidian vault:
+```
+<vault>/.obsidian/plugins/datacore-plugin/
+```
 
-## Releasing new releases
+Then enable it in Settings → Community plugins.
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+### 2. Choose a Preset
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+Open Settings → Datacore and select a preset:
+- **Pulp Fiction** (default): Horror pulp fiction catalog with 13 fields and editorial workflow
+- **General Library**: Book collection tracker with reading status
+- **Manuscripts**: Writing project tracker with submission workflow
+- **Custom**: Start from scratch with your own schema
 
-## Adding your plugin to the community plugin list
+### 3. Open a Dashboard
 
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+Use the ribbon icon or commands:
+- `Datacore: Open Status Dashboard` - See items grouped by status
+- `Datacore: Open Works Table` - Browse all items in sortable table
 
-## How to use
+## Architecture
 
-- Clone this repo.
-- Make sure your NodeJS is at least v16 (`node --version`).
-- `npm i` or `yarn` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
+This plugin is built with a clean, layered architecture:
 
-## Manually installing the plugin
+1. **Data Access Layer** (`hooks/useDataLoading.ts`): Load and parse markdown files from vault with real-time subscriptions
+2. **Query Layer** (`queries/queryFunctions.ts`): Pure functions for filtering, sorting, grouping, and aggregating
+3. **State Management**: Filter state, sort state, pagination
+4. **View Layer** (`components/`): Obsidian ItemView components for rendering
+5. **Settings Layer** (`config/settingsManager.ts`): Persistent configuration management
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+## File Structure
 
-## Improve code quality with eslint
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- This project already has eslint preconfigured, you can invoke a check by running`npm run lint`
-- Together with a custom eslint [plugin](https://github.com/obsidianmd/eslint-plugin) for Obsidan specific code guidelines.
-- A GitHub action is preconfigured to automatically lint every commit on all branches.
+```
+src/
+├── main.ts                          # Plugin entry point
+├── index.ts                         # Public API exports
+├── types/
+│   ├── settings.ts                 # DatacoreSettings, CatalogSchema
+│   ├── dynamicWork.ts              # CatalogItem, state types
+│   └── types.ts                    # Utility functions
+├── config/
+│   ├── presets.ts                  # PULP_FICTION, GENERAL_LIBRARY, MANUSCRIPTS presets
+│   └── settingsManager.ts          # SettingsManager + settings UI tab
+├── hooks/
+│   └── useDataLoading.ts           # File loading, vault subscriptions, filtering
+├── queries/
+│   └── queryFunctions.ts           # 20+ query utility functions
+├── components/
+│   ├── DatacoreComponentView.ts    # Base ItemView class
+│   ├── StatusDashboardView.ts      # Status summary component
+│   └── WorksTableView.ts           # Works table component
+└── styles/
+    └── components.css              # Component-specific styles (imported into main)
+```
 
-## Funding URL
+##Development
 
-You can include funding URLs where people who use your plugin can financially support it.
+### Install Dependencies
+```bash
+npm install
+```
 
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
+### Build Plugin
+```bash
+npm run build
+```
 
-```json
-{
-    "fundingUrl": "https://buymeacoffee.com"
+### Development Watch Mode
+```bash
+npm run dev
+```
+
+### Lint Code
+```bash
+npm run lint
+```
+
+### File Locations
+- **Entry Point**: `main.ts` - Plugin class and command registration
+- **Build Output**: `main.js` - Bundled JavaScript (created by esbuild)
+- **Manifest**: `manifest.json` - Plugin metadata
+- **Styles**: `styles.css` - All plugin styling
+
+## Configuration
+
+### Settings UI
+
+Access Settings → Datacore to:
+- Select a preset configuration
+- Set the catalog directory path (relative to vault root)
+- Enable/disable individual dashboard components
+- Configure UI options (items per page, compact mode, etc.)
+
+### Presets
+
+#### Pulp Fiction Catalog (Default)
+- **Path**: `works/`
+- **13 Fields**: title, authors, year, catalog-status, word-count, publications, bp-candidate, bp-approved, date-reviewed, date-approved, date-cataloged, keywords, content-warnings
+- **Status Workflow**: raw → reviewed → approved → published
+- **Dashboards**: Status Summary, Works Table, Publication Dashboard, Author Card, Backstage Pass Pipeline
+
+#### General Library Catalog
+- **Path**: `library/`
+- **6 Fields**: title, author, genre, status, year, rating
+- **Status Workflow**: unread → reading → completed
+- **Dashboards**: Status Summary, Works Table, Author Card
+
+#### Manuscript Tracker
+- **Path**: `manuscripts/`
+- **9 Fields**: title, author, genre, status, word-count, draft-date, query-date, agent, publisher
+- **Status Workflow**: draft → revising → querying → published
+- **Dashboards**: Status Summary, Works Table, Manuscript Pipeline
+
+#### Custom
+- **Path**: `catalog/`
+- **Fields**: Minimal (title only)
+- Start from scratch and add your own fields
+
+## Components
+
+### StatusDashboard
+Shows item counts grouped by a status field.
+
+```
+┌─────────────────────────────┐
+│ Status Summary              │
+├──────────────┬──────────────┤
+│ Status       │ Count        │
+├──────────────┼──────────────┤
+│ raw          │ 5            │
+│ reviewed     │ 8            │
+│ approved     │ 2            │
+└──────────────┴──────────────┘
+```
+
+### WorksTable
+Interactive table with sorting and pagination.
+
+- Sortable columns
+- Pagination controls
+- Respects field visibility settings
+- Mobile-responsive
+
+### PublicationDashboard
+Shows all works in a specific publication (wikilink array field).
+
+### AuthorCard
+Shows all works by a specific author with statistics.
+
+### BackstagePassPipeline
+Custom workflow showing items at different stages (e.g., candidate → approved → in-pipeline).
+
+## Query Functions
+
+Export for use in other scripts or custom components:
+
+```typescript
+import {
+  filterByField,
+  filterByText,
+  filterByRange,
+  sortByField,
+  groupByField,
+  countByField,
+  getUniqueValues,
+  getNumericStats,
+  paginate,
+} from 'datacore-plugin';
+```
+
+See `src/queries/queryFunctions.ts` for full API documentation.
+
+## Type Safety
+
+Full TypeScript support with exported types:
+
+```typescript
+import type {
+  DatacoreSettings,
+  CatalogSchema,
+  SchemaField,
+  CatalogItem,
+  FilterState,
+  SortState,
+  CatalogStatistics,
+} from 'datacore-plugin';
+```
+
+## Mobile Support
+
+The plugin includes responsive CSS for:
+- iOS (Safari in Obsidian app)
+- Android (Obsidian app)
+- Desktop (Chrome, Edge, Safari)
+
+All components gracefully degrade on small screens:
+- Tables switch to card view on mobile
+- Filter bar stacks vertically
+- Pagination handled automatically
+
+## Performance
+
+- **Client-side filtering**: Instant responses, no server calls
+- **Memoized operations**: Expensive computations cached
+- **Lazy loading**: Components load on-demand
+- **Real-time subscriptions**: Minimal overhead for vault changes
+- **Pagination**: Handle large catalogs efficiently
+
+## Data Format
+
+Catalog items use standard Obsidian markdown with YAML frontmatter:
+
+```markdown
+---
+title: "The Shadow in the Attic"
+authors: ["Lovecraft, Howard Phillips"]
+year: 1922
+catalog-status: "approved"
+word-count: 3500
+bp-candidate: true
+publications: ["[[Weird Tales Vol 5 No 1]]"]
+---
+
+# The Shadow in the Attic
+
+Story content and description...
+```
+
+## Extensibility
+
+### Custom Components
+
+Extend `DatacoreComponentView`:
+
+```typescript
+import { DatacoreComponentView, loadCatalogItems } from 'datacore-plugin';
+
+export class MyCustomView extends DatacoreComponentView {
+  async loadData() {
+    this.items = await loadCatalogItems(this.app, this.settings);
+  }
+
+  async renderComponent() {
+    // Render your custom UI
+  }
 }
 ```
 
-If you have multiple URLs, you can also do:
+### Custom Field Types
 
-```json
-{
-    "fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
-    }
-}
-```
+Add custom fields in settings:
+- Define field in schema
+- Parse with `parseFieldValue()` utility
+- Display with `formatFieldValue()` utility
 
-## API Documentation
+## License
 
-See https://docs.obsidian.md
+0-BSD License - See LICENSE file for details
+
+---
+
+**Status**: Phase 6 Implementation  
+**Version**: 0.1.0  
+**Last Updated**: 2026-01-01
+

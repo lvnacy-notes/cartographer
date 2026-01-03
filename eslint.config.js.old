@@ -1,5 +1,6 @@
 import tseslint from 'typescript-eslint';
 import obsidianmd from "eslint-plugin-obsidianmd";
+import stylistic from '@stylistic/eslint-plugin'
 import globals from "globals";
 import { globalIgnores } from "eslint/config";
 
@@ -19,6 +20,12 @@ export default tseslint.config(
 				tsconfigRootDir: import.meta.dirname,
 				extraFileExtensions: ['.json']
 			},
+		},
+		plugins: {
+			'@stylistic': stylistic
+		},
+		rules: {
+			'@stylistic/indent': ['error', 'tab', { 'SwitchCase': 1 }],
 		},
 	},
 	...obsidianmd.configs.recommended,

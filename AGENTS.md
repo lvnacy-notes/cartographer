@@ -131,14 +131,222 @@ Follow Obsidian's **Developer Policies** and **Plugin Guidelines**. In particula
 ## Coding conventions
 
 - TypeScript with `"strict": true` preferred.
+- **No explicit or implicit `any` types**: All generated TypeScript code must have explicit types. Use union types, generics with constraints, or type assertions where necessary. Never rely on implicit `any` from untyped dependencies.
 - **Keep `main.ts` minimal**: Focus only on plugin lifecycle (onload, onunload, addCommand calls). Delegate all feature logic to separate modules.
 - **Split large files**: If any file exceeds ~200-300 lines, consider breaking it into smaller, focused modules.
 - **Use clear module boundaries**: Each file should have a single, well-defined responsibility.
+- **One class per file maximum**: Keep classes in separate files to maintain clear module boundaries and single responsibility.
 - Bundle everything into `main.js` (no unbundled runtime deps).
 - Avoid Node/Electron APIs if you want mobile compatibility; set `isDesktopOnly` accordingly.
 - Prefer `async/await` over promise chains; handle errors gracefully.
 
+## ESLint & Common Linting Errors
+
+**Most Common Issues to Avoid** (learned from Phase 1 cleanup):
+
+### 1. Missing Curly Braces on Control Structures
+**Rule:** `curly`  
+**Error:** Expected { after 'if' condition
+
+**Fix:**
+```typescript
+// ❌ Wrong
+if (value) return;
+
+// ✅ Correct
+if (value) {
+	return;
+}
+```
+
+### 2. Unused Variables and Imports
+**Rule:** `@typescript-eslint/no-unused-vars`  
+**Error:** Variable is defined but never used
+
+**Fix:**
+```typescript
+// ❌ Wrong
+const unused = getValue();
+console.log('something else');
+
+// ✅ Correct - Remove if not needed
+console.log('something else');
+
+// Or rename parameters if required by signature
+function handler(_event: unknown) {
+	// Implementation doesn't use event
+}
+```
+
+### 3. Nullish Coalescing vs Logical OR
+**Rule:** `@typescript-eslint/prefer-nullish-coalescing`  
+**Error:** Prefer using nullish coalescing operator (`??`) instead of logical or (`||`)
+
+**Why:** `??` only triggers on `null`/`undefined`, while `||` triggers on any falsy value (0, false, empty string).
+
+**Fix:**
+```typescript
+// ❌ Wrong (will treat 0 as falsy)
+const count = value || 0;  // If value is 0, defaults to 0 anyway
+
+// ✅ Correct
+const count = value ?? 0;  // If value is null/undefined, defaults to 0
+```
+
+### 4. Non-Null Assertions (!)
+**Rule:** `@typescript-eslint/no-non-null-assertion`  
+**Error:** Forbidden non-null assertion
+
+**Fix:**
+```typescript
+// ❌ Wrong
+const group = groups.get(key)!.push(item);
+
+// ✅ Correct - Use a guard
+const group = groups.get(key);
+if (group) {
+	group.push(item);
+}
+```
+
+### 5. Type Assertions on Any
+**Rule:** `@typescript-eslint/no-unsafe-assignment`, `@typescript-eslint/no-unsafe-argument`  
+**Error:** Unsafe assignment/argument of type `any`
+
+**Fix:**
+```typescript
+// ❌ Wrong
+const settings = JSON.parse(jsonString);  // Returns any
+
+// ✅ Correct - Add type assertion
+const settings = JSON.parse(jsonString) as DatacoreSettings;
+```
+
+### 6. Async Methods Without Await
+**Rule:** `require-await`  
+**Error:** Async method has no 'await' expression
+
+**Fix:**
+```typescript
+// ❌ Wrong
+async renderComponent(): Promise<void> {
+	const container = this.containerEl;
+	container.empty();
+}
+
+// ✅ Correct - Either remove async or add await
+renderComponent(): void {  // Synchronous function
+	const container = this.containerEl;
+	container.empty();
+}
+
+// OR if you need Promise
+renderComponent(): Promise<void> {
+	return Promise.resolve().then(() => {
+		const container = this.containerEl;
+		container.empty();
+	});
+}
+```
+
+### 7. Unsafe Error Handling
+**Rule:** `@typescript-eslint/no-unsafe-member-access`  
+**Error:** Unsafe member access .message on an `any` value
+
+**Fix:**
+```typescript
+// ❌ Wrong
+.catch(error => {
+	console.log(error.message);  // error is any
+})
+
+// ✅ Correct - Type guard the error
+.catch((error: unknown) => {
+	const message = error instanceof Error ? error.message : String(error);
+	console.log(message);
+})
+```
+
+### 8. Sentence Case for UI Text
+**Rule:** `obsidianmd/ui/sentence-case`  
+**Error:** Use sentence case for UI text
+
+**Fix:**
+```typescript
+// ❌ Wrong
+'Total Words'
+'Status Dashboard'
+
+// ✅ Correct
+'Total words'
+'Status dashboard'
+```
+
+### 9. Lexical Declarations in Case Blocks
+**Rule:** `no-case-declarations`  
+**Error:** Unexpected lexical declaration in case block
+
+**Fix:**
+```typescript
+// ❌ Wrong
+switch (type) {
+	case 'range':
+		const [min, max] = value;
+		return min + max;
+}
+
+// ✅ Correct - Wrap in braces
+switch (type) {
+	case 'range': {
+		const [min, max] = value;
+		return min + max;
+	}
+}
+```
+
+### 10. Unknown Type Handling in Filter/Switch Logic
+**Rule:** `@typescript-eslint/no-unsafe-argument`  
+**Error:** Argument of type 'unknown' is not assignable to parameter of type 'string'
+
+**Fix:**
+```typescript
+// ❌ Wrong
+case 'contains':
+	const compareValue = filter.value as string | number | boolean;
+	if (Array.isArray(fieldValue)) {
+		return fieldValue.includes(compareValue);  // number not assignable to string
+	}
+
+// ✅ Correct - Convert to string for safe comparison
+case 'contains': {
+	const compareValue = String(filter.value);
+	if (Array.isArray(fieldValue)) {
+		return fieldValue.map((v) => String(v)).includes(compareValue);
+	}
+	return String(fieldValue) === compareValue;
+}
+```
+
+### 11. Floating Promises
+**Rule:** `@typescript-eslint/no-floating-promises`  
+**Error:** Promises must be awaited or marked with void operator
+
+**Fix:**
+```typescript
+// ❌ Wrong
+this.someAsyncFunction();  // Promise not handled
+
+// ✅ Correct - Either await or void
+await this.someAsyncFunction();
+
+// OR explicitly ignore
+void this.someAsyncFunction();
+```
+
+---
+
 ## Mobile
+
 
 - Where feasible, test on iOS and Android.
 - Don't assume desktop-only behavior unless `isDesktopOnly` is `true`.
@@ -249,3 +457,229 @@ this.registerInterval(window.setInterval(() => { /* ... */ }, 1000));
 - Developer policies: https://docs.obsidian.md/Developer+policies
 - Plugin guidelines: https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines
 - Style guide: https://help.obsidian.md/style-guide
+
+---
+
+# Datacore Plugin Development Roadmap
+
+> **⚠️ SESSION DIRECTIVE:** At the beginning of each session, review [PHASE-6-DATACORE-PLUGIN-MASTER-SPEC.md](.agent/catalog-overhaul/PHASE-6-DATACORE-PLUGIN-MASTER-SPEC.md) for current status, completed work, and session objectives.
+
+## Overview
+
+This plugin is built over **5 focused sessions** within the larger Pulp Fiction Phase 6 project. The plugin is configuration-driven, supporting multiple catalog presets (Pulp Fiction, General Library, Manuscripts) with the same codebase.
+
+**Key Principle:** No hardcoded field names. All behavior configured via presets.
+
+## Session Status
+
+| Session | Phase | Status | Deliverables |
+|---------|-------|--------|--------------|
+| 1 | Setup & Configuration Architecture | ✅ **COMPLETE** | 15 TypeScript files, 2,840+ lines, 4 presets, settings UI |
+| 2 | Data Access & Query Foundation | ⏳ Pending Build/Test | Data loading, YAML parsing, 20+ query functions |
+| 3 | Core Components - Phase 1 | ⏳ Next | StatusDashboard, FilterBar, WorksTable |
+| 4 | Core Components - Phase 2 | ⏳ Next | PublicationDashboard, AuthorCard, BackstagePipeline |
+| 5 | Plugin Integration & Migration | ⏳ Next | Plugin entry point, Obsidian commands, replace Dataview |
+
+## Session 1: Setup & Configuration Architecture ✅ COMPLETE
+
+**What Was Built:**
+- 15 TypeScript source files (2,840+ lines)
+- 4 production-ready presets (Pulp Fiction, General Library, Manuscripts, Custom)
+- Complete type system and interfaces
+- Settings manager with Obsidian UI
+- Data loading utilities (YAML parsing, vault subscriptions)
+- Query function library (20+ operations)
+- 2 component view scaffolds (StatusDashboard, WorksTable)
+- Responsive CSS styling (250+ lines)
+- Comprehensive documentation
+
+**Files Created:**
+- `src/main.ts` (95 lines)
+- `src/index.ts` (40+ lines)
+- `src/config/presets.ts` (700+ lines)
+- `src/config/settingsManager.ts` (200+ lines)
+- `src/types/settings.ts` (145 lines)
+- `src/types/dynamicWork.ts` (75 lines)
+- `src/types/types.ts` (95 lines)
+- `src/hooks/useDataLoading.ts` (170+ lines)
+- `src/queries/queryFunctions.ts` (350+ lines)
+- `src/components/DatacoreComponentView.ts` (120+ lines)
+- `src/components/StatusDashboardView.ts` (35 lines)
+- `src/components/WorksTableView.ts` (50 lines)
+- `styles.css` (250+ lines)
+- Plus supporting docs: README.md, BUILD_SUMMARY.md, FILE_INVENTORY.md, IMPLEMENTATION_CHECKLIST.md
+
+**Code Quality:**
+- TypeScript strict mode enabled
+- 100% type coverage
+- No external UI library dependencies (native Obsidian API)
+- Mobile-responsive design
+- Dark/light theme compatible
+
+**Next Step:** Execute `npm run build` to compile TypeScript → JavaScript, then test in Obsidian.
+
+---
+
+## Session 2: Data Access & Query Foundation ⏳
+
+**Objectives:**
+- Implement data loading from vault (YAML parsing, field extraction)
+- Build type-safe CatalogItem class
+- Create useDataLoading hook for reactive data updates
+- Implement complete query function library (filters, sorts, groups, aggregates)
+- Add field type coercion and validation
+
+**Key Functions:**
+```typescript
+useCatalogData(datacore, settings): { items, isLoading, revision }
+filterItems(items, filters): filtered
+sortItems(items, sortColumn, sortDesc): sorted
+groupByField(items, fieldKey): Map<string, items[]>
+countByField(items, fieldKey): Record<string, number>
+```
+
+**Testing:**
+- Load 30 Pulp Fiction works successfully
+- Verify all fields parsed correctly
+- Test filtering with multiple conditions
+- Benchmark sorting performance
+- Test real-time updates when files change
+
+**Estimated Time:** 1 session (3-4 hours)
+
+---
+
+## Session 3: Core Components - Phase 1 ⏳
+
+**Objectives:**
+- Build ConfigurableWorksTable component
+- Build ConfigurableFilterBar component
+- Build ConfigurableStatusDashboard component
+- Implement field-based configuration system
+- Add responsive design for mobile
+
+**Components:**
+- `ConfigurableWorksTable`: Renders columns from config, sortable headers, pagination, mobile-responsive
+- `ConfigurableFilterBar`: Renders filters from config, multiple filter types, real-time filtering, layout options
+- `ConfigurableStatusDashboard`: Groups by configured field, shows counts, optional statistics
+
+**Testing:**
+- All 3 components work with Pulp Fiction preset
+- Test with General Library and Manuscript presets
+- Verify responsive behavior on mobile
+- Test with custom field combinations
+- Performance with 30+ items
+
+**Estimated Time:** 1 session (3-4 hours)
+
+---
+
+## Session 4: Core Components - Phase 2 ⏳
+
+**Objectives:**
+- Build ConfigurablePublicationDashboard
+- Build ConfigurableAuthorCard
+- Build ConfigurableBackstagePipeline
+- Add custom hooks (useFilters, useSorting)
+- Integration testing
+
+**Components:**
+- `ConfigurablePublicationDashboard`: Works with any foreign key field, configurable display columns
+- `ConfigurableAuthorCard`: Works with any author-like field, statistics display, configurable columns
+- `ConfigurableBackstagePipeline`: Multiple configurable stages, custom filter logic per stage
+
+**Testing:**
+- All 6 components work together
+- Test all presets end-to-end
+- Verify data flows correctly through component tree
+- Test with sample data from all 3 catalog types
+- Responsive design across all components
+
+**Estimated Time:** 1 session (3-4 hours)
+
+---
+
+## Session 5: Plugin Integration & Migration ⏳
+
+**Objectives:**
+- Implement plugin entry point
+- Add Obsidian commands for opening dashboards
+- Integrate components into markdown rendering
+- Replace existing Dataview queries in Pulp Fiction.md
+- Migration to publication/author dashboards
+- Testing and optimization
+
+**Deliverables:**
+- Complete `src/main.ts` (plugin lifecycle, settings, commands)
+- Updated Pulp Fiction.md (all 5 original queries replaced)
+- Updated publication dashboard files
+- Updated author card template
+- Plugin README with configuration guide
+- Migration checklist
+- Performance benchmarks
+- Mobile testing results
+
+**Testing:**
+- Plugin installs and enables successfully
+- All Obsidian commands work
+- All dashboards render with correct data
+- Real-time updates work
+- Mobile experience is smooth
+- No console errors
+- Performance acceptable (page load < 1s)
+
+**Estimated Time:** 1 session (3-4 hours)
+
+---
+
+## Working Across Sessions
+
+### Starting a New Session
+1. **Review Master Spec:** Read [PHASE-6-DATACORE-PLUGIN-MASTER-SPEC.md](.agent/catalog-overhaul/PHASE-6-DATACORE-PLUGIN-MASTER-SPEC.md) for current status
+2. **Check Completion:** Review previous session summary to understand current state
+3. **Read Objectives:** Review the specific session objectives above
+4. **Reference Architecture:** Consult attached spec documents as needed
+5. **Begin Implementation:** Follow the session deliverables
+
+### During a Session
+1. Create/modify files in plugin project directory
+2. Test changes in Obsidian
+3. Update git as needed
+4. Document blockers or discoveries
+
+### Ending a Session
+1. Create session summary document in `.agent/` directory
+2. Commit working code to git
+3. Note next session starting point
+4. Update roadmap progress in master spec
+
+---
+
+## Quick Reference
+
+**Build & Install:**
+```bash
+npm install                    # Install dependencies
+npm run build                  # Compile TypeScript → main.js
+npm run dev                    # Watch mode (rebuilds on file change)
+```
+
+**Test Installation:**
+- Copy `main.js`, `manifest.json`, `styles.css` to `<vault>/.obsidian/plugins/datacore-plugin/`
+- Reload Obsidian (`Cmd-R` on macOS, `Ctrl-R` on Windows/Linux)
+- Enable plugin in **Settings → Community plugins**
+
+**Master Specification:**
+- Location: `.agent/catalog-overhaul/PHASE-6-DATACORE-PLUGIN-MASTER-SPEC.md`
+- Contains: Full architecture, all specifications, detailed session plans
+- Update at end of each session with progress status
+
+**Key Files:**
+- Plugin entry: `src/main.ts`
+- Settings: `src/config/settingsManager.ts`
+- Presets: `src/config/presets.ts`
+- Types: `src/types/*.ts`
+- Components: `src/components/*.ts`
+- Queries: `src/queries/queryFunctions.ts`
+- Data loading: `src/hooks/useDataLoading.ts`
+- Styling: `styles.css`
