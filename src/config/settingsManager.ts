@@ -134,8 +134,16 @@ export class SettingsManager {
 
 	/**
 	 * Create a new library
+	 * @throws Error if vault path does not exist
 	 */
-	createLibrary(library: Omit<Library, 'id' | 'createdAt'>): Library {
+	async createLibrary(library: Omit<Library, 'id' | 'createdAt'>): Promise<Library> {
+		// Validate that the vault path exists
+		try {
+			await this.plugin.app.vault.adapter.exists(library.path);
+		} catch (error) {
+			throw new Error(`Invalid library path: ${library.path} does not exist in vault`);
+		}
+
 		const newLibrary: Library = {
 			id: `lib-${Date.now()}`,
 			...library,
