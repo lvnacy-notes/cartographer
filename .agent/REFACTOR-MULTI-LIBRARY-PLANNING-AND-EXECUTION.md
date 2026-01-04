@@ -1,0 +1,171 @@
+---
+date: 2026-01-04
+title: Multi-Library Architecture Refactoring - Conversation Record
+document-type: conversation-summary
+project: Cartographer Plugin
+phase: 6.1
+status: In Progress
+last-updated: 2026-01-04
+---
+
+# Multi-Library Architecture Refactoring - Conversation Record
+
+**Purpose:** Comprehensive record of all conversations during the multi-library refactoring. Captures discussions, decisions, reasoning, and clarifications that inform work direction.
+
+**Scope:** All conversation topics, including tangential discussions that impact decisions.
+
+**Maintenance:** This document will be **automatically updated when approaching context limits** (80-90% token usage) to preserve conversation continuity across sessions.
+
+---
+
+## Conversation 1: AGENTS.md Compliance & Code Organization
+
+**When:** Early in refactoring session  
+**Trigger:** User reviewed attached settingsTab.ts and noticed both `LibraryModal` and `DatacoreSettingsTab` classes in same file
+
+**User's Question:** "You do actually review the AGENTS spec before generating code... right?"
+
+**What Happened:**
+- User caught that code violated AGENTS.md standard: "One class per file maximum"
+- Agent had not reviewed AGENTS.md before generating code
+- Acknowledged oversight
+
+**Decision Made:** Extract `LibraryModal` into separate file `src/config/libraryModal.ts`
+
+**Why This Matters:**
+- Establishes protocol: AGENTS.md must be reviewed *before* code generation, not after
+- Enforces clear module boundaries and single responsibility
+- Sets expectation that agent actively consults project standards
+
+**Outcome:**
+- Created `libraryModal.ts` with just the LibraryModal class
+- Updated `settingsTab.ts` to import from libraryModal.ts
+- Both files now follow AGENTS.md standard
+
+**Takeaway:** Agent needs to proactively review AGENTS.md for any new code generation. This is not optional.
+
+---
+
+## Conversation 2: Scope Clarification - What Is This Plugin Actually For?
+
+**When:** Mid-session during spec review  
+**Context:** Agent (and spec) discussed "Context Libraries" with 3 examples: Books, Projects, Custom
+
+**User's Challenge:** "How the fuck does a Projects Tracker fit into a library?"
+
+**What They Were Saying:**
+- Projects Tracker is project *management*, not a library *catalog*
+- Specification conflated two fundamentally different domains
+- Using "library" metaphor for non-catalog collections is conceptually wrong
+
+**User's Core Question:** "What is this plugin actually for?"
+
+**This Forced Clarification:**
+- Is the plugin for: **Option A (Focused)** - Library catalogs only (books, works, curated collections)?
+- Or: **Option B (Broad)** - Generic data collection management (projects, tasks, anything with schema)?
+
+**User's Answer:** "Option A describes the intent precisely."
+
+**Decision Made:** Plugin scope is **library catalogs specifically** — curated collections of works (books, stories, articles), not generic project management.
+
+**Changes Made to Specification:**
+- ✅ Removed Projects Tracker example entirely
+- ✅ Renamed "Context Libraries" section to "Library Catalogs as Context Collections"
+- ✅ Rewrote all examples to focus on actual library catalogs: Book Library, Manuscript Catalog, Custom Work Collection
+- ✅ Updated purpose statement: "portable library catalog system" (not "generic data collection")
+- ✅ Added explicit "What This Plugin Does NOT Do" section (no projects, no tasks, no generic data management)
+- ✅ Confirmed user still wants Phase 6 context ("I do still want references to 'Phase 6'")
+
+**Why This Matters:**
+- Prevents feature creep and scope bloat
+- Clarifies that "library" isn't just metaphorical — this plugin is for actual library catalogs
+- Eliminates ambiguity about what future features should/shouldn't be added
+- Ensures plugin stays focused on its actual purpose
+
+**Takeaway:** Specification had a fundamental category error. Catching it early prevents building the wrong thing. This is why spec review matters.
+
+---
+
+## Conversation 3: Document Purpose & Maintenance
+
+**When:** After creating initial conversation summary document  
+**Context:** User asked "Why does this doc read like a planning doc or changelog?"
+
+**Issue Identified:**
+- Document was 90% project status tracking (work completed, work pending, steps 1-8)
+- Only 10% actual conversation history
+- Mixed two different document purposes without clarity
+
+**User's Point:** "We already have a status tracker! We have multiple! ... Get rid of the tracker shit altogether."
+
+**Why They Were Right:**
+- PHASE-6-CARTOGRAPHER-MASTER-SPEC.md already tracks detailed status
+- Git commits track what code changes happened
+- CHANGELOG documents track change history
+- Creating yet another status tracker is redundant
+
+**What A Conversation Summary Should Actually Be:**
+- Record of what we *talked about*
+- Why we made decisions (the reasoning, not just the decision)
+- Questions that came up and how they were resolved
+- Clarifications and disagreements
+- Context that informed choices
+
+**Decision Made:** Rewrite document completely as pure conversation record, not project tracker
+
+**Why This Matters:**
+- Conversation summary serves a different purpose than status tracking
+- Its value is in preserving discussion context, not tracking deliverables
+- Across sessions, you need to know *why* a decision was made, not just *what* was decided
+- Status can be tracked elsewhere; conversation is unique to this document
+
+**Takeaway:** Don't mix document purposes. A conversation summary is for conversations. Status tracking is for status trackers.
+
+---
+
+## Key Decisions & Reasoning
+
+### Decision 1: Multi-Library Architecture
+**Reasoning:** Hardcoded preset system creates portability problems. Users shouldn't have to choose between "Pulp Fiction preset" and "General Library preset" — they should configure their own library once.
+
+**Trade-off:** More complex implementation upfront, but vastly better user experience and flexibility.
+
+### Decision 2: Focused Plugin Scope (Library Catalogs Only)
+**Reasoning:** Projects, tasks, and generic data management are different domains with different needs. Trying to support everything dilutes focus and creates design complexity.
+
+**Constraint:** Plugin is purpose-built for library catalogs, not a general-purpose data management system.
+
+### Decision 3: Always Review AGENTS.md First
+**Reasoning:** Project has established standards for code organization, type safety, and patterns. Not following them creates technical debt and inconsistency.
+
+**Standard:** Before any code generation, consult AGENTS.md. This is non-negotiable.
+
+---
+
+## Unresolved Questions & Ongoing Topics
+
+None currently. All major conversations have been resolved with explicit decisions.
+
+---
+
+## Next Conversation Topics (Likely)
+
+1. **Build Results** — Once `npm run build` is run in devcontainer, likely topics:
+   - Were there unexpected compile errors?
+   - Do new files import correctly?
+   - Any type-safety issues discovered during build?
+
+2. **Step 4 vs Step 5 Priority** — Whether to implement default schema templates (Step 4) or proceed directly to data loading updates (Step 5)
+
+3. **Data Loading Integration** — How to handle switching between libraries and reloading appropriate data
+
+4. **Component Migration** — How to update existing components to read from active library schema without hardcoding
+
+---
+
+## References & Context
+
+**Master Specification:** PHASE-6-CARTOGRAPHER-MASTER-SPEC.md (primary source of truth for project status)  
+**Code Standards:** AGENTS.md (project-wide coding conventions)  
+**Architecture Details:** PHASE-6-CARTOGRAPHER-MASTER-SPEC.md (full technical architecture)  
+**Previous Session:** SESSION_HANDOFF_PHASE1_CLEANUP.md (Phase 1 completion summary)

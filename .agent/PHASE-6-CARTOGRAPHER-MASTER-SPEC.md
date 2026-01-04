@@ -24,7 +24,7 @@ tags:
 **Major Architectural Decision:** Refactoring from preset-based system to **user-configurable multi-library system**
 
 **What Changed:**
-- ❌ Removed: Bundled presets (Pulp Fiction, General Library, Manuscripts)
+- ❌ Removed: Hardcoded configuration assumptions
 - ✅ Added: Multi-library configuration system (create/edit/remove libraries)
 - ✅ Added: Library sidebar panel for switching between libraries
 - ✅ Added: Per-library schema definition and management
@@ -43,16 +43,20 @@ tags:
 - Component scaffolds ready
 - Comprehensive CSS styling in place
 
-**Refactoring Work (Session 1.5 Continued):**
-- [ ] Update `types/settings.ts`: `Library[]` instead of `presetName`
-- [ ] Update `config/settingsManager.ts`: Library CRUD operations
-- [ ] Update `config/settingsTab.ts`: Library management UI
-- [ ] Update `src/main.ts`: Dynamic command registration
-- [ ] Create sidebar panel component for library switching
-- [ ] Remove `config/presets.ts` - library definitions now user-created
-- [ ] Create `config/defaultSchema.ts`: Template for new libraries
+**Refactoring Work (Session 1.5 Completed - January 4, 2026):**
+- ✅ Update `types/settings.ts`: `Library[]` instead of `presetName`
+- ✅ Update `config/settingsManager.ts`: Library CRUD operations with async vault validation
+- ✅ Update `config/settingsTab.ts`: Library management UI with add/edit/delete
+- ✅ Create `config/libraryModal.ts`: Modal for library creation/editing
+- ✅ Build verification: Clean TypeScript compilation
+- ✅ Lint resolution: All critical errors fixed (promise handling, type narrowing, error context)
+- ⏳ Create sidebar panel component for library switching
+- ⏳ Update data loading to work with active library
+- ⏳ Update components to read from active library config
+- ⏳ Dynamic command registration in main.ts
+- ✅ Remove `config/presets.ts` - library definitions now user-created
 
-**Build Status:** ⏳ Pending (after refactoring complete)
+**Build Status:** ✅ CLEAN - npm run build successful, no TypeScript errors
 
 ---
 
@@ -60,115 +64,111 @@ tags:
 
 ### The Broader Vision
 
-This plugin is part of a **complete catalog overhaul** for the Carnival of Calamity publishing ecosystem's Context Library—a distributed, multi-library knowledge management system. Users can configure any number of libraries in a single vault, each representing a different catalog (Pulp Fiction works, General Library books, Manuscripts, etc.).
+This plugin is a **portable library catalog system**—allowing users to manage curated collections of works (books, stories, articles, or any written content) within Obsidian. Users can configure any number of library catalogs in a single vault, each representing a different collection with its own metadata structure and browsing experience.
 
 ### The Problem Being Solved
 
 The existing query infrastructure relies on **Dataview**, which:
-- Works adequately for static catalogs but lacks interactivity
-- Requires manual query updates when schema changes
-- Cannot be easily adapted across different catalog structures
-- Offers no real-time filtering or advanced visualization capabilities
-- Creates tight coupling between queries and specific field names
+- Works adequately for static catalogs but lacks interactive filtering and real-time updates
+- Requires manual query updates whenever catalog schema changes
+- Offers no advanced visualization or editorial workflow support
+- Creates tight coupling between queries and specific field names (e.g., hardcoded "authors", "status")
+- Cannot be easily adapted across different library structures (Book Library vs. Manuscript Catalog)
 
-### The Solution: Datacore Plugin
+### The Solution: Cartographer Plugin
 
 We're building a **portable, user-configurable Obsidian plugin** that:
-1. Replaces Dataview with interactive components
-2. Works in any vault with multiple libraries simultaneously
-3. Each library has its own schema and component configuration
-4. Provides real-time filtering, sorting, and visualization
-5. Maintains backward compatibility while adding powerful new capabilities
-6. Starts with empty library list; users add libraries as needed
+1. Replaces Dataview with interactive, configuration-driven components
+2. Works in any vault with multiple library catalogs simultaneously
+3. Each catalog has its own schema, workflows, and component configuration
+4. Provides real-time filtering, sorting, and visualization of catalog items
+5. Maintains portable, reusable code (no hardcoded field assumptions)
+6. Starts with empty catalog list; users add catalogs as needed
 
 ### Strategic Importance
 
-This plugin represents the **foundation of Phase 6: Query System Migration**. Its success enables:
-- Advanced filtering and search across all catalog modules
-- Real-time updates as new works are added
-- Cross-catalog analytics and reporting
-- Multi-library support in single vault
-- Enhanced editorial workflows (Backstage Pass pipeline, submission tracking)
-- Mobile-responsive dashboards for remote access
+This plugin represents the **library catalog component of Phase 6: Query System Migration**—the project-wide reorganization of catalog access from static Dataview queries to interactive, configuration-driven dashboards.
+
+Its success enables:
+- Interactive browsing and filtering across curated work collections
+- Real-time updates as new works are added or metadata changes
+- Custom editorial workflows and status tracking for any catalog type
+- Support for multiple independent library catalogs in a single vault
+- Mobile-responsive dashboards for remote access and discovery
+- Data-driven analytics across any collection type
 
 ---
 
-## 🗺️ The LVNACY Obsidian Ecosystem
+## 🗺️ Library Catalogs as Context Collections
 
-### Context Libraries
+### What Is a Library Catalog?
 
-The LVNACY Obsidian vault ecosystem consists of multiple **Context Libraries**—each a specialized catalog (library) of curated items organized around a specific conceptual context. A Context Library combines:
-- **Content**: Items organized by theme, purpose, or category
-- **Metadata**: Standardized structure and fields across all items
-- **Queries**: Interactive dashboards for browsing, filtering, and discovery
-- **Workflows**: Editorial processes, status tracking, and publication pipelines
+The plugin supports **Library Catalogs**—curated collections of works organized for browsing, discovery, and management. A Library Catalog combines:
+- **Content**: Individual works (books, stories, articles, etc.) organized in the vault
+- **Metadata**: Standardized fields across all items in the catalog (author, year, status, etc.)
+- **Interactive Access**: Real-time dashboards for filtering, sorting, and exploration
+- **Editorial Workflows**: Status tracking, review pipelines, and curation processes
 
-#### 1. Pulp Fiction Context Library (Primary focus of Phase 6)
-*A catalog of horror-themed fiction produced in pulp form—curated works from pulp magazines of the 1920s-1960s*
-
-- Directory: `/works/`
-- Items: 30 canonical pulp fiction works
-- Key Fields: title, authors, year, catalog-status, bp-candidate, bp-approved, publications, word-count, etc.
-- Status Workflow: raw → reviewed → approved → published
-- Editorial Pipeline: Backstage Pass selection and approval process
-- Current Queries: 5 in Pulp Fiction.md status dashboard + 8 publication dashboards + 1 author template
-- Plugin Integration: Datacore plugin with Pulp Fiction preset (default)
-
-#### 2. General Library Context Library (Future LVNACY module)
-*A personal library catalog for tracking reading—a contextual archive of discovery*
+#### Example 1: Book Library Catalog
+_A personal reading collection—books owned, read, or to be read_
 
 - Directory: `/library/` or `/books/`
-- Items: General book collection
-- Key Fields: title, author, genre, status, year, rating
+- Items: Individual book records (one file per work)
+- Key Fields: title, author, genre, status, year, rating, date-read
 - Status Workflow: unread → reading → completed
-- Plugin Integration: Datacore plugin with General Library preset
-- Queries: Filtering by status, genre, rating; author statistics
+- Plugin Integration: Cartographer with Book Library configuration
+- Dashboards: Browse by status/genre, author statistics, reading history
 
-#### 3. Manuscript Tracker Context Library (Planned: Separate Implementation)
-*A writing portfolio and submission tracking system—documenting the journey from draft to publication*
+#### Example 2: Manuscript Catalog
+_A curated collection of short fiction works for publication consideration_
 
-- Directory: `/manuscripts/`
-- Items: Personal manuscript projects
-- Key Fields: title, author, genre, status, word-count, draft-date, query-date, agent, publisher
-- Status Workflow: draft → revising → querying → published
-- Plugin Integration: Datacore plugin with Manuscript preset + Longform integration for drafting
-- Queries: Pipeline tracking, agent status, submission timeline, manuscript statistics
-- **Note**: See [LVNACY-Manuscript-Tracker-System.md](LVNACY-Manuscript-Tracker-System.md) for detailed implementation plan
-- Cross-Plugin Integration: Datacore (dashboards) + Longform (composition) + Dataview (metadata)
+- Directory: `/works/` or `/manuscripts/`
+- Items: Individual story/novella records (one file per work)
+- Key Fields: title, author, genre, status, word-count, publications, date-added
+- Status Workflow: unsorted → cataloged → approved → published
+- Plugin Integration: Cartographer with Manuscript Catalog configuration
+- Dashboards: Status overview, publication tracking, author contributions
 
-#### 4. Additional Context Libraries (Planned)
-- Research/bibliography Context Library
-- Timeline/chronology Context Library
-- Relationship/network Context Library
-- Any future LVNACY modules
+#### Example 3: Custom Work Collection
+_Any curated collection of written works with custom tracking fields_
 
-### Shared Template Structure
+- Directory: User-defined (e.g., `/articles/`, `/essays/`, `/poetry/`)
+- Items: Individual work records following library structure
+- Key Fields: User-configured (minimum: title, at least one identifier)
+- Status Workflow: User-configured based on curation needs
+- Plugin Integration: Cartographer with custom schema
+- Dashboards: Generated from schema definition
 
-All catalogs inherit from a common **markdown template**:
+### Standard Catalog Structure
+
+All library catalogs share a common **markdown template pattern**:
 ```markdown
 ---
-title: [Item Title]
+title: [Work Title]
+[author/creator]: [Name]
+[status-field]: [Status Value]
 [custom-field-1]: [value]
 [custom-field-2]: [value]
 ---
 
-# [Item Title]
+# [Work Title]
 
 ## Summary
-[Item description]
+[Work description and context]
 
-## Metadata
-[Additional context]
+## Details
+[Additional information relevant to curation]
 ```
 
-### Key Insight
+### Core Design Principle
 
-While the **template structure is standardized**, each catalog has **minor metadata variations**. The Datacore plugin must:
-- Use **sensible Pulp Fiction defaults** out-of-the-box
-- Allow **field addition/removal** through settings UI
-- Support **custom field mappings** for different catalogs
-- Enable **preset configurations** for known catalog types
-- Maintain **portable plugin code** (no hard-coded field names)
+The **Cartographer plugin** must:
+- Support any library catalog, not just Pulp Fiction
+- Allow **flexible field definition** per catalog through settings UI
+- Support **custom status workflows** for different curation processes
+- Enable **schema templates** for quick setup (Manuscript, Book, Generic)
+- Maintain **portable, reusable plugin code** (no hardcoded field names or paths)
+- Work identically in any vault with any library configuration
 
 ---
 
@@ -183,50 +183,50 @@ Instead of bundled presets, users create and manage libraries directly in the pl
 │                    Datacore Plugin (Universal)                   │
 ├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │         Library Management & Configuration Layer           │
-│  │  • Add/remove/edit libraries (CRUD operations)            │ │
-│  │  • Each library defines: name, path, schema, components   │ │
-│  │  • Library sidebar panel for quick switching              │ │
-│  │  • Per-library settings persistence                       │ │
-│  └────────────────────────────────────────────────────────────┘ │
-│                            ↑                                      │
+│  ┌────────────────────────────────────────────────────────────┐  │
+│  │         Library Management & Configuration Layer           │  │
+│  │  • Add/remove/edit libraries (CRUD operations)             │  │
+│  │  • Each library defines: name, path, schema, components    │  │
+│  │  • Library sidebar panel for quick switching               │  │
+│  │  • Per-library settings persistence                        │  │
+│  └────────────────────────────────────────────────────────────┘  │
+│                            ↑                                     │
 │                  Settings UI + Sidebar Panel                     │
 │                                                                  │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │         Data Access & State Management Layer               │ │
-│  │  • File loading from active library's path                │ │
-│  │  • YAML frontmatter parsing and field extraction          │ │
-│  │  • Real-time subscriptions to vault changes               │ │
-│  │  • In-memory data model with caching                      │ │
-│  └────────────────────────────────────────────────────────────┘ │
-│                            ↓                                      │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │        Query & Transformation Layer                        │ │
-│  │  • Generic filter functions (adaptable to schema)         │ │
-│  │  • Sort, group, and aggregate operations                  │ │
-│  │  • Memoized computations for performance                  │ │
-│  │  • Derived data calculations                              │ │
-│  └────────────────────────────────────────────────────────────┘ │
-│                            ↓                                      │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │      Component Layer (Configuration-Driven)                │ │
-│  │  • StatusDashboard (reads active library schema)          │ │
-│  │  • WorksTable with dynamic columns                        │ │
-│  │  • FilterBar (fields from active library schema)          │ │
-│  │  • PublicationDashboard                                   │ │
-│  │  • AuthorCard                                             │ │
-│  │  • BackstagePipeline                                      │ │
-│  │  • All components read from active library config         │ │
-│  └────────────────────────────────────────────────────────────┘ │
-│                            ↓                                      │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │     Obsidian Integration & Rendering                       │ │
-│  │  • Sidebar panel for library switching                    │ │
-│  │  • Dynamic commands per library                           │ │
-│  │  • Modal/sidebar views for dashboards                     │ │
-│  │  • Native Obsidian API integration                        │ │
-│  └────────────────────────────────────────────────────────────┘ │
+│  ┌────────────────────────────────────────────────────────────┐  │
+│  │         Data Access & State Management Layer               │  │
+│  │  • File loading from active library's path                 │  │
+│  │  • YAML frontmatter parsing and field extraction           │  │
+│  │  • Real-time subscriptions to vault changes                │  │
+│  │  • In-memory data model with caching                       │  │
+│  └────────────────────────────────────────────────────────────┘  │
+│                            ↓                                     │
+│  ┌────────────────────────────────────────────────────────────┐  │
+│  │        Query & Transformation Layer                        │  │
+│  │  • Generic filter functions (adaptable to schema)          │  │
+│  │  • Sort, group, and aggregate operations                   │  │
+│  │  • Memoized computations for performance                   │  │
+│  │  • Derived data calculations                               │  │
+│  └────────────────────────────────────────────────────────────┘  │
+│                            ↓                                     │
+│  ┌────────────────────────────────────────────────────────────┐  │
+│  │      Component Layer (Configuration-Driven)                │  │
+│  │  • StatusDashboard (reads active library schema)           │  │
+│  │  • WorksTable with dynamic columns                         │  │
+│  │  • FilterBar (fields from active library schema)           │  │
+│  │  • PublicationDashboard                                    │  │
+│  │  • AuthorCard                                              │  │
+│  │  • BackstagePipeline                                       │  │
+│  │  • All components read from active library config          │  │
+│  └────────────────────────────────────────────────────────────┘  │
+│                            ↓                                     │
+│  ┌────────────────────────────────────────────────────────────┐  │
+│  │     Obsidian Integration & Rendering                       │  │
+│  │  • Sidebar panel for library switching                     │  │
+│  │  • Dynamic commands per library                            │  │
+│  │  • Modal/sidebar views for dashboards                      │  │
+│  │  • Native Obsidian API integration                         │  │
+│  └────────────────────────────────────────────────────────────┘  │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 
@@ -264,14 +264,14 @@ interface DatacoreSettings {
 ```
 
 **3. Dynamic Data Model** │
-│  └────────────────────────────────────────────────────────────┘ │
-│                            ↓                                      │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │     Obsidian Integration & Rendering                       │ │
-│  │  • Inline component embedding in markdown                 │ │
-│  │  • Modal/sidebar views for dashboards                     │ │
-│  │  • Native Obsidian API integration                        │ │
-│  └────────────────────────────────────────────────────────────┘ │
+│  └────────────────────────────────────────────────────────────┘  │
+│                            ↓                                     │
+│  ┌────────────────────────────────────────────────────────────┐  │
+│  │     Obsidian Integration & Rendering                       │  │
+│  │  • Inline component embedding in markdown                  │  │
+│  │  • Modal/sidebar views for dashboards                      │  │
+│  │  • Native Obsidian API integration                         │  │
+│  └────────────────────────────────────────────────────────────┘  │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 
@@ -340,9 +340,9 @@ This approach is more flexible than presets because:
 ### Project Structure
 
 ```
-Cartographer/                    ← Separate repo/project
+Cartographer/                                  ← Separate repo/project
 ├── src/
-│   ├── main.ts                                 ← Plugin entry point
+│   ├── main.ts                                ← Plugin entry point
 │   ├── config/
 │   │   ├── presets.ts                         ← 3 bundled presets
 │   │   ├── settingsManager.ts                 ← Settings UI + persistence

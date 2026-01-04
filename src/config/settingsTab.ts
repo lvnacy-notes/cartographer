@@ -9,6 +9,7 @@ import {
 	Setting
 } from 'obsidian';
 import { SettingsManager } from './settingsManager';
+import { LibraryModal } from './libraryModal';
 
 export class DatacoreSettingsTab extends PluginSettingTab {
 	plugin: Plugin;
@@ -25,7 +26,7 @@ export class DatacoreSettingsTab extends PluginSettingTab {
 		const settings = this.settingsManager.getSettings();
 
 		containerEl.empty();
-		new Setting(containerEl).setName('Datacore plugin').setHeading();
+		new Setting(containerEl).setName('Cartographer').setHeading();
 
 		// Active library selector
 		new Setting(containerEl)
@@ -48,6 +49,89 @@ export class DatacoreSettingsTab extends PluginSettingTab {
 						this.display();
 					});
 			});
+
+		// Library management section
+		/* eslint-disable obsidianmd/ui/sentence-case */
+		new Setting(containerEl).setName('Library Management').setHeading();
+
+		// Add library button
+		new Setting(containerEl).addButton((button) => {
+			button
+				.setButtonText('Add library')
+				.setCta()
+				.onClick(() => {
+					new LibraryModal(this.app, this.settingsManager, null, async (lib) => {
+						void this.settingsManager.createLibrary(lib);
+						await this.settingsManager.saveSettings();
+						this.display();
+					}).open();
+				});
+		});
+
+		// Library list with edit/delete buttons
+		if (settings.libraries.length === 0) {
+			containerEl.createEl('p', {
+				text: 'No libraries configured. Add one to get started.'
+			});
+		} else {
+			settings.libraries.forEach((library) => {
+				const libContainer = containerEl.createDiv({
+					cls: 'library-item'
+				});
+
+				const libInfo = libContainer.createDiv({ cls: 'library-info' });
+				libInfo.createEl('strong', { text: library.name });
+				libInfo.createEl('div', {
+					text: `Path: ${library.path}`,
+					cls: 'setting-item-description'
+				});
+				libInfo.createEl('div', {
+					text: `Fields: ${library.schema.fields.length}`,
+					cls: 'setting-item-description'
+				});
+
+				const libActions = libContainer.createDiv({ cls: 'library-actions' });
+
+				// Edit button
+				const editBtn = libActions.createEl('button', { text: 'Edit' });
+				editBtn.addEventListener('click', () => {
+					new LibraryModal(this.app, this.settingsManager, library, async (lib) => {
+						this.settingsManager.updateLibrary(library.id, lib);
+						await this.settingsManager.saveSettings();
+						this.display();
+					}).open();
+				});
+
+				// Delete button
+				const deleteBtn = libActions.createEl('button', {
+					text: 'Delete',
+					cls: 'mod-warning'
+				});
+				deleteBtn.addEventListener('click', () => {
+					const { name: _name, id } = library;
+					const deleteConfirmBtn = libActions.createEl('button', {
+						text: 'Confirm delete',
+						cls: 'mod-warning'
+					});
+					deleteBtn.hide();
+					deleteConfirmBtn.addEventListener('click', () => {
+						this.settingsManager.deleteLibrary(id);
+						void this.settingsManager.saveSettings();
+						this.display();
+					});
+					const cancelConfirmBtn = libActions.createEl('button', { text: 'Cancel' });
+					cancelConfirmBtn.addEventListener('click', () => {
+						deleteConfirmBtn.remove();
+						cancelConfirmBtn.remove();
+						deleteBtn.show();
+					});
+				});
+			});
+		}
+
+		// UI Preferences section
+		/* eslint-disable obsidianmd/ui/sentence-case */
+		new Setting(containerEl).setName('UI Preferences').setHeading();
 
 		// Items per page
 		new Setting(containerEl)

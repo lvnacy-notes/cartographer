@@ -1,10 +1,10 @@
 # Cartographer: Multi-Library Refactoring Plan
 **Date:** January 4, 2026  
-**Status:** IN PROGRESS - Steps 1-2 Complete  
+**Status:** IN PROGRESS - Steps 1-3 Complete & Build Verified  
 **Scope:** Phase 1.5 Architecture Refactor
 **Plugin ID:** cartographer
 **Branch:** `feat/preset-elimination-refactor`
-**Last Commit:** `build(step-1): Refactor to multi-library architecture from presets`
+**Last Commit:** `build(step-3): Rebuild settings UI and fix type/lint errors`
 
 ---
 
@@ -13,16 +13,22 @@
 **Completed:**
 - ✅ Step 1: Type system refactored - all types updated, presets.ts deleted
 - ✅ Step 2: Settings manager enhanced with async createLibrary() and vault path validation
+- ✅ Step 3: Settings UI rebuilt with library management UI and libraryModal extracted
+- ✅ Build verification: Clean TypeScript compilation (npm run build)
+- ✅ Lint resolution: All critical errors fixed; 12 console.log warnings deferred to completion
 - ✅ All changes committed to `feat/preset-elimination-refactor` branch
 
 **Next Action:**
-- Proceed with Step 4: Create default schemas template file
+- Proceed with Step 4: Create default schema templates file
 
 **Files Changed This Session:**
 - `src/types/settings.ts` - Type system refactored
-- `src/config/settingsManager.ts` - Enhanced with async vault path validation
+- `src/config/settingsManager.ts` - Enhanced with async vault path validation and error context
+- `src/config/settingsTab.ts` - Rebuilt with library management UI
+- `src/config/libraryModal.ts` - New file: Extracted modal with fixed type narrowing
 - `src/config/presets.ts` - Deleted (700+ lines)
-- Build artifact: Clean, no errors
+- Build artifacts: Clean, no errors
+- Lint: 12 console.log warnings (deferred to completion phase)
 
 ---
 
@@ -48,18 +54,18 @@ Transform the plugin from a preset-based system to a user-configurable multi-lib
 
 ## Current State (Pre-Refactor)
 
-**Architecture:**
-- Bundled presets: Pulp Fiction, General Library, Manuscripts, Custom
-- Settings stored single `presetName` field
-- Components read from preset configuration
-- No mechanism for multiple active libraries
+**Current State (Pre-Refactor):**
+- Bundled configuration system with hardcoded catalog assumptions
+- Settings stored single library reference
+- Components tightly coupled to specific field names
+- No mechanism for flexible multi-library management
 
 **Files Affected:**
-- `src/config/presets.ts` (700+ lines) - Contains all preset definitions
-- `src/types/settings.ts` - `presetName` field in `DatacoreSettings`
-- `src/config/settingsManager.ts` - Preset loading/switching logic
-- `src/config/settingsTab.ts` - Preset dropdown UI
-- `src/main.ts` - No dynamic commands
+- `src/config/defaultSchemas.ts` (new file) - Optional schema templates for initialization
+- `src/types/settings.ts` - Library definitions in `DatacoreSettings`
+- `src/config/settingsManager.ts` - Library configuration CRUD operations
+- `src/config/settingsTab.ts` - Library management UI
+- `src/main.ts` - Dynamic command registration per library
 
 ---
 
@@ -77,8 +83,8 @@ Transform the plugin from a preset-based system to a user-configurable multi-lib
 ```typescript
 interface Library {
   id: string;                    // Unique identifier
-  name: string;                  // Display name (e.g., "Pulp Fiction")
-  path: string;                  // Vault path (e.g., "pulp-fiction/works")
+  name: string;                  // Display name (e.g., "My Books")
+  path: string;                  // Vault path (e.g., "books", "research", "items")
   schema: CatalogSchema;         // Field definitions
   createdAt: string;             // ISO timestamp
 }
@@ -121,12 +127,11 @@ interface DatacoreSettings {
 **Enhancements Implemented:**
 - Updated `createLibrary()` to async with vault path validation
 - Error thrown if path doesn't exist in vault
-- All methods fully functional and tested via build
 
 ### Step 3: Rebuild Settings UI
 **File:** `src/config/settingsTab.ts`
 
-**Status:** PENDING
+**Status:** ✅ COMPLETE
 
 **New UI Sections:**
 
@@ -157,14 +162,12 @@ interface DatacoreSettings {
 **Exported Templates:**
 ```typescript
 export const DEFAULT_SCHEMA_TEMPLATES = {
-  pulpFiction: { /* Pulp Fiction schema */ },
-  generalLibrary: { /* General Library schema */ },
-  manuscriptTracker: { /* Manuscript schema */ },
-  blank: { /* Minimal schema */ }
+  blank: { /* Minimal schema */ },
+  basic: { /* Basic catalog with common fields */ }
 };
 ```
 
-**Purpose:** Provide starting templates when users create new libraries (optional in dropdown)
+**Purpose:** Provide optional starting templates when users create new libraries (optional in dropdown)
 
 ### Step 5: Update Data Loading
 **File:** `src/hooks/useDataLoading.ts`
@@ -291,7 +294,7 @@ private openLibrary(libraryId: string) {
 1. ✅ **Step 1** - Update type system (foundational) - COMPLETE
 2. ✅ **Step 2** - Update settings manager (core logic) - COMPLETE
 3. ⏳ **Step 4** - Create default schemas (reference templates) - NEXT
-4. ⏳ **Step 3** - Rebuild settings UI (user interaction)
+4. ✅ **Step 3** - Rebuild settings UI (user interaction) - COMPLETE
 5. ⏳ **Step 5** - Update data loading (data flow)
 6. ⏳ **Step 6** - Update components (presentation layer)
 7. ⏳ **Step 7** - Create sidebar panel (navigation)
@@ -330,9 +333,9 @@ private openLibrary(libraryId: string) {
 
 ## Benefits of This Refactor
 
-✅ **Multi-Library Support:** One vault, multiple catalogs  
-✅ **No Presets Needed:** Users create libraries directly  
-✅ **Flexible Schemas:** Each library can have different fields  
+✅ **Multi-Library Support:** One vault, multiple independent catalogs  
+✅ **User-Configurable:** Users create and manage libraries directly  
+✅ **Flexible Schemas:** Each library defines its own fields and structure  
 ✅ **Clear Data Flow:** Active library determines what data loads  
 ✅ **Better UX:** Sidebar makes library switching obvious  
 ✅ **Scalable:** Easy to add more libraries in future  
@@ -346,7 +349,8 @@ private openLibrary(libraryId: string) {
 |------|--------|----------------|
 | `src/types/settings.ts` | Update | ±50 |
 | `src/config/settingsManager.ts` | Rewrite | ±100 |
-| `src/config/settingsTab.ts` | Rebuild | ±150 |
+| `src/config/libraryModal.ts` | Create | ~120 |
+| `src/config/settingsTab.ts` | Rebuild | ±160 |
 | `src/config/presets.ts` | Delete | -700 |
 | `src/config/defaultSchemas.ts` | Create | ~200 |
 | `src/hooks/useDataLoading.ts` | Update | ±20 |

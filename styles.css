@@ -296,3 +296,104 @@ Comprehensive styling for all Datacore components, views, and dashboards
 		padding: 0.5rem;
 	}
 }
+
+/* Library Management Styles */
+.library-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1rem;
+	margin: 0.5rem 0;
+	background-color: var(--background-secondary);
+	border: 1px solid var(--divider-color);
+	border-radius: 4px;
+	gap: 1rem;
+}
+
+.library-info {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.library-info strong {
+	font-size: 1.05em;
+	color: var(--text-normal);
+}
+
+.library-info .setting-item-description {
+	font-size: 0.9em;
+	color: var(--text-muted);
+}
+
+.library-actions {
+	display: flex;
+	gap: 0.5rem;
+}
+
+.library-actions button {
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--divider-color);
+	border-radius: 3px;
+	background-color: var(--background-tertiary);
+	color: var(--text-normal);
+	cursor: pointer;
+	font-size: 0.9em;
+	transition: all 0.2s ease;
+}
+
+.library-actions button:hover {
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+	border-color: var(--interactive-accent);
+}
+
+.library-actions button.mod-warning {
+	background-color: var(--color-red-rgb, rgba(220, 38, 38, 0.1));
+	color: var(--color-red);
+	border-color: var(--color-red);
+}
+
+.library-actions button.mod-warning:hover {
+	background-color: var(--color-red);
+	color: white;
+}
+
+/* Modal Styles */
+.modal-button-container {
+	display: flex;
+	gap: 0.5rem;
+	justify-content: flex-end;
+	margin-top: 1rem;
+	padding-top: 1rem;
+	border-top: 1px solid var(--divider-color);
+}
+
+.modal-button-container button {
+	padding: 0.5rem 1.5rem;
+	border: 1px solid var(--divider-color);
+	border-radius: 3px;
+	background-color: var(--background-tertiary);
+	color: var(--text-normal);
+	cursor: pointer;
+	font-weight: 500;
+	transition: all 0.2s ease;
+}
+
+.modal-button-container button:hover {
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+	border-color: var(--interactive-accent);
+}
+
+.modal-button-container button.mod-cta {
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+	border-color: var(--interactive-accent);
+	font-weight: 600;
+}
+
+.modal-button-container button.mod-cta:hover {
+	opacity: 0.9;
+}

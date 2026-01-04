@@ -136,6 +136,7 @@ Follow Obsidian's **Developer Policies** and **Plugin Guidelines**. In particula
 - **Split large files**: If any file exceeds ~200-300 lines, consider breaking it into smaller, focused modules.
 - **Use clear module boundaries**: Each file should have a single, well-defined responsibility.
 - **One class per file maximum**: Keep classes in separate files to maintain clear module boundaries and single responsibility.
+- **No ignore directives**: Never add `eslint-disable`, `@ts-ignore`, or similar linting/type-checking bypass comments. All lint and type errors must be fixed with proper code changes. Ignore directives may only be added by the user if deemed appropriate.
 - Bundle everything into `main.js` (no unbundled runtime deps).
 - Avoid Node/Electron APIs if you want mobile compatibility; set `isDesktopOnly` accordingly.
 - Prefer `async/await` over promise chains; handle errors gracefully.

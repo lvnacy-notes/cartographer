@@ -141,7 +141,8 @@ export class SettingsManager {
 		try {
 			await this.plugin.app.vault.adapter.exists(library.path);
 		} catch (error) {
-			throw new Error(`Invalid library path: ${library.path} does not exist in vault`);
+			const errorMessage = error instanceof Error ? error.message : String(error);
+			throw new Error(`Invalid library path: ${library.path} does not exist in vault. ${ errorMessage }`);
 		}
 
 		const newLibrary: Library = {
