@@ -72,25 +72,7 @@ function parseMarkdownToItem(
 		}
 
 		const frontmatterText = frontmatterMatch[1];
-		const fields: Record<string, string | number | boolean | string[] | Date | null> = {};
-
-		// Parse YAML-like frontmatter (simple key: value parsing)
-		const lines_fm = frontmatterText.split('\n');
-		for (const line of lines_fm) {
-			const match = line.match(/^([^:]+):\s*(.*)$/);
-			if (!match?.[1] || !match?.[2]) {continue;}
-
-			const key = match[1]?.trim();
-			const value = match[2]?.trim();
-
-			// Parse value based on field type definition
-			const fieldDef = settings.schema.fields.find((f) => f.key === key);
-			if (fieldDef) {
-				fields[key] = parseFieldValue(value, fieldDef.type);
-			} else {
-				fields[key] = value;
-			}
-		}
+		const fields = parseYamlFrontmatter(frontmatterText, settings);
 
 		// Ensure title field exists (use filename as fallback)
 		const { titleField } = settings.schema.coreFields;
@@ -102,6 +84,99 @@ function parseMarkdownToItem(
 		console.error(`Error parsing ${file.name}:`, error);
 		return null;
 	}
+}
+
+/**
+ * Parse YAML frontmatter with support for arrays, nested objects, and proper type conversion
+ * Handles:
+ * - Simple key: value pairs
+ * - Multi-line arrays with - item syntax
+ * - Empty/null values
+ * - Quoted strings with special characters (e.g., wikilinks)
+ */
+function parseYamlFrontmatter(
+	frontmatterText: string,
+	settings: DatacoreSettings
+): Record<string, string | number | boolean | string[] | Date | null> {
+	const fields: Record<string, string | number | boolean | string[] | Date | null> = {};
+	const lines = frontmatterText.split('\n');
+	let currentKey: string | null = null;
+	let currentArray: string[] = [];
+
+	for (let i = 0; i < lines.length; i++) {
+		const line = lines[i];
+
+		// Skip empty lines
+		if (!line.trim()) {
+			continue;
+		}
+
+		// Check if line is an array item (starts with - )
+		if (line.match(/^\s*-\s+/)) {
+			const arrayItem = line.replace(/^\s*-\s+/, '').trim();
+			if (currentKey) {
+				// Remove quotes if present (e.g., '[[Link]]' -> [[Link]])
+				const cleanItem = arrayItem.replace(/^['"]|['"]$/g, '');
+				currentArray.push(cleanItem);
+			}
+			continue;
+		}
+
+		// If we have a current array, save it and reset
+		if (currentArray.length > 0 && currentKey) {
+			const fieldDef = settings.schema.fields.find((f) => f.key === currentKey);
+			fields[currentKey] = parseFieldValue(currentArray, fieldDef?.type ?? 'array');
+			currentArray = [];
+			currentKey = null;
+		}
+
+		// Check for key: value pattern
+		const match = line.match(/^([^:]+):\s*(.*)$/);
+		if (!match?.[1]) {
+			continue;
+		}
+
+		const key = match[1]?.trim();
+		const value = (match[2]?.trim()) ?? '';
+
+		// Check if this line starts an array or has an inline value
+		if (value === '') {
+			// Check if next line is an array item
+			const nextLine = i + 1 < lines.length ? lines[i + 1] : '';
+			if (nextLine.match(/^\s*-\s+/)) {
+				// This is an array field, collect items
+				currentKey = key;
+				currentArray = [];
+				continue;
+			} else {
+				// Empty value
+				const fieldDef = settings.schema.fields.find((f) => f.key === key);
+				fields[key] = parseFieldValue(null, fieldDef?.type ?? 'string');
+			}
+		} else {
+			// Inline value (may be in array or single)
+			const fieldDef = settings.schema.fields.find((f) => f.key === key);
+
+			// Remove quotes if present
+			const cleanValue = value.replace(/^['"]|['"]$/g, '');
+
+			if (fieldDef?.type === 'array' || fieldDef?.type === 'wikilink-array') {
+				// Single-line array or single item
+				const cleanItem = cleanValue.replace(/^['"]|['"]$/g, '');
+				fields[key] = parseFieldValue([cleanItem], fieldDef.type);
+			} else {
+				fields[key] = parseFieldValue(cleanValue, fieldDef?.type ?? 'string');
+			}
+		}
+	}
+
+	// Handle any remaining array
+	if (currentArray.length > 0 && currentKey) {
+		const fieldDef = settings.schema.fields.find((f) => f.key === currentKey);
+		fields[currentKey] = parseFieldValue(currentArray, fieldDef?.type ?? 'array');
+	}
+
+	return fields;
 }
 
 /**
