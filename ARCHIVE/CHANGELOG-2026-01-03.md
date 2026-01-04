@@ -106,7 +106,7 @@ tags:
 - Created `SESSION_HANDOFF_PHASE1_CLEANUP.md`: Detailed handoff document
 - Created `SESSION-1-CLEANUP-COMPLETION.md`: Session summary
 - Created `.agent/phase-one/ERRORS_AND_PATCHES.md`: Complete patch log
-- Updated `PHASE-6-DATACORE-PLUGIN-MASTER-SPEC.md`: Master specification
+- Updated `PHASE-6-CARTOGRAPHER-MASTER-SPEC.md`: Master specification
 - Created this CHANGELOG document
 
 ## Detailed Change Log

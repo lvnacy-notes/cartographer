@@ -31,7 +31,14 @@ export class WorksTableView extends DatacoreComponentView {
 	}
 
 	async loadData(): Promise<void> {
-		this.items = await loadCatalogItems(this.app, this.settings);
+		console.log('[Datacore] WorksTableView.loadData() starting');
+		try {
+			this.items = await loadCatalogItems(this.app, this.settings);
+			console.log(`[Datacore] WorksTableView loaded ${this.items.length} items`);
+		} catch (error) {
+			console.error('[Datacore] WorksTableView.loadData() error:', error);
+			throw error;
+		}
 	}
 
 	async renderComponent(): Promise<void> {

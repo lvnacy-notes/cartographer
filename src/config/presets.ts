@@ -17,7 +17,7 @@ import { DatacoreSettings } from '../types/settings';
 export const PULP_FICTION_PRESET: DatacoreSettings = {
 	version: '1.0.0',
 	presetName: 'pulp-fiction',
-	catalogPath: 'works',
+	catalogPath: 'pulp-fiction/works',
 
 	schema: {
 		catalogName: 'Pulp Fiction Library',

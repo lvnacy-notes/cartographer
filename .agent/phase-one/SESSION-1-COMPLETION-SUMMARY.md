@@ -44,7 +44,7 @@ Complete the code implementation phase for the Datacore plugin (Session 1: Setup
 - **Styling & Configuration**:
   - `styles.css` (250+ lines) - Complete responsive CSS with Obsidian theming
   - `manifest.json` - Updated with Datacore metadata (id, name, version 0.1.0)
-  - `package.json` - Updated with datacore-plugin details
+  - `package.json` - Updated with cartographer details
 
 - **Documentation**:
   - `README.md` - Complete usage guide and API reference
@@ -53,7 +53,7 @@ Complete the code implementation phase for the Datacore plugin (Session 1: Setup
   - `IMPLEMENTATION_CHECKLIST.md` - Verification checklist for code quality
 
 ### Files Modified
-- **PHASE-6-DATACORE-PLUGIN-MASTER-SPEC.md**: Comprehensive update with:
+- **PHASE-6-CARTOGRAPHER-MASTER-SPEC.md**: Comprehensive update with:
   - Status header highlighting Session 1 completion
   - Session 1 section changed from objectives to completed deliverables
   - Added "🚀 Immediate Next Steps" section with build & test procedures
@@ -133,7 +133,7 @@ Complete the code implementation phase for the Datacore plugin (Session 1: Setup
 - **For Component Specs**: See PHASE-6-DATACORE-COMPONENT-ARCHITECTURE.md
 - **For Configuration Details**: See PHASE-6-PORTABILITY-CONFIGURATION.md
 - **For Migration Planning**: See PHASE-6-AUDIT-DATAVIEW-TO-DATACORE.md
-- **For Current Status**: Review top of PHASE-6-DATACORE-PLUGIN-MASTER-SPEC.md (status update section)
+- **For Current Status**: Review top of PHASE-6-CARTOGRAPHER-MASTER-SPEC.md (status update section)
 
 ### Important Insights
 1. **Build-Test as Blocker**: Code implementation is complete but untested; build phase will reveal any TypeScript/architecture issues

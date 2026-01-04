@@ -173,13 +173,13 @@ function handler(_event: unknown) {
 
 ✅ **Build Status:** Clean  
 ```
-> datacore-plugin@0.1.0 build
+> cartographer@0.1.0 build
 > tsc -noEmit -skipLibCheck && node esbuild.config.js production
 ```
 
 ✅ **Lint Status:** Clean  
 ```
-> datacore-plugin@0.1.0 lint
+> cartographer@0.1.0 lint
 > eslint .
 ```
 

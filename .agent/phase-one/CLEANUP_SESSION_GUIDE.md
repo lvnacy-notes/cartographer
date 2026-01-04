@@ -25,7 +25,7 @@
 ### Prerequisites
 - Node.js 18+ available in container
 - npm installed
-- Current directory: `/workspace/context-library-service`
+- Current directory: `/workspace/cartographer`
 
 ### Initial Build Check
 
@@ -168,6 +168,6 @@ npm run esbuild         # Manual esbuild (if needed)
 - All external dependencies bundled into `main.js` by esbuild
 - Settings managed through Obsidian's plugin settings UI
 
-**Start with:** `cd /workspace/context-library-service && npm install && npm run build`
+**Start with:** `cd /workspace/cartographer && npm install && npm run build`
 
 Then systematically document and fix each error found.

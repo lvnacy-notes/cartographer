@@ -462,24 +462,29 @@ this.registerInterval(window.setInterval(() => { /* ... */ }, 1000));
 
 # Datacore Plugin Development Roadmap
 
-> **⚠️ SESSION DIRECTIVE:** At the beginning of each session, review [PHASE-6-DATACORE-PLUGIN-MASTER-SPEC.md](.agent/catalog-overhaul/PHASE-6-DATACORE-PLUGIN-MASTER-SPEC.md) for current status, completed work, and session objectives.
+> **⚠️ SESSION DIRECTIVE:** At the beginning of each session, review [PHASE-6-CARTOGRAPHER-MASTER-SPEC.md](.agent/catalog-overhaul/PHASE-6-CARTOGRAPHER-MASTER-SPEC.md) for current status, completed work, and session objectives.
 
 ## Overview
 
-This plugin is built over **5 focused phases** within the larger Pulp Fiction Phase 6 project. The plugin is configuration-driven, supporting multiple catalog presets (Pulp Fiction, General Library, Manuscripts) with the same codebase.
+This plugin is built over **5 focused phases** within the larger Pulp Fiction Phase 6 project. The plugin is configuration-driven, supporting **multiple libraries per vault** with the same codebase.
 
-**Key Principle:** No hardcoded field names. All behavior configured via presets.
+**Key Principle:** No hardcoded field names or paths. All behavior configured via library definitions. Single library at a time, switchable via sidebar panel or commands.
+
+**Architecture Change (January 4, 2026):** Moved from preset-based system to user-configurable library system. Each library defines its own:
+- Catalog path (e.g., `pulp-fiction/works`, `library`, `manuscripts`)
+- Schema with custom fields
+- Component configuration
 
 ## Phase Status
 
 | Phase | Status | Deliverables | Notes |
 |---------|-------|--------|--------------|
 |---|---|---|---|
-| 1 | ✅ **COMPLETE** | 16 TypeScript files, 2,880+ lines, 4 presets, full type system | Architecture & settings ready |
-| 2 | ⏳ In Progress | Data loading, YAML parsing, 20+ query functions | Testing with real data |
+| 1 | 🔄 **REFACTORING** | Update types, settings, data loading for multi-library support | Removing presets, adding library management |
+| 2 | ⏳ Next | Data loading, YAML parsing, 20+ query functions | Testing with real data |
 | 3 | ⏳ Next | StatusDashboard, FilterBar, WorksTable | Core UI components |
 | 4 | ⏳ Next | PublicationDashboard, AuthorCard, BackstagePipeline | Advanced components |
-| 5 | ⏳ Next | Plugin entry point, Obsidian commands, replace Dataview | Integration & migration |
+| 5 | ⏳ Next | Plugin entry point, Obsidian commands, sidebar panel | Integration & migration |
 
 ## Phase 1: Setup & Configuration Architecture ✅ COMPLETE
 
@@ -636,7 +641,7 @@ countByField(items, fieldKey): Record<string, number>
 ## Working Across Phases
 
 ### Starting a New Phase
-1. **Review Master Spec:** Read [PHASE-6-DATACORE-PLUGIN-MASTER-SPEC.md](.agent/catalog-overhaul/PHASE-6-DATACORE-PLUGIN-MASTER-SPEC.md) for current status
+1. **Review Master Spec:** Read [PHASE-6-CARTOGRAPHER-MASTER-SPEC.md](.agent/catalog-overhaul/PHASE-6-CARTOGRAPHER-MASTER-SPEC.md) for current status
 2. **Check Completion:** Review previous phase summary to understand current state
 3. **Read Objectives:** Review the specific phase objectives above
 4. **Reference Architecture:** Consult attached spec documents as needed
@@ -666,12 +671,12 @@ npm run dev                    # Watch mode (rebuilds on file change)
 ```
 
 **Test Installation:**
-- Copy `main.js`, `manifest.json`, `styles.css` to `<vault>/.obsidian/plugins/datacore-plugin/`
+- Copy `main.js`, `manifest.json`, `styles.css` to `<vault>/.obsidian/plugins/cartographer/`
 - Reload Obsidian (`Cmd-R` on macOS, `Ctrl-R` on Windows/Linux)
 - Enable plugin in **Settings → Community plugins**
 
 **Master Specification:**
-- Location: `.agent/catalog-overhaul/PHASE-6-DATACORE-PLUGIN-MASTER-SPEC.md`
+- Location: `.agent/catalog-overhaul/PHASE-6-CARTOGRAPHER-MASTER-SPEC.md`
 - Contains: Full architecture, all specifications, detailed phase plans
 - Update at end of each phase with progress status
 

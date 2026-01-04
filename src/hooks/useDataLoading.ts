@@ -27,28 +27,52 @@ export async function loadCatalogItems(
 	const items: CatalogItem[] = [];
 
 	try {
+		console.log(`[Datacore] Starting catalog load: ${settings.catalogPath}`);
+		console.log(`[Datacore] Preset: ${settings.presetName}`);
+		console.log(`[Datacore] Looking in vault root for: ${settings.catalogPath}`);
+		
 		// Get the catalog folder
 		const folder = app.vault.getAbstractFileByPath(settings.catalogPath);
-		if (!folder || !('children' in folder)) {
-			console.warn(`Catalog folder not found: ${settings.catalogPath}`);
+		
+		if (!folder) {
+			console.error(`[Datacore] Catalog folder not found at: ${settings.catalogPath}`);
+			console.log(`[Datacore] Vault root files:`, app.vault.getRoot().children.map(f => f.path));
+			return items;
+		}
+		
+		if (!('children' in folder)) {
+			console.error(`[Datacore] Path exists but is not a folder: ${settings.catalogPath}`);
 			return items;
 		}
 
 		// Process each file in the catalog folder
 		const children = folder.children as unknown[];
+		console.log(`[Datacore] Found ${children.length} items in folder`);
+		
+		let fileCount = 0;
+		let parseCount = 0;
+		
 		for (const file of children) {
 			if (!(file instanceof TFile)) {continue;}
 			if (!file.extension.match(/md|markdown/)) {continue;}
 
+			fileCount++;
+			console.log(`[Datacore] Processing: ${file.name}`);
+			
 			const content = await app.vault.read(file);
 			const item = parseMarkdownToItem(file, content, settings);
 
 			if (item) {
 				items.push(item);
+				parseCount++;
+			} else {
+				console.warn(`[Datacore] Failed to parse: ${file.name}`);
 			}
 		}
+		
+		console.log(`[Datacore] Load complete: ${fileCount} files processed, ${parseCount} items loaded`);
 	} catch (error) {
-		console.error('Error loading catalog items:', error);
+		console.error('[Datacore] Error loading catalog items:', error);
 	}
 
 	return items;
@@ -104,7 +128,7 @@ function parseYamlFrontmatter(
 	let currentArray: string[] = [];
 
 	for (let i = 0; i < lines.length; i++) {
-		const line = lines[i];
+		const line = lines[i] ?? '';
 
 		// Skip empty lines
 		if (!line.trim()) {
@@ -112,8 +136,8 @@ function parseYamlFrontmatter(
 		}
 
 		// Check if line is an array item (starts with - )
-		if (line.match(/^\s*-\s+/)) {
-			const arrayItem = line.replace(/^\s*-\s+/, '').trim();
+		if (line?.match(/^\s*-\s+/)) {
+			const arrayItem = (line ?? '').replace(/^\s*-\s+/, '').trim();
 			if (currentKey) {
 				// Remove quotes if present (e.g., '[[Link]]' -> [[Link]])
 				const cleanItem = arrayItem.replace(/^['"]|['"]$/g, '');
@@ -131,7 +155,7 @@ function parseYamlFrontmatter(
 		}
 
 		// Check for key: value pattern
-		const match = line.match(/^([^:]+):\s*(.*)$/);
+		const match = (line ?? '').match(/^([^:]+):\s*(.*)$/);
 		if (!match?.[1]) {
 			continue;
 		}
@@ -142,8 +166,8 @@ function parseYamlFrontmatter(
 		// Check if this line starts an array or has an inline value
 		if (value === '') {
 			// Check if next line is an array item
-			const nextLine = i + 1 < lines.length ? lines[i + 1] : '';
-			if (nextLine.match(/^\s*-\s+/)) {
+			const nextLine = i + 1 < lines.length ? (lines[i + 1] ?? '') : '';
+			if (nextLine?.match(/^\s*-\s+/)) {
 				// This is an array field, collect items
 				currentKey = key;
 				currentArray = [];
