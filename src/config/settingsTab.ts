@@ -2,8 +2,12 @@
  * Settings UI Tab for Obsidian settings panel
  */
 
-import { App, PluginSettingTab, Setting, Plugin } from 'obsidian';
-import { PRESETS } from './presets';
+import {
+	App,
+	Plugin,
+	PluginSettingTab,
+	Setting
+} from 'obsidian';
 import { SettingsManager } from './settingsManager';
 
 export class DatacoreSettingsTab extends PluginSettingTab {
@@ -23,45 +27,25 @@ export class DatacoreSettingsTab extends PluginSettingTab {
 		containerEl.empty();
 		new Setting(containerEl).setName('Datacore plugin').setHeading();
 
-		// Preset selection
+		// Active library selector
 		new Setting(containerEl)
-			.setName('Configuration preset')
-			.setDesc('Select a preset configuration or create a custom one')
+			.setName('Active library')
+			.setDesc('Select which library to display')
 			.addDropdown((dropdown) => {
-				this.settingsManager.getAvailablePresets().forEach((preset) => {
-					dropdown.addOption(preset, preset);
+				dropdown.addOption('', 'None selected');
+				settings.libraries.forEach((library) => {
+					dropdown.addOption(library.id, library.name);
 				});
 				dropdown
-					.setValue(settings.presetName)
-					.onChange(async (value: keyof typeof PRESETS) => {
-						await this.settingsManager.loadPreset(value);
-						this.display(); // Refresh the UI
-					});
-			});
-
-		// Catalog path
-		new Setting(containerEl)
-			.setName('Catalog path')
-			.setDesc('Relative path to catalog directory (e.g., "works", "library")')
-			.addText((text) => {
-				text
-					.setValue(settings.catalogPath)
+					.setValue(settings.activeLibraryId ?? '')
 					.onChange(async (value: string) => {
-						this.settingsManager.setCatalogPath(value);
+						if (value) {
+							this.settingsManager.setActiveLibrary(value);
+						} else {
+							settings.activeLibraryId = null;
+						}
 						await this.settingsManager.saveSettings();
-					});
-			});
-
-		// Catalog name
-		new Setting(containerEl)
-			.setName('Catalog name')
-			.setDesc('Display name for this catalog')
-			.addText((text) => {
-				text
-					.setValue(settings.schema.catalogName)
-					.onChange(async (value: string) => {
-						this.settingsManager.setCatalogName(value);
-						await this.settingsManager.saveSettings();
+						this.display();
 					});
 			});
 

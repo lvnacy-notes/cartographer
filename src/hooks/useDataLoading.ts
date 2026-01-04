@@ -27,21 +27,34 @@ export async function loadCatalogItems(
 	const items: CatalogItem[] = [];
 
 	try {
-		console.log(`[Datacore] Starting catalog load: ${settings.catalogPath}`);
-		console.log(`[Datacore] Preset: ${settings.presetName}`);
-		console.log(`[Datacore] Looking in vault root for: ${settings.catalogPath}`);
+		// Get active library
+		const { activeLibraryId } = settings;
+		if (!activeLibraryId) {
+			console.log('[Datacore] No active library selected');
+			return items;
+		}
+
+		const activeLibrary = settings.libraries.find((lib) => lib.id === activeLibraryId);
+		if (!activeLibrary) {
+			console.error(`[Datacore] Active library not found: ${activeLibraryId}`);
+			return items;
+		}
+
+		console.log(`[Datacore] Starting catalog load: ${activeLibrary.path}`);
+		console.log(`[Datacore] Library: ${activeLibrary.name}`);
+		console.log(`[Datacore] Looking in vault root for: ${activeLibrary.path}`);
 		
 		// Get the catalog folder
-		const folder = app.vault.getAbstractFileByPath(settings.catalogPath);
+		const folder = app.vault.getAbstractFileByPath(activeLibrary.path);
 		
 		if (!folder) {
-			console.error(`[Datacore] Catalog folder not found at: ${settings.catalogPath}`);
+			console.error(`[Datacore] Catalog folder not found at: ${activeLibrary.path}`);
 			console.log(`[Datacore] Vault root files:`, app.vault.getRoot().children.map(f => f.path));
 			return items;
 		}
 		
 		if (!('children' in folder)) {
-			console.error(`[Datacore] Path exists but is not a folder: ${settings.catalogPath}`);
+			console.error(`[Datacore] Path exists but is not a folder: ${activeLibrary.path}`);
 			return items;
 		}
 

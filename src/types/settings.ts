@@ -1,22 +1,34 @@
 /**
- * Configuration types for Datacore plugin
- * Defines all settings structure, schemas, and presets
+ * Library configuration - defines a single catalog/collection
+ */
+export interface Library {
+	// Unique identifier for this library
+	id: string;
+	// User-friendly display name
+	name: string;
+	// Vault path where catalog items are stored
+	path: string; // e.g., 'pulp-fiction/works', 'manuscripts', 'my-library/books'
+	// Schema definition for this library
+	schema: CatalogSchema;
+	// ISO timestamp of when library was created
+	createdAt: string;
+}
+
+/**
+ * Configuration types for Cartographer plugin
+ * Defines all settings structure, schemas, and library management
  */
 
 export interface DatacoreSettings {
 	// Core configuration
 	version: string;
-	presetName: string; // 'pulp-fiction', 'general-library', 'manuscripts', 'custom'
-
-	// Catalog location
-	catalogPath: string; // e.g., 'works', 'manuscripts', 'stories'
-
-	// Schema & field configuration
+	// Multi-library support
+	libraries: Library[];
+	activeLibraryId: string | null; // ID of currently active library, or null if none selected
+	// Schema & field configuration for the ACTIVE library
 	schema: CatalogSchema;
-
 	// Component visibility & configuration
 	dashboards: DashboardConfigs;
-
 	// UI preferences
 	ui: {
 		itemsPerPage: number;
@@ -32,10 +44,8 @@ export interface DatacoreSettings {
 export interface CatalogSchema {
 	// Display name for this catalog
 	catalogName: string;
-
 	// Field definitions
 	fields: SchemaField[];
-
 	// Core fields (required for plugin to function)
 	coreFields: {
 		titleField: string; // Which field is the title (usually 'title')
@@ -50,10 +60,8 @@ export interface CatalogSchema {
 export interface SchemaField {
 	// Internal field name (matches frontmatter key)
 	key: string;
-
 	// Display label in UI
 	label: string;
-
 	// Field type (determines how it's parsed and displayed)
 	type:
 		| 'string'
@@ -63,25 +71,18 @@ export interface SchemaField {
 		| 'array'
 		| 'wikilink-array'
 		| 'object';
-
 	// Category for grouping in UI
 	category: 'metadata' | 'status' | 'workflow' | 'content' | 'custom';
-
 	// Whether field is visible in default table views
 	visible: boolean;
-
 	// Whether field can be filtered by
 	filterable: boolean;
-
 	// Whether field can be sorted by
 	sortable: boolean;
-
 	// For array types: what is the item type?
 	arrayItemType?: 'string' | 'wikilink';
-
 	// Default sort order (lower = earlier in list)
 	sortOrder: number;
-
 	// Description for settings UI
 	description?: string;
 }

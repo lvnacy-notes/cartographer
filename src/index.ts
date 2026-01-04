@@ -4,12 +4,31 @@
  */
 
 // Types
-export type { CatalogItem, CatalogDataState, FilterState, SortState, CatalogStatistics } from './types/dynamicWork';
-export type { DatacoreSettings, CatalogSchema, SchemaField, DashboardConfigs } from './types/settings';
-export { getTypedField, itemToObject, parseFieldValue, formatFieldValue, isDateLike, toDate, coerceToValidDateValue } from './types/types';
+export type {
+	CatalogDataState,
+	CatalogItem,
+	CatalogStatistics,
+	FilterState,
+	SortState
+} from './types/dynamicWork';
+export type {
+	CatalogSchema,
+	DashboardConfigs,
+	DatacoreSettings,
+	Library,
+	SchemaField
+} from './types/settings';
+export {
+	coerceToValidDateValue,
+	formatFieldValue,
+	getTypedField,
+	isDateLike,
+	itemToObject,
+	parseFieldValue,
+	toDate
+} from './types/types';
 
 // Config
-export { PRESETS, PULP_FICTION_PRESET, GENERAL_LIBRARY_PRESET, MANUSCRIPTS_PRESET, DEFAULT_CUSTOM_PRESET } from './config/presets';
 export { SettingsManager } from './config/settingsManager';
 export { DatacoreSettingsTab } from './config/settingsTab';
 
@@ -44,6 +63,17 @@ export {
 } from './queries/queryFunctions';
 
 // Components
-export { DatacoreComponentView, createTableElement, createFilterElement, createStatusSummary } from './components/DatacoreComponentView';
-export { StatusDashboardView, STATUS_DASHBOARD_VIEW_TYPE } from './components/StatusDashboardView';
-export { WorksTableView, WORKS_TABLE_VIEW_TYPE } from './components/WorksTableView';
+export {
+	DatacoreComponentView,
+	createTableElement,
+	createFilterElement,
+	createStatusSummary
+} from './components/DatacoreComponentView';
+export {
+	StatusDashboardView,
+	STATUS_DASHBOARD_VIEW_TYPE
+} from './components/StatusDashboardView';
+export {
+	WorksTableView,
+	WORKS_TABLE_VIEW_TYPE
+} from './components/WorksTableView';
