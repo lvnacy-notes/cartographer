@@ -14,18 +14,20 @@
 - ✅ Step 1: Type system refactored - all types updated, presets.ts deleted
 - ✅ Step 2: Settings manager enhanced with async createLibrary() and vault path validation
 - ✅ Step 3: Settings UI rebuilt with library management UI and libraryModal extracted
+- ✅ Step 4: Default schema templates created based on documented structure
 - ✅ Build verification: Clean TypeScript compilation (npm run build)
 - ✅ Lint resolution: All critical errors fixed; 12 console.log warnings deferred to completion
 - ✅ All changes committed to `feat/preset-elimination-refactor` branch
 
 **Next Action:**
-- Proceed with Step 4: Create default schema templates file
+- Proceed with Step 5: Update data loading to work with active library
 
 **Files Changed This Session:**
 - `src/types/settings.ts` - Type system refactored
 - `src/config/settingsManager.ts` - Enhanced with async vault path validation and error context
 - `src/config/settingsTab.ts` - Rebuilt with library management UI
 - `src/config/libraryModal.ts` - New file: Extracted modal with fixed type narrowing
+- `src/config/defaultSchemas.ts` - New file: DEFAULT_LIBRARY_SCHEMA with 26 fields from documentation
 - `src/config/presets.ts` - Deleted (700+ lines)
 - Build artifacts: Clean, no errors
 - Lint: 12 console.log warnings (deferred to completion phase)
@@ -293,9 +295,9 @@ private openLibrary(libraryId: string) {
 
 1. ✅ **Step 1** - Update type system (foundational) - COMPLETE
 2. ✅ **Step 2** - Update settings manager (core logic) - COMPLETE
-3. ⏳ **Step 4** - Create default schemas (reference templates) - NEXT
-4. ✅ **Step 3** - Rebuild settings UI (user interaction) - COMPLETE
-5. ⏳ **Step 5** - Update data loading (data flow)
+3. ✅ **Step 3** - Rebuild settings UI (user interaction) - COMPLETE
+4. ✅ **Step 4** - Create default schemas (reference templates) - COMPLETE
+5. ⏳ **Step 5** - Update data loading (data flow) - NEXT
 6. ⏳ **Step 6** - Update components (presentation layer)
 7. ⏳ **Step 7** - Create sidebar panel (navigation)
 8. ⏳ **Step 8** - Update plugin entry point (integration)

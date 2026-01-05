@@ -1,7 +1,7 @@
 ---
 date: 2026-01-04
 digital-assistant: Step 3 settings UI rebuild, library modal extraction, and build/lint error resolution
-commit-sha: TBD
+commit-sha: 084ef1d
 branch: feat/preset-elimination-refactor
 tags: 
   - changelog
@@ -147,8 +147,16 @@ tags:
 
 ## Commit Information
 
-**Commit SHA**: [To be filled during commit process]
-**Commit Message**: `build(step-3): Rebuild settings UI and fix type/lint errors`
+**Commit SHA**: 084ef1dd8e1d12bae5b7ca1aa2e0e1c4322f14ee
+**Commit Message**: feat(step-3): Complete settings UI rebuild with library management
+
+- Rebuild DatacoreSettingsTab with active library selector and library CRUD UI
+- Extract LibraryModal to separate file (follows 1-class-per-file AGENTS.md rule)
+- Add library management section (add/edit/delete with confirmation dialogs)
+- Remove all catalog-specific hardcoding (Pulp Fiction references eliminated)
+- Add CSS styling for library UI components (.library-item, .library-actions, etc.)
+- Fix lint issues in settings configuration code
+- Build verified: Clean TypeScript compilation with no errors
 **Files in Commit**: 
 - `src/config/settingsTab.ts` (modified, ~160 lines)
 - `src/config/settingsManager.ts` (modified, ~15 lines)

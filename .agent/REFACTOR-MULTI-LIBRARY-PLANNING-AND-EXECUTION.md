@@ -16,6 +16,8 @@ last-updated: 2026-01-04
 
 **Maintenance:** This document will be **automatically updated when approaching context limits** (80-90% token usage) to preserve conversation continuity across sessions.
 
+**Session Start Protocol:** Before any session work begins, review attached documentation to understand context, prior decisions, and requirements.
+
 ---
 
 ## Conversation 1: AGENTS.md Compliance & Code Organization
@@ -123,6 +125,65 @@ last-updated: 2026-01-04
 
 ---
 
+## Conversation 4: Documentation Review Protocol & Assumption-Driven Development
+
+**When:** Step 4 schema template creation  
+**Trigger:** User asked "I provided docs as context for this conversation at the very beginning. Were any of them reviewed?"
+
+**What Happened:**
+- Agent generated default schema templates without consulting attached documentation
+- Created generic templates with made-up field names instead of examining actual data
+- User asked: "Where in the docs is 'Pulp Fiction' mentioned? Why is that name in the code you generated?"
+- Discovery: Agent had assumed schema structure instead of reading actual work files or documentation
+
+**The Protocol Violation:**
+Agent failed at start-of-session protocol: Should have reviewed **all attached documentation BEFORE generating code**
+- Attached docs: AGENTS.md, PHASE-6-CARTOGRAPHER-MASTER-SPEC.md, REFACTORING-PLAN-MULTI-LIBRARY.md
+- Attached changelogs: Evidence of previous sessions with decisions already made
+- None of these were consulted before writing code
+
+**What Should Have Happened:**
+1. Read AGENTS.md (code standards, project conventions)
+2. Read PHASE-6-CARTOGRAPHER-MASTER-SPEC.md (plugin purpose, architecture decisions)
+3. Read REFACTORING-PLAN-MULTI-LIBRARY.md (what Step 4 entails specifically)
+4. Review attached changelogs (understand prior work)
+5. *Then* begin code generation
+
+**Decision Made:** Established iron-clad protocol: **Consult all project documentation before generating any code**. This is non-negotiable and must be part of every session start.
+
+**Implementation of Fix:**
+- Agent examined works/README.md (actual documented schema)
+- Extracted actual field structure from real work files (Call of Cthulhu.md, Vulthoom.md, Shadow on the Moor.md)
+- Created `DEFAULT_LIBRARY_SCHEMA` based on documented 26-field structure
+- Removed vault-specific naming ("Pulp Fiction" → generic "DEFAULT_LIBRARY_SCHEMA")
+- Made schema portable and generic (suitable for any library catalog type)
+
+**Why This Matters:**
+- Prevents wasted work and invalid assumptions
+- Respects existing documentation and prior decisions
+- Ensures code matches actual requirements, not guesses
+- Establishes consistency in how decisions are made
+- Documentation review *is* part of the work, not optional
+
+**Critical Protocol Going Forward:**
+```
+Session Start Checklist:
+1. ✅ Review all attached documentation
+2. ✅ Consult AGENTS.md for code standards before any generation
+3. ✅ Review specification docs for decisions already made
+4. ✅ Examine existing data/files before creating structure
+5. ✅ Then begin implementation
+```
+
+**Outcome:**
+- Step 4 completed with proper schema based on actual data
+- Protocol now explicitly codified
+- Future sessions must follow documentation-first approach
+
+**Takeaway:** Documentation exists for a reason—it captures decisions, specifications, and context. Consulting it first prevents building the wrong thing. This must become standard at session start: **Always review attached docs before generating code.** No exceptions.
+
+---
+
 ## Key Decisions & Reasoning
 
 ### Decision 1: Multi-Library Architecture
@@ -140,26 +201,48 @@ last-updated: 2026-01-04
 
 **Standard:** Before any code generation, consult AGENTS.md. This is non-negotiable.
 
+### Decision 4: Documentation-First Development Protocol
+**Reasoning:** Attached documentation represents prior decisions, specifications, and context. Starting work without reviewing it leads to invalid assumptions, wasted effort, and code that doesn't match requirements.
+
+**Protocol:** Every session start must include:
+1. Review all attached documentation
+2. Consult AGENTS.md for code standards
+3. Review specification docs for established decisions
+4. Examine actual data/vault files before creating schemas
+5. Only then begin implementation
+
+**Why:** This prevents assumptions, respects prior work, ensures alignment with requirements, and establishes consistency.
+
 ---
 
 ## Unresolved Questions & Ongoing Topics
 
 None currently. All major conversations have been resolved with explicit decisions.
 
+**Established Protocols for Future Sessions:**
+- Documentation review is mandatory at session start
+- AGENTS.md consultation required before code generation
+- Specification review required to understand prior decisions
+- Actual data examination before creating schema definitions
+
 ---
 
 ## Next Conversation Topics (Likely)
 
-1. **Build Results** — Once `npm run build` is run in devcontainer, likely topics:
-   - Were there unexpected compile errors?
-   - Do new files import correctly?
-   - Any type-safety issues discovered during build?
+1. **Step 5 Implementation** — Data loading updates to work with active library
+   - How to pass library parameter to loadCatalogItems()
+   - How to use library.path and library.schema in data loading
+   - Testing with multiple libraries
 
-2. **Step 4 vs Step 5 Priority** — Whether to implement default schema templates (Step 4) or proceed directly to data loading updates (Step 5)
+2. **Component Updates** — Adapting existing components to read from active library config
+   - How to pass activeLibrary to component views
+   - Dynamic schema-driven rendering
+   - Testing with different schemas
 
-3. **Data Loading Integration** — How to handle switching between libraries and reloading appropriate data
-
-4. **Component Migration** — How to update existing components to read from active library schema without hardcoding
+3. **Sidebar Panel Creation** — Library switching UI
+   - Implementation details and integration points
+   - Visual indicators for active library
+   - Library quick actions
 
 ---
 
