@@ -1,26 +1,28 @@
 # Cartographer: Multi-Library Refactoring Plan
 **Date:** January 4, 2026 - January 5, 2026
-**Status:** IN PROGRESS - 5 of 9 Steps Complete  
+**Status:** IN PROGRESS - 7 of 9 Steps Complete  
 **Scope:** Phase 1.5 Architecture Refactor
 **Plugin ID:** cartographer
 **Branch:** `feat/preset-elimination-refactor`
-**Last Commit:** `fix: Add type assertion to JSON.parse return in createSchemaFromDefault`
+**Last Commit:** `refactor: Update components to read from active library config`
 
 ---
 
-## Progress Summary (January 4, 2026)
+## Progress Summary (January 5, 2026)
 
 **Completed:**
 - ✅ Step 1: Type system refactored - all types updated, presets.ts deleted
 - ✅ Step 2: Settings manager enhanced with async createLibrary() and vault path validation
 - ✅ Step 3: Settings UI rebuilt with library management UI and libraryModal extracted
 - ✅ Step 4: Default schema templates created based on documented structure
+- ✅ Step 5: Data loading is updated to reflect the new schema
+- ✅ Step 6: Components updated to read from active library config
 - ✅ Build verification: Clean TypeScript compilation (npm run build)
-- ✅ Lint resolution: All critical errors fixed; 12 console.log warnings deferred to completion
+- ✅ Lint resolution: All critical errors fixed; console.log warnings deferred to completion
 - ✅ All changes committed to `feat/preset-elimination-refactor` branch
 
 **Next Action:**
-- Proceed with Step 6: Update components to read from active library config
+- Proceed with Step 7: Create sidebar panel component for library switching
 
 **Files Changed Session 1.5 (Steps 1-4):**
 - `src/types/settings.ts` - Type system refactored
@@ -163,7 +165,7 @@ interface DatacoreSettings {
    - Add/remove fields
    - Change field properties (type, visibility, etc.)
 
-### Step 4: Create Default Schemas
+### Step 4: Create Default Schemas ✅ COMPLETE
 **File:** `src/config/defaultSchemas.ts` (new file)
 
 **Exported Templates:**
@@ -196,35 +198,25 @@ export async function loadCatalogItems(
 
 **Build Status:** ✅ Clean - No TypeScript errors, no lint errors
 
-### Step 6: Update Components
-**Files:** `src/components/*.ts` (all component views)
+### Step 6: Update Components ✅ COMPLETE
+**Files:** `src/components/DatacoreComponentView.ts`, `src/components/StatusDashboardView.ts`, `src/components/WorksTableView.ts`
 
-**Status:** PENDING
+**Status:** ✅ COMPLETE - Build verified, no errors
 
 **Changes:**
-- Accept `activeLibrary: Library` prop
-- Read schema from `activeLibrary.schema` instead of settings
-- Update field labels and type definitions dynamically
+- ✅ Added `getActiveLibrary()` helper method to `DatacoreComponentView` base class
+- ✅ Updated `StatusDashboardView.loadData()` to use `getActiveLibrary()`
+- ✅ Updated `WorksTableView.loadData()` to use `getActiveLibrary()`
+- ✅ Updated `createTableElement()` signature to accept `schemaFields` array instead of full `settings` object
+- ✅ Removed unused `schema` parameter from `createStatusSummary()` function
+- ✅ Updated component render methods to read schema from active library
+- ✅ Both views now check for active library and display appropriate message if none selected
 
-**Example - StatusDashboardView:**
-```typescript
-export class StatusDashboardView extends DatacoreComponentView {
-  async loadData(): Promise<void> {
-    const library = this.getActiveLibrary();
-    if (!library) {
-      console.warn('No active library selected');
-      return;
-    }
-    this.items = await loadCatalogItems(this.app, library);
-  }
-
-  private getActiveLibrary(): Library | null {
-    return this.settingsManager
-      .getSettings()
-      .libraries.find(lib => lib.id === this.settingsManager.getSettings().activeLibraryId) ?? null;
-  }
-}
-```
+**Implementation Details:**
+- `getActiveLibrary()` returns active library or null if none selected
+- Components extract schema fields from `activeLibrary.schema` instead of `settings.schema`
+- Utility functions now accept schema configuration directly, not full settings object
+- Removed all violations of AGENTS.md directives (no unused parameters)
 
 ### Step 7: Create Sidebar Panel
 **File:** `src/components/LibrarySidebarPanel.ts` (new file)
@@ -305,8 +297,8 @@ private openLibrary(libraryId: string) {
 3. ✅ **Step 3** - Rebuild settings UI (user interaction) - COMPLETE
 4. ✅ **Step 4** - Create default schemas (reference templates) - COMPLETE
 5. ✅ **Step 5** - Update data loading (data flow) - COMPLETE
-6. ⏳ **Step 6** - Update components (presentation layer) - NEXT
-7. ⏳ **Step 7** - Create sidebar panel (navigation)
+6. ✅ **Step 6** - Update components (presentation layer) - COMPLETE
+7. ⏳ **Step 7** - Create sidebar panel (navigation) - NEXT
 8. ⏳ **Step 8** - Update plugin entry point (integration)
 9. ✅ **Step 9** - Delete presets file (cleanup) - COMPLETE
 

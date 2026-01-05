@@ -54,9 +54,17 @@ export class WorksTableView extends DatacoreComponentView {
 	async renderComponent(): Promise<void> {
 		return await Promise.resolve().then(() => {
 			const container = this.containerEl.children[1] as HTMLElement;
-			if (!container) {return;}
+			if (!container) {
+				return;
+			}
 
 			container.empty();
+
+			const activeLibrary = this.getActiveLibrary();
+			if (!activeLibrary) {
+				container.createEl('p', { text: 'No active library selected' });
+				return;
+			}
 
 			const { worksTable } = this.settings.dashboards;
 
@@ -70,7 +78,7 @@ export class WorksTableView extends DatacoreComponentView {
 			// Get columns to display
 			const columns = worksTable.defaultColumns
 				.map((key) => {
-					const fieldDef = this.settings.schema.fields.find((f) => f.key === key);
+					const fieldDef = activeLibrary.schema.fields.find((f) => f.key === key);
 					return fieldDef
 						? { key, label: fieldDef.label }
 						: null;
@@ -80,8 +88,13 @@ export class WorksTableView extends DatacoreComponentView {
 			// Sort items
 			const sorted = sortItems(this.items, this.sortState, this.settings);
 
-			// Create and render table
-			createTableElement(container, columns, sorted, this.settings);
+			// Create and render table with schema fields from active library
+			const schemaFieldsForTable = activeLibrary.schema.fields.map((f) => ({
+				key: f.key,
+				label: f.label,
+				type: f.type,
+			}));
+			createTableElement(container, columns, sorted, schemaFieldsForTable);
 
 			// Add controls
 			const controls = container.createDiv({ cls: 'datacore-table-controls' });

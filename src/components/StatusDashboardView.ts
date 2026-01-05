@@ -46,6 +46,12 @@ export class StatusDashboardView extends DatacoreComponentView {
 
 		container.empty();
 
+		const activeLibrary = this.getActiveLibrary();
+		if (!activeLibrary) {
+			container.createEl('p', { text: 'No active library selected' });
+			return;
+		}
+
 		const { statusDashboard } = this.settings.dashboards;
 
 		if (!statusDashboard.enabled) {
@@ -59,8 +65,7 @@ export class StatusDashboardView extends DatacoreComponentView {
 			container,
 			this.items,
 			statusDashboard.groupByField,
-			statusDashboard.showWordCounts,
-			this.settings
+			statusDashboard.showWordCounts
 		)).catch((error: unknown) => {
 			const message = error instanceof Error ? error.message : String(error);
 			container.createEl('p', { text: `Error rendering status dashboard: ${message}` });

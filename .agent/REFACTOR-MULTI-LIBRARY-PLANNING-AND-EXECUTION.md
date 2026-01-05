@@ -184,6 +184,48 @@ Session Start Checklist:
 
 ---
 
+## Conversation 5: Specification Documentation — Removing Bundled Presets & Unnecessary Examples
+
+**When:** January 5, 2026, during spec cleanup  
+**Trigger:** User requested removing the bundled presets section from PHASE-6-CARTOGRAPHER-MASTER-SPEC.md (starting line 459)
+
+**What Was There:**
+The spec contained three hardcoded preset examples: Pulp Fiction Catalog, General Library Catalog, and Manuscript Tracker Catalog. These were relics from the preset-based system that had already been eliminated in earlier refactoring steps. The spec documentation hadn't been updated to reflect the new modular architecture.
+
+**Initial Update:**
+Agent replaced presets section with new "Default Schema Template" section explaining:
+- No bundled presets anymore — users create custom libraries
+- `DEFAULT_LIBRARY_SCHEMA` provides optional 26-field starting template
+- Users customize it in settings UI as needed
+- Included example of creating a book library
+
+**User's Objection:**
+"What is it with the manuscript tracker example? This is a library, for books. Context libraries, for books, articles, papers, and publications of said context. Libraries. Not trackers. not management. Just a fucking catalog. Can we stop with adding unnecessary fluff please?"
+
+**What They Were Saying:**
+- Manuscript trackers are project management tools, not library catalogs
+- Libraries are for cataloging publications/works, not tracking submission pipelines
+- The example muddied the actual purpose of the plugin
+- Adding unnecessary use cases creates scope creep and conceptual confusion
+
+**Decision Made:** Remove the manuscript tracker example entirely. Keep only the book library example.
+
+**Why This Matters:**
+- Reinforces plugin scope clarity: library catalogs for curated work collections, nothing else
+- Prevents introducing scope creep through examples
+- Specification should reflect actual purpose, not tangential "could be used for" scenarios
+- Cleaner documentation is more authoritative and actionable
+
+**Outcome:**
+- Removed manuscript tracker example completely
+- Kept focused, minimal documentation with single book library example
+- Spec now reflects actual scope: "a library, for books...just a fucking catalog"
+- Documentation is leaner and more purpose-driven
+
+**Takeaway:** Examples in documentation should reinforce scope, not broaden it. If something doesn't fit the core purpose, it doesn't belong in spec examples—no matter how tangentially possible it might be. Keep documentation focused.
+
+---
+
 ## Key Decisions & Reasoning
 
 ### Decision 1: Multi-Library Architecture

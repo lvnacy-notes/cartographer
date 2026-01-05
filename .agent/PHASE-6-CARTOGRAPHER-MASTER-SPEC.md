@@ -456,91 +456,63 @@ interface DashboardConfigs {
 }
 ```
 
-### Configuration Presets (Bundled)
+### Default Schema Template
 
-#### Preset: Pulp Fiction Catalog (Default)
-```typescript
-{
-  catalogPath: 'works',
-  schema: {
-    fields: [
-      { key: 'title', label: 'Title', type: 'string', visible: true, ... },
-      { key: 'authors', label: 'Author(s)', type: 'wikilink-array', visible: true, ... },
-      { key: 'year', label: 'Year', type: 'number', visible: true, ... },
-      { key: 'catalog-status', label: 'Status', type: 'string', visible: true, ... },
-      { key: 'word-count', label: 'Words', type: 'number', visible: true, ... },
-      { key: 'publications', label: 'Publications', type: 'wikilink-array', visible: false, ... },
-      { key: 'bp-candidate', label: 'BP Candidate', type: 'boolean', visible: false, ... },
-      { key: 'bp-approved', label: 'BP Approved', type: 'boolean', visible: false, ... },
-      { key: 'date-reviewed', label: 'Date Reviewed', type: 'date', visible: false, ... },
-      { key: 'date-approved', label: 'Date Approved', type: 'date', visible: false, ... },
-      { key: 'date-cataloged', label: 'Date Cataloged', type: 'date', visible: false, ... },
-      { key: 'keywords', label: 'Keywords', type: 'array', visible: false, ... },
-      { key: 'content-warnings', label: 'Warnings', type: 'array', visible: false, ... },
-    ]
-  },
-  dashboards: {
-    statusDashboard: { enabled: true, groupByField: 'catalog-status', ... },
-    worksTable: { enabled: true, defaultColumns: ['title', 'authors', 'year', ...], ... },
-    filterBar: { enabled: true, filters: [ { field: 'catalog-status', ... }, ... ], ... },
-    publicationDashboard: { enabled: true, ... },
-    authorCard: { enabled: true, ... },
-    backstagePassPipeline: { enabled: true, stages: [ ... ], ... },
-  }
-}
-```
+**No Bundled Presets** — The plugin no longer ships with hardcoded presets. Instead, users create libraries directly with customizable schemas.
 
-#### Preset: General Library Catalog
-```typescript
-{
-  catalogPath: 'library',
-  schema: {
-    fields: [
-      { key: 'title', label: 'Title', type: 'string', visible: true, ... },
-      { key: 'author', label: 'Author', type: 'string', visible: true, ... },
-      { key: 'genre', label: 'Genre', type: 'string', visible: true, ... },
-      { key: 'status', label: 'Status', type: 'string', visible: true, ... },
-      { key: 'year', label: 'Year', type: 'number', visible: true, ... },
-      { key: 'rating', label: 'Rating', type: 'number', visible: true, ... },
-    ]
-  },
-  dashboards: {
-    statusDashboard: { enabled: true, groupByField: 'status', ... },
-    worksTable: { enabled: true, defaultColumns: ['title', 'author', 'genre', ...], ... },
-    filterBar: { enabled: true, filters: [ { field: 'status', ... }, { field: 'genre', ... } ], ... },
-    publicationDashboard: { enabled: false },
-    authorCard: { enabled: true, ... },
-    backstagePassPipeline: { enabled: false },
-  }
-}
-```
+**Default Schema:** When users create a new library, they can start with `DEFAULT_LIBRARY_SCHEMA` defined in [src/config/defaultSchemas.ts](src/config/defaultSchemas.ts). This provides a comprehensive 26-field template based on best practices from the Pulp Fiction work catalog:
 
-#### Preset: Manuscript Tracker Catalog
+**Core Fields:**
+- `title` (string) - Work title
+- `catalog-status` (string) - Default status field for grouping
+
+**Type & Classification:**
+- `class` (string) - Primary categorization (e.g., "story", "article")
+- `category` (string) - Secondary classification (e.g., "short story", "novelette")
+
+**Contributors & Publication:**
+- `authors` (wikilink-array) - Author references
+- `year`, `volume`, `issue` (numbers) - Publication metadata
+- `publications` (wikilink-array) - Source publication references
+
+**Source Documentation:**
+- `citation` (string) - Formal bibliographic citation
+- `wikisource` (string) - Link to full text
+- `backstage-draft` (string) - Editorial draft link
+
+**Content & Cataloging:**
+- `synopsis` (string) - Plot summary
+- `bp-candidate` (boolean) - Editorial pipeline candidate
+- `bp-approved` (boolean) - Editorial pipeline approved
+
+**Timeline & Tracking:**
+- `date-read`, `date-cataloged`, `date-reviewed`, `date-approved` (dates)
+
+**Metrics & Keywords:**
+- `word-count` (number)
+- `keywords`, `tags`, `content-warnings` (arrays)
+- `content-metadata` (object) - Structured analysis fields
+
+**Customization:** Users can:
+- Start with the default schema and add/remove fields
+- Create entirely custom schemas with only required fields
+- Modify field visibility, filterability, and sortability per library
+- Define custom status workflows for different curation processes
+
+**Example: Creating a Book Library**
 ```typescript
-{
-  catalogPath: 'manuscripts',
-  schema: {
-    fields: [
-      { key: 'title', label: 'Title', type: 'string', visible: true, ... },
-      { key: 'author', label: 'Author', type: 'string', visible: true, ... },
-      { key: 'genre', label: 'Genre', type: 'string', visible: true, ... },
-      { key: 'status', label: 'Status', type: 'string', visible: true, ... },
-      { key: 'word-count', label: 'Words', type: 'number', visible: true, ... },
-      { key: 'draft-date', label: 'Draft Done', type: 'date', visible: true, ... },
-      { key: 'query-date', label: 'Querying', type: 'date', visible: true, ... },
-      { key: 'agent', label: 'Agent', type: 'string', visible: true, ... },
-      { key: 'publisher', label: 'Publisher', type: 'string', visible: false, ... },
-    ]
-  },
-  dashboards: {
-    statusDashboard: { enabled: true, groupByField: 'status', ... },
-    worksTable: { enabled: true, defaultColumns: ['title', 'author', 'status', ...], ... },
-    filterBar: { enabled: true, filters: [ ... ], ... },
-    publicationDashboard: { enabled: false },
-    authorCard: { enabled: false },
-    backstagePassPipeline: { enabled: false },
-  }
-}
+// User creates library with default schema
+const myLibrary = {
+  id: 'books-2026',
+  name: 'My Book Collection',
+  path: 'library/books',
+  schema: createSchemaFromDefault() // Full 26-field template
+};
+
+// User customizes in settings UI based on needs:
+// - Keep: title, authors, year, word-count
+// - Remove: bp-candidate, bp-approved, editorial workflow fields
+// - Adjust visibility for fields they want to see in table views
 ```
 
 ### Component Specifications (Configuration-Driven)

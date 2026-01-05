@@ -1,7 +1,7 @@
 ---
 date: 2026-01-05
 digital-assistant: architecture refactoring, multi-library support
-commit-sha: TBD
+commit-sha: 57ceb78
 branch: feat/preset-elimination-refactor
 tags: 
   - phase-1.5
@@ -72,9 +72,23 @@ Agent completed code refactoring for Step 5:
 
 ## Commit Information
 
-**Commit SHA**: [To be filled during commit process]
-**Commit Message**: [To be filled during commit process]
-**Files in Commit**: [To be filled during commit process]  
+**Commit SHA**: 57ceb78c180636d975c5f371273f14bb2ed6d992
+**Commit Message**: feat(step-5): Refactor data loading to accept Library parameter
+
+- Updated loadCatalogItems() signature to accept Library instead of full DatacoreSettings
+- Removed active library extraction logic from data loading (caller responsibility)
+- Updated StatusDashboardView and WorksTableView to extract active library before loading
+- Data loading now dynamically uses library.path and library.schema
+- Added early return pattern when no active library selected (improved error handling)
+- Verified TypeScript compilation clean (0 errors) and lint passing
+**Files in Commit**:
+- .agent/PHASE-6-CARTOGRAPHER-MASTER-SPEC.md
+- .agent/REFACTORING-PLAN-MULTI-LIBRARY.md
+- ARCHIVE/CHANGELOG-2026-01-05-STEP-5-DATA-LOADING.md
+- src/components/StatusDashboardView.ts
+- src/components/WorksTableView.ts
+- src/config/defaultSchemas.ts
+- src/hooks/useDataLoading.ts  
 
 ## Next Steps (Phase 1.5 Remaining)
 
