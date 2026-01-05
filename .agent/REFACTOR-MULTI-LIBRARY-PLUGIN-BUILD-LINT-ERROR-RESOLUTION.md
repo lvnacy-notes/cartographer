@@ -207,27 +207,30 @@ Obsidian's lint rule `obsidianmd/ui/sentence-case` requires UI text to be in sen
 
 **The Issue:** `window.confirm()` violates Obsidian's `no-alert` rule.
 
-**User's Feedback:** "Unexpected confirm" lint error on delete confirmation dialog.
+**Context:** This pattern appeared in multiple places: LibrarySidebarPanel delete button and standalone DeleteConfirmModal implementation.
 
-**Initial Agent Approach:** Suggested complex solutions involving custom modal components.
+**Root Problem:** Using browser's native `window.confirm()` instead of Obsidian's Modal API, compounded by implicit `any` types on `app` parameter.
 
-**Better Solution:** Hide the delete button, show "Confirm delete" and "Cancel" buttons instead:
+**Solution Pattern:** Refactor to extend Obsidian's Modal class with:
+- Proper `app: App` typing (no `any`)
+- Custom button-based confirmation UI using Obsidian's `contentEl` API
+- Lifecycle hooks (`onOpen`/`onClose`) for proper resource management
+- Destructive-action styling via `mod-warning` CSS class
 
-```typescript
-deleteBtn.addEventListener('click', () => {
-  const { name: _name, id } = library;  // Destructure, using _name since not needed
-  const deleteConfirmBtn = libActions.createEl('button', {
-    text: 'Confirm delete',
-    cls: 'mod-warning'
-  });
-  deleteBtn.hide();
-  // ... rest of confirmation flow
-});
-```
+**Implementation (DeleteConfirmModal.ts):**
+- Changed from standalone class to `extends Modal`
+- Implemented `onOpen()` with message + Cancel/Delete buttons
+- Each button calls callback with appropriate boolean and closes modal
+- Proper cleanup in `onClose()` method
 
-**Why This is Better:** Uses native Obsidian UI patterns instead of browser dialogs. Better UX, better accessibility, consistent with Obsidian design language.
+**Why This is Better:** 
+- Native Obsidian integration with consistent UX patterns
+- Better accessibility (keyboard navigation, screen readers)
+- Proper modal stacking and focus management
+- Type-safe with zero implicit `any` usage
+- Aligns with Obsidian design conventions
 
-**Lesson:** Browser API (`window.confirm`) conflicts with Obsidian patterns. Custom button-based confirmation is the right approach.
+**Lesson:** Browser APIs (`window.confirm`, `window.alert`) conflict with Obsidian architecture. Always use Obsidian Modal API for user interaction patterns.
 
 ---
 
@@ -330,7 +333,30 @@ Resolve **all TypeScript compilation errors** and **lint violations** in the ref
 - `settings.catalogPath` removed but still referenced
 - Schema type changes in `CatalogSchema` interface
 
-**Resolution Notes:** [To be filled as errors encountered]
+**Resolution Notes:** 
+
+**Issue 1: Undefined Container Access**  
+**Location:** LibrarySidebarPanel.ts, line 61  
+**Error:** `'container' is possibly 'undefined'. ts(18048)`  
+**Fix:** Guard with null check and type assertion:
+```typescript
+const container = this.containerEl.children[1];
+if (!container) {
+  return;
+}
+const element = container as HTMLElement;
+element.empty();
+```
+
+**Issue 2: NodeList Element Access**  
+**Location:** LibrarySidebarPanel.ts, lines 191 and 196  
+**Error:** `Object is possibly 'undefined'. ts(2532)`  
+**Fix:** Extract and guard DOM collection access:
+```typescript
+const item = items[i];
+if (!item) {continue;}
+item.textContent = ...;
+```
 
 ---
 
@@ -354,7 +380,23 @@ Resolve **all TypeScript compilation errors** and **lint violations** in the ref
 - Callers not awaiting async operations
 - Promise type mismatches in subscriptions
 
-**Resolution Notes:** [To be filled as errors encountered]
+**Resolution Notes:** 
+
+**Issue 1: Promise Returned in Event Listener Callback**  
+**Location:** LibrarySidebarPanel.ts, lines 150-156 and 169-177  
+**Error:** `Promise returned in function argument where a void return was expected.`  
+**Fix:** Use IIFE pattern to wrap async operations:
+```typescript
+mainEl.addEventListener('click', () => {
+  if (!isActive) {
+    void (async () => {
+      this.settingsManager.setActiveLibrary(library.id);
+      await this.settingsManager.saveSettings();
+      await this.render();
+    })();
+  }
+});
+```
 
 ---
 
@@ -366,7 +408,97 @@ Resolve **all TypeScript compilation errors** and **lint violations** in the ref
 - New UI code not following style conventions
 - Missing JSDoc comments on public methods
 
-**Resolution Notes:** [To be filled as errors encountered]
+**Resolution Notes:** 
+
+**Issue 1: Unused Variables (AGENTS.md Violation)**  
+**Location:** LibrarySidebarPanel.ts, line 71  
+**Error:** `'titleEl' is declared but never used.`  
+**Fix:** Don't assign unused DOM creation:
+```typescript
+libraryPanel.createEl('h3', {
+  text: 'Libraries',
+  cls: 'datacore-library-title'
+});
+```
+
+**Issue 2: Unsafe Error Type Handling in Catch Blocks**  
+**Location:** LibrarySidebarPanel.ts, lines 122 and 193  
+**Error:** `Unsafe call of a(n) 'error' type typed value.`  
+**Fix:** Safely extract error message with type guards:
+```typescript
+catch (error: unknown) {
+  const errorMsg = error instanceof Error ? error.message : String(error);
+  console.warn(`Could not load count for library ${library.name}:`, errorMsg);
+}
+```
+
+**Issue 3: Browser Alert API and Implicit Any Types in Modal**  
+**Location:** DeleteConfirmModal.ts, lines 9, 13-14, 21  
+**Errors:**
+- `@typescript-eslint/no-explicit-any` (lines 9, 13): Implicit `any` type on `app` parameter and callback
+- `@typescript-eslint/no-unsafe-assignment` (line 14): Unsafe assignment of `any` value to property
+- `no-alert` (line 21): Use of `window.confirm()` browser API
+
+**Root Cause:** Original implementation used standalone class with `window.confirm()` dialog instead of Obsidian's native Modal API, and typed `app` parameter as `any` instead of `App`.
+
+**Fix:** Refactor to extend Obsidian's Modal class with proper types and button-based confirmation:
+```typescript
+import { App, Modal } from 'obsidian';
+
+export class DeleteConfirmModal extends Modal {
+  private libraryName: string;
+  private onConfirm: (confirmed: boolean) => void;
+
+  constructor(app: App, libraryName: string, onConfirm: (confirmed: boolean) => void) {
+    super(app);
+    this.libraryName = libraryName;
+    this.onConfirm = onConfirm;
+  }
+
+  onOpen(): void {
+    const { contentEl } = this;
+    contentEl.createEl('h2', { text: 'Delete library' });
+    
+    const messageEl = contentEl.createDiv();
+    messageEl.createEl('p', {
+      text: `Are you sure you want to delete the library "${this.libraryName}"?`,
+    });
+    messageEl.createEl('p', {
+      text: 'This action cannot be undone.',
+      cls: 'u-muted',
+    });
+
+    const buttonContainer = contentEl.createDiv({ cls: 'delete-confirm-buttons' });
+    
+    const cancelBtn = buttonContainer.createEl('button', { text: 'Cancel' });
+    cancelBtn.addEventListener('click', () => {
+      this.onConfirm(false);
+      this.close();
+    });
+
+    const deleteBtn = buttonContainer.createEl('button', {
+      text: 'Delete library',
+      cls: 'mod-warning',
+    });
+    deleteBtn.addEventListener('click', () => {
+      this.onConfirm(true);
+      this.close();
+    });
+  }
+
+  onClose(): void {
+    const { contentEl } = this;
+    contentEl.empty();
+  }
+}
+```
+
+**Why This Works:** 
+- Extends `Modal` provides proper Obsidian integration and lifecycle hooks
+- Typed `app: App` parameter eliminates implicit `any` 
+- Custom button-based confirmation replaces browser `window.confirm()` with Obsidian UI patterns
+- Modal lifecycle (`onOpen`/`onClose`) ensures proper cleanup and memory management
+- `mod-warning` class provides destructive-action styling consistent with Obsidian conventions
 
 ---
 
@@ -378,7 +510,24 @@ Resolve **all TypeScript compilation errors** and **lint violations** in the ref
 - Null coalescing not handled properly
 - Optional chaining not applied where needed
 
-**Resolution Notes:** [To be filled as errors encountered]
+**Resolution Notes:** 
+
+**Issue 1: Unsafe API Call (Missing Type)**  
+**Location:** LibrarySidebarPanel.ts, lines 84-87  
+**Error:** `Unsafe call of a(n) 'error' type typed value. Property 'setting' does not exist on type 'App'.`  
+**Fix:** Use LibraryModal directly instead of non-existent API:
+```typescript
+const modal = new LibraryModal(
+  this.plugin.app,
+  this.settingsManager,
+  null,
+  async () => {
+    await this.settingsManager.saveSettings();
+    await this.render();
+  }
+);
+modal.open();
+```
 
 ---
 

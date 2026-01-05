@@ -293,3 +293,128 @@
 		padding: 0.5rem;
 	}
 }
+
+/* Library Sidebar Panel Styles */
+.datacore-library-panel {
+	padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.datacore-library-title {
+	margin: 0 0 1rem 0;
+	font-size: 1.1em;
+	font-weight: 600;
+}
+
+.datacore-library-buttons {
+	display: flex;
+	gap: 0.5rem;
+	margin-bottom: 1rem;
+}
+
+.datacore-add-library-btn {
+	flex: 1;
+	padding: 0.5rem;
+	background-color: var(--background-tertiary);
+	border: 1px solid var(--divider-color);
+	border-radius: 4px;
+	color: var(--text-normal);
+	cursor: pointer;
+	font-size: 0.9em;
+	font-weight: 500;
+	transition: background-color 0.2s ease;
+}
+
+.datacore-add-library-btn:hover {
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+}
+
+.datacore-library-list {
+	flex: 1;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.datacore-library-empty {
+	padding: 2rem 1rem;
+	text-align: center;
+	color: var(--text-muted);
+	font-size: 0.9em;
+}
+
+.datacore-library-item {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem;
+	background-color: var(--background-secondary);
+	border: 1px solid var(--divider-color);
+	border-radius: 4px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.datacore-library-item:hover {
+	background-color: var(--background-tertiary);
+	border-color: var(--interactive-accent);
+}
+
+.datacore-library-item-active {
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+	border-color: var(--interactive-accent);
+	font-weight: 500;
+}
+
+.datacore-library-item-main {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.datacore-library-item-name {
+	font-weight: 500;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.datacore-library-item-count {
+	font-size: 0.85em;
+	color: var(--text-muted);
+}
+
+.datacore-library-item-active .datacore-library-item-count {
+	color: var(--text-on-accent);
+}
+
+.datacore-library-item-actions {
+	display: flex;
+	gap: 0.25rem;
+}
+
+.datacore-library-delete-btn {
+	padding: 0.25rem 0.5rem;
+	background-color: transparent;
+	border: 1px solid var(--divider-color);
+	border-radius: 3px;
+	color: var(--text-muted);
+	cursor: pointer;
+	font-size: 0.9em;
+	transition: all 0.2s ease;
+	min-width: 32px;
+}
+
+.datacore-library-delete-btn:hover {
+	background-color: var(--text-error);
+	color: white;
+	border-color: var(--text-error);
+}
+
