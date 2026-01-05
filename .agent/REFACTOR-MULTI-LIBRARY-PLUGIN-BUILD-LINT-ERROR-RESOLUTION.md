@@ -230,7 +230,7 @@ Obsidian's lint rule `obsidianmd/ui/sentence-case` requires UI text to be in sen
 - Type-safe with zero implicit `any` usage
 - Aligns with Obsidian design conventions
 
-**Lesson:** Browser APIs (`window.confirm`, `window.alert`) conflict with Obsidian architecture. Always use Obsidian Modal API for user interaction patterns.
+`**Lesson:** Browser APIs (`window.confirm`, `window.alert`) conflict with Obsidian architecture. Always use Obsidian Modal API for user interaction patterns.
 
 ---
 

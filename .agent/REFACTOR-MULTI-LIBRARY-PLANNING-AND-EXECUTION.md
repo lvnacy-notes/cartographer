@@ -5,7 +5,7 @@ document-type: conversation-summary
 project: Cartographer Plugin
 phase: 6.1
 status: In Progress
-last-updated: 2026-01-04
+last-updated: 2026-01-05
 ---
 
 # Multi-Library Architecture Refactoring - Conversation Record
@@ -226,6 +226,85 @@ Agent replaced presets section with new "Default Schema Template" section explai
 
 ---
 
+## Conversation 6: Step 8 Command Architecture — Separation of Concerns
+
+**When:** January 5, 2026, Phase 1.5 Step 8 Implementation  
+**Trigger:** User specified requirements for Step 8 (dynamic command registration)
+
+**User's Statement:** "With regard to Step 8: `main.ts` is for plugin lifecycle methods ONLY. What we are not going to do is pack full of command logic. What I would like is for the command logic to live in their own folder, where each command lives in its own file. `main.ts` then registers the commands as needed."
+
+**What This Addresses:**
+AGENTS.md requirement: "Keep `main.ts` minimal: Focus only on plugin lifecycle (onload, onunload, addCommand calls). Delegate all feature logic to separate modules."
+
+Previous concern: Temptation to pack all command registration and logic into `main.ts`, violating single responsibility principle.
+
+**Architecture Designed:**
+
+**Folder Structure:**
+```
+src/commands/
+├── index.ts                    ← Exports all command definitions and registration
+├── types.ts                    ← CommandDefinition interface (moved to src/types/commands.ts)
+├── core/
+│   ├── openStatusDashboard.ts  ← One command per file
+│   ├── openWorksTable.ts
+│   └── toggleLibrarySidebar.ts
+└── library/
+    └── openLibrary.ts          ← Dynamic command (one per configured library)
+```
+
+**Key Design Principles:**
+1. **One class/function per file** (AGENTS.md compliance)
+2. **Separation of concerns:** Command logic isolated from lifecycle management
+3. **Command definitions as interfaces:** Standardized format for bulk registration
+4. **Folder organization:** `core/` for static commands, `library/` for dynamic ones
+5. **Minimal main.ts:** Only calls `registerAllCommands(plugin)` helper
+
+**Command Definition Interface:**
+```typescript
+interface CommandDefinition {
+  id: string;
+  name: string;
+  callback: () => void | Promise<void>;
+}
+```
+
+**Registration Pattern:**
+- `getCoreCommands(plugin)` - Returns array of static command definitions
+- `getLibraryCommands(plugin)` - Returns array of dynamic command definitions (one per library)
+- `registerAllCommands(plugin)` - Bulk registration of all commands
+- `updateLibraryCommands(plugin)` - Re-register library commands when library list changes
+
+**main.ts Responsibility:**
+1. Load settings
+2. Register views
+3. Call `registerAllCommands(this)` 
+4. Add ribbon icon
+5. That's it — no command logic
+
+**Why This Approach:**
+- Maintains clear separation between plugin lifecycle and feature logic
+- Makes adding new commands trivial (create new file, export function, add to core/library folder)
+- Testable command logic in isolation
+- Keeps `main.ts` readable and maintainable
+- Each command file has single, focused responsibility
+
+**Implementation Details:**
+- `CommandDefinition` interface moved to `src/types/commands.ts` (consolidates all type definitions in types folder)
+- Core commands (status dashboard, works table, sidebar toggle) always registered
+- Library commands dynamically generated and registered for each configured library
+- Command IDs follow pattern: `datacore-{feature}` (core), `datacore-library-{libraryId}` (dynamic)
+
+**Outcome:**
+- Command architecture fully designed and implemented
+- Aligns with AGENTS.md single-responsibility principle
+- Maintains minimal, lifecycle-focused `main.ts`
+- Scalable for future commands
+
+**Takeaway:** Structure for code organization matters. By committing to one-command-per-file and organizing into folders by type (core/dynamic), we prevent command registration from becoming a maintenance burden. Commands stay modular and testable.
+
+---
+
 ## Key Decisions & Reasoning
 
 ### Decision 1: Multi-Library Architecture
@@ -255,6 +334,18 @@ Agent replaced presets section with new "Default Schema Template" section explai
 
 **Why:** This prevents assumptions, respects prior work, ensures alignment with requirements, and establishes consistency.
 
+### Decision 5: Command Architecture — Separation of Concerns
+**Reasoning:** `main.ts` is the plugin lifecycle entry point and should remain minimal and focused. Command logic should be isolated into separate modules for maintainability, testability, and scalability.
+
+**Structure:** 
+- `src/commands/` folder containing all command logic
+- Subfolders by type: `core/` (static) and `library/` (dynamic)
+- One command per file (AGENTS.md compliance)
+- `src/commands/index.ts` exports functions for bulk registration
+- `main.ts` calls `registerAllCommands(this)` and nothing else
+
+**Why:** Keeps plugin entry point readable, makes adding commands trivial, maintains single responsibility principle, and prevents command registration from becoming a maintenance burden.
+
 ---
 
 ## Unresolved Questions & Ongoing Topics
@@ -271,20 +362,17 @@ None currently. All major conversations have been resolved with explicit decisio
 
 ## Next Conversation Topics (Likely)
 
-1. **Step 5 Implementation** — Data loading updates to work with active library
-   - How to pass library parameter to loadCatalogItems()
-   - How to use library.path and library.schema in data loading
-   - Testing with multiple libraries
+1. **Build & Testing** — Verify Step 8 implementation
+   - Run npm run build to check for TypeScript errors
+   - Lint verification (eslint compliance)
+   - Test command registration with multiple libraries
+   - Verify dynamic library commands are generated correctly
 
-2. **Component Updates** — Adapting existing components to read from active library config
-   - How to pass activeLibrary to component views
-   - Dynamic schema-driven rendering
-   - Testing with different schemas
-
-3. **Sidebar Panel Creation** — Library switching UI
-   - Implementation details and integration points
-   - Visual indicators for active library
-   - Library quick actions
+2. **Future Phases** — Beyond Phase 1.5 refactoring
+   - Phase 2: Data loading and YAML parsing with live testing
+   - Phase 3: StatusDashboard, FilterBar, WorksTable UI components
+   - Phase 4: Advanced components (PublicationDashboard, AuthorCard, BackstagePipeline)
+   - Phase 5: Full Obsidian integration and mobile testing
 
 ---
 

@@ -14,10 +14,10 @@ import {
 	LibrarySidebarPanel,
 	LIBRARY_SIDEBAR_VIEW_TYPE
 } from './components/LibrarySidebarPanel';
-import { toggleSidebarPanel } from './utils/viewUtils';
+import { registerAllCommands } from './commands';
 
 
-export default class DatacorePlugin extends Plugin {
+export default class Cartographer extends Plugin {
 	settings: DatacoreSettings;
 	settingsManager: SettingsManager;
 
@@ -45,30 +45,8 @@ export default class DatacorePlugin extends Plugin {
 		// Add settings tab
 		this.addSettingTab(new DatacoreSettingsTab(this.app, this, this.settingsManager));
 
-		// Add commands to open views
-		this.addCommand({
-			id: 'datacore-open-status-dashboard',
-			name: 'Open status dashboard',
-			callback: () => {
-				void this.activateView(STATUS_DASHBOARD_VIEW_TYPE);
-			}
-		});
-
-		this.addCommand({
-			id: 'datacore-open-works-table',
-			name: 'Open works table',
-			callback: () => {
-				void this.activateView(WORKS_TABLE_VIEW_TYPE);
-			}
-		});
-
-		this.addCommand({
-			id: 'datacore-toggle-library-sidebar',
-			name: 'Toggle library sidebar',
-			callback: () => {
-				void toggleSidebarPanel(this.app, LIBRARY_SIDEBAR_VIEW_TYPE);
-			}
-		});
+		// Register all commands (core + dynamic library commands)
+		registerAllCommands(this);
 
 		// Add ribbon icon
 		this.addRibbonIcon('database', 'Datacore catalog', () => {
@@ -80,7 +58,7 @@ export default class DatacorePlugin extends Plugin {
 		// Plugin cleanup happens automatically
 	}
 
-	private async activateView(viewType: string) {
+	async activateView(viewType: string): Promise<void> {
 		const { workspace } = this.app;
 
 		const leaves = workspace.getLeavesOfType(viewType);
