@@ -3,9 +3,15 @@
  * Components are rendered using Obsidian's view system
  */
 
-import { ItemView, WorkspaceLeaf } from 'obsidian';
+import {
+	ItemView,
+	WorkspaceLeaf
+} from 'obsidian';
 import { CatalogItem } from '../types/dynamicWork';
-import { DatacoreSettings } from '../types/settings';
+import {
+	DatacoreSettings,
+	Library
+} from '../types/settings';
 
 /**
  * Base class for Datacore component views in Obsidian
@@ -19,6 +25,17 @@ export abstract class DatacoreComponentView extends ItemView {
 	constructor(leaf: WorkspaceLeaf, settings: DatacoreSettings) {
 		super(leaf);
 		this.settings = settings;
+	}
+
+	/**
+	 * Get the currently active library configuration
+	 */
+	getActiveLibrary(): Library | null {
+		const activeId = this.settings.activeLibraryId;
+		if (!activeId) {
+			return null;
+		}
+		return this.settings.libraries.find((lib) => lib.id === activeId) ?? null;
 	}
 
 	/**
@@ -63,7 +80,7 @@ export function createTableElement(
 	container: HTMLElement,
 	columns: Array<{ key: string; label: string }>,
 	items: CatalogItem[],
-	settings: DatacoreSettings
+	schemaFields: Array<{ key: string; label: string; type: string }>
 ): HTMLTableElement {
 	const table = container.createEl('table', { cls: 'datacore-table' });
 	const thead = table.createEl('thead');
@@ -82,7 +99,7 @@ export function createTableElement(
 			const cell = row.createEl('td');
 			const value = item.getField(key);
 
-			const fieldDef = settings.schema.fields.find((f) => f.key === key);
+			const fieldDef = schemaFields.find((f) => f.key === key);
 			if (fieldDef?.type === 'date' && value) {
 				if (value instanceof Date) {
 					cell.setText(value.toLocaleDateString());
@@ -165,8 +182,7 @@ export function createStatusSummary(
 	container: HTMLElement,
 	items: CatalogItem[],
 	groupByField: string,
-	showWordCounts: boolean = false,
-	_settings: DatacoreSettings
+	showWordCounts: boolean = false
 ): void {
 	const summaryDiv = container.createDiv({ cls: 'datacore-status-summary' });
 	const groups = new Map<string | number | boolean | string[] | Date | null, CatalogItem[]>();

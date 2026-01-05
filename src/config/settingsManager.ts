@@ -4,8 +4,11 @@
  */
 
 import { Plugin } from 'obsidian';
-import { DatacoreSettings, SchemaField } from '../types/settings';
-import { PRESETS } from './presets';
+import {
+	DatacoreSettings,
+	Library,
+	SchemaField
+} from '../types/settings';
 
 /**
  * Manages loading, saving, and validating plugin settings
@@ -16,7 +19,7 @@ export class SettingsManager {
 
 	constructor(plugin: Plugin) {
 		this.plugin = plugin;
-		this.settings = PRESETS['pulp-fiction'] as DatacoreSettings;
+		this.settings = this.getDefaultSettings();
 	}
 
 	async loadSettings(): Promise<DatacoreSettings> {
@@ -25,8 +28,8 @@ export class SettingsManager {
 		if (saved?.version) {
 			this.settings = this.validateSettings(saved);
 		} else {
-			// Load default preset
-			this.settings = JSON.parse(JSON.stringify(PRESETS['pulp-fiction'])) as DatacoreSettings;
+			// Initialize with empty library list
+			this.settings = this.getDefaultSettings();
 		}
 
 		return this.settings;
@@ -40,12 +43,56 @@ export class SettingsManager {
 		return this.settings;
 	}
 
-	/**
-	 * Load a preset by name
-	 */
-	async loadPreset(presetName: keyof typeof PRESETS): Promise<void> {
-		this.settings = JSON.parse(JSON.stringify(PRESETS[presetName])) as DatacoreSettings;
-		await this.saveSettings();
+	private getDefaultSettings(): DatacoreSettings {
+		return {
+			version: '1.0.0',
+			libraries: [],
+			activeLibraryId: null,
+			schema: {
+				catalogName: 'Default Catalog',
+				fields: [],
+				coreFields: { titleField: 'title' },
+			},
+			dashboards: {
+				statusDashboard: {
+					enabled: false,
+					groupByField: '',
+					showTotalStats: false,
+					showWordCounts: false,
+				},
+				worksTable: {
+					enabled: true,
+					defaultColumns: ['title'],
+					enablePagination: true,
+				},
+				filterBar: {
+					enabled: false,
+					layout: 'vertical' as const,
+					filters: [],
+				},
+				publicationDashboard: {
+					enabled: false,
+					foreignKeyField: '',
+					displayColumns: [],
+				},
+				authorCard: {
+					enabled: false,
+					authorField: '',
+					displayColumns: [],
+					showStatistics: false,
+				},
+				backstagePassPipeline: {
+					enabled: false,
+					stages: [],
+				},
+			},
+			ui: {
+				itemsPerPage: 50,
+				defaultSortColumn: 'title',
+				defaultSortDesc: false,
+				compactMode: false,
+			},
+		};
 	}
 
 	/**
@@ -86,24 +133,71 @@ export class SettingsManager {
 	}
 
 	/**
-	 * Update catalog path
+	 * Create a new library
+	 * @throws Error if vault path does not exist
 	 */
-	setCatalogPath(path: string): void {
-		this.settings.catalogPath = path;
+	async createLibrary(library: Omit<Library, 'id' | 'createdAt'>): Promise<Library> {
+		// Validate that the vault path exists
+		try {
+			await this.plugin.app.vault.adapter.exists(library.path);
+		} catch (error) {
+			const errorMessage = error instanceof Error ? error.message : String(error);
+			throw new Error(`Invalid library path: ${library.path} does not exist in vault. ${ errorMessage }`);
+		}
+
+		const newLibrary: Library = {
+			id: `lib-${Date.now()}`,
+			...library,
+			createdAt: new Date().toISOString(),
+		};
+		this.settings.libraries.push(newLibrary);
+		return newLibrary;
 	}
 
 	/**
-	 * Update catalog name
+	 * Update an existing library
 	 */
-	setCatalogName(name: string): void {
-		this.settings.schema.catalogName = name;
+	updateLibrary(id: string, updates: Partial<Library>): void {
+		const library = this.settings.libraries.find((lib) => lib.id === id);
+		if (library) {
+			Object.assign(library, updates);
+		}
 	}
 
 	/**
-	 * Get list of available presets
+	 * Delete a library
 	 */
-	getAvailablePresets(): string[] {
-		return Object.keys(PRESETS);
+	deleteLibrary(id: string): void {
+		this.settings.libraries = this.settings.libraries.filter((lib) => lib.id !== id);
+		if (this.settings.activeLibraryId === id) {
+			this.settings.activeLibraryId = null;
+		}
+	}
+
+	/**
+	 * Get a library by ID
+	 */
+	getLibrary(id: string): Library | null {
+		return this.settings.libraries.find((lib) => lib.id === id) ?? null;
+	}
+
+	/**
+	 * Set the active library
+	 */
+	setActiveLibrary(id: string): void {
+		if (this.settings.libraries.find((lib) => lib.id === id)) {
+			this.settings.activeLibraryId = id;
+		}
+	}
+
+	/**
+	 * Get the active library
+	 */
+	getActiveLibrary(): Library | null {
+		if (!this.settings.activeLibraryId) {
+			return null;
+		}
+		return this.getLibrary(this.settings.activeLibraryId);
 	}
 
 	/**
@@ -111,14 +205,22 @@ export class SettingsManager {
 	 */
 	private validateSettings(saved: DatacoreSettings): DatacoreSettings {
 		// Ensure all required fields exist
-		if (!saved.version) {saved.version = '1.0.0';}
-		if (!saved.presetName) {saved.presetName = 'custom';}
-		if (!saved.catalogPath) {saved.catalogPath = 'catalog';}
+		if (!saved.version) {
+			saved.version = '1.0.0';
+		}
+
+		if (!saved.libraries) {
+			saved.libraries = [];
+		}
+
+		if (saved.activeLibraryId === undefined) {
+			saved.activeLibraryId = null;
+		}
 
 		// Ensure schema exists
 		if (!saved.schema) {
 			saved.schema = {
-				catalogName: 'Custom Catalog',
+				catalogName: 'Default Catalog',
 				fields: [],
 				coreFields: { titleField: 'title' },
 			};

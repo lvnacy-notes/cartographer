@@ -2,9 +2,14 @@
  * Settings UI Tab for Obsidian settings panel
  */
 
-import { App, PluginSettingTab, Setting, Plugin } from 'obsidian';
-import { PRESETS } from './presets';
+import {
+	App,
+	Plugin,
+	PluginSettingTab,
+	Setting
+} from 'obsidian';
 import { SettingsManager } from './settingsManager';
+import { LibraryModal } from './libraryModal';
 
 export class DatacoreSettingsTab extends PluginSettingTab {
 	plugin: Plugin;
@@ -21,49 +26,112 @@ export class DatacoreSettingsTab extends PluginSettingTab {
 		const settings = this.settingsManager.getSettings();
 
 		containerEl.empty();
-		new Setting(containerEl).setName('Datacore plugin').setHeading();
+		new Setting(containerEl).setName('Cartographer').setHeading();
 
-		// Preset selection
+		// Active library selector
 		new Setting(containerEl)
-			.setName('Configuration preset')
-			.setDesc('Select a preset configuration or create a custom one')
+			.setName('Active library')
+			.setDesc('Select which library to display')
 			.addDropdown((dropdown) => {
-				this.settingsManager.getAvailablePresets().forEach((preset) => {
-					dropdown.addOption(preset, preset);
+				dropdown.addOption('', 'None selected');
+				settings.libraries.forEach((library) => {
+					dropdown.addOption(library.id, library.name);
 				});
 				dropdown
-					.setValue(settings.presetName)
-					.onChange(async (value: keyof typeof PRESETS) => {
-						await this.settingsManager.loadPreset(value);
-						this.display(); // Refresh the UI
+					.setValue(settings.activeLibraryId ?? '')
+					.onChange(async (value: string) => {
+						if (value) {
+							this.settingsManager.setActiveLibrary(value);
+						} else {
+							settings.activeLibraryId = null;
+						}
+						await this.settingsManager.saveSettings();
+						this.display();
 					});
 			});
 
-		// Catalog path
-		new Setting(containerEl)
-			.setName('Catalog path')
-			.setDesc('Relative path to catalog directory (e.g., "works", "library")')
-			.addText((text) => {
-				text
-					.setValue(settings.catalogPath)
-					.onChange(async (value: string) => {
-						this.settingsManager.setCatalogPath(value);
-						await this.settingsManager.saveSettings();
-					});
-			});
+		// Library management section
+		/* eslint-disable obsidianmd/ui/sentence-case */
+		new Setting(containerEl).setName('Library Management').setHeading();
 
-		// Catalog name
-		new Setting(containerEl)
-			.setName('Catalog name')
-			.setDesc('Display name for this catalog')
-			.addText((text) => {
-				text
-					.setValue(settings.schema.catalogName)
-					.onChange(async (value: string) => {
-						this.settingsManager.setCatalogName(value);
+		// Add library button
+		new Setting(containerEl).addButton((button) => {
+			button
+				.setButtonText('Add library')
+				.setCta()
+				.onClick(() => {
+					new LibraryModal(this.app, this.settingsManager, null, async (lib) => {
+						void this.settingsManager.createLibrary(lib);
 						await this.settingsManager.saveSettings();
-					});
+						this.display();
+					}).open();
+				});
+		});
+
+		// Library list with edit/delete buttons
+		if (settings.libraries.length === 0) {
+			containerEl.createEl('p', {
+				text: 'No libraries configured. Add one to get started.'
 			});
+		} else {
+			settings.libraries.forEach((library) => {
+				const libContainer = containerEl.createDiv({
+					cls: 'library-item'
+				});
+
+				const libInfo = libContainer.createDiv({ cls: 'library-info' });
+				libInfo.createEl('strong', { text: library.name });
+				libInfo.createEl('div', {
+					text: `Path: ${library.path}`,
+					cls: 'setting-item-description'
+				});
+				libInfo.createEl('div', {
+					text: `Fields: ${library.schema.fields.length}`,
+					cls: 'setting-item-description'
+				});
+
+				const libActions = libContainer.createDiv({ cls: 'library-actions' });
+
+				// Edit button
+				const editBtn = libActions.createEl('button', { text: 'Edit' });
+				editBtn.addEventListener('click', () => {
+					new LibraryModal(this.app, this.settingsManager, library, async (lib) => {
+						this.settingsManager.updateLibrary(library.id, lib);
+						await this.settingsManager.saveSettings();
+						this.display();
+					}).open();
+				});
+
+				// Delete button
+				const deleteBtn = libActions.createEl('button', {
+					text: 'Delete',
+					cls: 'mod-warning'
+				});
+				deleteBtn.addEventListener('click', () => {
+					const { name: _name, id } = library;
+					const deleteConfirmBtn = libActions.createEl('button', {
+						text: 'Confirm delete',
+						cls: 'mod-warning'
+					});
+					deleteBtn.hide();
+					deleteConfirmBtn.addEventListener('click', () => {
+						this.settingsManager.deleteLibrary(id);
+						void this.settingsManager.saveSettings();
+						this.display();
+					});
+					const cancelConfirmBtn = libActions.createEl('button', { text: 'Cancel' });
+					cancelConfirmBtn.addEventListener('click', () => {
+						deleteConfirmBtn.remove();
+						cancelConfirmBtn.remove();
+						deleteBtn.show();
+					});
+				});
+			});
+		}
+
+		// UI Preferences section
+		/* eslint-disable obsidianmd/ui/sentence-case */
+		new Setting(containerEl).setName('UI Preferences').setHeading();
 
 		// Items per page
 		new Setting(containerEl)

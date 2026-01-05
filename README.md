@@ -1,4 +1,4 @@
-# Datacore Plugin - Portable Query System for Obsidian Catalogs
+# Context Library Service - Portable Query System for Libraries in the LVNACY Modular Obsidian system
 
 A configuration-driven, multi-vault query and dashboard system for Obsidian that transforms static Dataview queries into interactive, real-time dashboards.
 
@@ -17,7 +17,7 @@ A configuration-driven, multi-vault query and dashboard system for Obsidian that
 
 Copy the entire plugin folder to your Obsidian vault:
 ```
-<vault>/.obsidian/plugins/datacore-plugin/
+<vault>/.obsidian/plugins/cartographer/
 ```
 
 Then enable it in Settings → Community plugins.
@@ -183,7 +183,7 @@ import {
   getUniqueValues,
   getNumericStats,
   paginate,
-} from 'datacore-plugin';
+} from 'cartographer';
 ```
 
 See `src/queries/queryFunctions.ts` for full API documentation.
@@ -201,7 +201,7 @@ import type {
   FilterState,
   SortState,
   CatalogStatistics,
-} from 'datacore-plugin';
+} from 'cartographer';
 ```
 
 ## Mobile Support
@@ -251,7 +251,10 @@ Story content and description...
 Extend `DatacoreComponentView`:
 
 ```typescript
-import { DatacoreComponentView, loadCatalogItems } from 'datacore-plugin';
+import {
+  DatacoreComponentView,
+  loadCatalogItems
+  } from 'cartographer';
 
 export class MyCustomView extends DatacoreComponentView {
   async loadData() {

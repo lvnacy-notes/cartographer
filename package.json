@@ -1,7 +1,7 @@
 {
-	"name": "datacore-plugin",
+	"name": "cartographer",
 	"version": "0.1.0",
-	"description": "Portable, configuration-driven query system for Obsidian catalogs",
+	"description": "Portable, configuration-driven query system for libraries in the LVNACY Modular Obsidian system",
 	"main": "main.js",
 	"type": "module",
 	"scripts": {

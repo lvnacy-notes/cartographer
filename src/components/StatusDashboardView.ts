@@ -18,7 +18,24 @@ export class StatusDashboardView extends DatacoreComponentView {
 	}
 
 	async loadData(): Promise<void> {
-		this.items = await loadCatalogItems(this.app, this.settings);
+		console.log('[Datacore] StatusDashboardView.loadData() starting');
+		try {
+			// Get active library
+			const activeLibrary = this.settings.libraries.find(
+				(lib) => lib.id === this.settings.activeLibraryId
+			);
+			if (!activeLibrary) {
+				console.warn('[Datacore] No active library selected');
+				this.items = [];
+				return;
+			}
+
+			this.items = await loadCatalogItems(this.app, activeLibrary);
+			console.log(`[Datacore] StatusDashboardView loaded ${this.items.length} items`);
+		} catch (error) {
+			console.error('[Datacore] StatusDashboardView.loadData() error:', error);
+			throw error;
+		}
 	}
 
 	async renderComponent(): Promise<void> {
@@ -28,6 +45,12 @@ export class StatusDashboardView extends DatacoreComponentView {
 		}
 
 		container.empty();
+
+		const activeLibrary = this.getActiveLibrary();
+		if (!activeLibrary) {
+			container.createEl('p', { text: 'No active library selected' });
+			return;
+		}
 
 		const { statusDashboard } = this.settings.dashboards;
 
@@ -42,8 +65,7 @@ export class StatusDashboardView extends DatacoreComponentView {
 			container,
 			this.items,
 			statusDashboard.groupByField,
-			statusDashboard.showWordCounts,
-			this.settings
+			statusDashboard.showWordCounts
 		)).catch((error: unknown) => {
 			const message = error instanceof Error ? error.message : String(error);
 			container.createEl('p', { text: `Error rendering status dashboard: ${message}` });

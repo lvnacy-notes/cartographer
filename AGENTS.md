@@ -1,4 +1,4 @@
-# Obsidian community plugin
+# Cartographer
 
 ## Project overview
 
@@ -13,7 +13,7 @@
 - **Bundler: esbuild** (required for this sample - `esbuild.config.mjs` and build scripts depend on it). Alternative bundlers like Rollup or webpack are acceptable for other projects if they bundle all external dependencies into `main.js`.
 - Types: `obsidian` type definitions.
 
-**Note**: This sample project has specific technical dependencies on npm and esbuild. If you're creating a plugin from scratch, you can choose different tools, but you'll need to replace the build configuration accordingly.
+**Note**: This project has specific technical dependencies on npm and esbuild. If you're creating a plugin from scratch, you can choose different tools, but you'll need to replace the build configuration accordingly.
 
 ### Install
 
@@ -136,6 +136,7 @@ Follow Obsidian's **Developer Policies** and **Plugin Guidelines**. In particula
 - **Split large files**: If any file exceeds ~200-300 lines, consider breaking it into smaller, focused modules.
 - **Use clear module boundaries**: Each file should have a single, well-defined responsibility.
 - **One class per file maximum**: Keep classes in separate files to maintain clear module boundaries and single responsibility.
+- **No ignore directives**: Never add `eslint-disable`, `@ts-ignore`, or similar linting/type-checking bypass comments. All lint and type errors must be fixed with proper code changes. Ignore directives may only be added by the user if deemed appropriate.
 - Bundle everything into `main.js` (no unbundled runtime deps).
 - Avoid Node/Electron APIs if you want mobile compatibility; set `isDesktopOnly` accordingly.
 - Prefer `async/await` over promise chains; handle errors gracefully.
@@ -462,25 +463,31 @@ this.registerInterval(window.setInterval(() => { /* ... */ }, 1000));
 
 # Datacore Plugin Development Roadmap
 
-> **⚠️ SESSION DIRECTIVE:** At the beginning of each session, review [PHASE-6-DATACORE-PLUGIN-MASTER-SPEC.md](.agent/catalog-overhaul/PHASE-6-DATACORE-PLUGIN-MASTER-SPEC.md) for current status, completed work, and session objectives.
+> **⚠️ SESSION DIRECTIVE:** At the beginning of each session, review [PHASE-6-CARTOGRAPHER-MASTER-SPEC.md](.agent/catalog-overhaul/PHASE-6-CARTOGRAPHER-MASTER-SPEC.md) for current status, completed work, and session objectives.
 
 ## Overview
 
-This plugin is built over **5 focused sessions** within the larger Pulp Fiction Phase 6 project. The plugin is configuration-driven, supporting multiple catalog presets (Pulp Fiction, General Library, Manuscripts) with the same codebase.
+This plugin is built over **5 focused phases** within the larger Pulp Fiction Phase 6 project. The plugin is configuration-driven, supporting **multiple libraries per vault** with the same codebase.
 
-**Key Principle:** No hardcoded field names. All behavior configured via presets.
+**Key Principle:** No hardcoded field names or paths. All behavior configured via library definitions. Single library at a time, switchable via sidebar panel or commands.
 
-## Session Status
+**Architecture Change (January 4, 2026):** Moved from preset-based system to user-configurable library system. Each library defines its own:
+- Catalog path (e.g., `pulp-fiction/works`, `library`, `manuscripts`)
+- Schema with custom fields
+- Component configuration
 
-| Session | Phase | Status | Deliverables |
+## Phase Status
+
+| Phase | Status | Deliverables | Notes |
 |---------|-------|--------|--------------|
-| 1 | Setup & Configuration Architecture | ✅ **COMPLETE** | 15 TypeScript files, 2,840+ lines, 4 presets, settings UI |
-| 2 | Data Access & Query Foundation | ⏳ Pending Build/Test | Data loading, YAML parsing, 20+ query functions |
-| 3 | Core Components - Phase 1 | ⏳ Next | StatusDashboard, FilterBar, WorksTable |
-| 4 | Core Components - Phase 2 | ⏳ Next | PublicationDashboard, AuthorCard, BackstagePipeline |
-| 5 | Plugin Integration & Migration | ⏳ Next | Plugin entry point, Obsidian commands, replace Dataview |
+|---|---|---|---|
+| 1 | 🔄 **REFACTORING** | Update types, settings, data loading for multi-library support | Removing presets, adding library management |
+| 2 | ⏳ Next | Data loading, YAML parsing, 20+ query functions | Testing with real data |
+| 3 | ⏳ Next | StatusDashboard, FilterBar, WorksTable | Core UI components |
+| 4 | ⏳ Next | PublicationDashboard, AuthorCard, BackstagePipeline | Advanced components |
+| 5 | ⏳ Next | Plugin entry point, Obsidian commands, sidebar panel | Integration & migration |
 
-## Session 1: Setup & Configuration Architecture ✅ COMPLETE
+## Phase 1: Setup & Configuration Architecture ✅ COMPLETE
 
 **What Was Built:**
 - 15 TypeScript source files (2,840+ lines)
@@ -520,7 +527,7 @@ This plugin is built over **5 focused sessions** within the larger Pulp Fiction 
 
 ---
 
-## Session 2: Data Access & Query Foundation ⏳
+## Phase 2: Data Access & Query Foundation ⏳
 
 **Objectives:**
 - Implement data loading from vault (YAML parsing, field extraction)
@@ -549,7 +556,7 @@ countByField(items, fieldKey): Record<string, number>
 
 ---
 
-## Session 3: Core Components - Phase 1 ⏳
+## Phase 3: Core Components - Part 1 ⏳
 
 **Objectives:**
 - Build ConfigurableWorksTable component
@@ -574,7 +581,7 @@ countByField(items, fieldKey): Record<string, number>
 
 ---
 
-## Session 4: Core Components - Phase 2 ⏳
+## Phase 4: Core Components - Part 2 ⏳
 
 **Objectives:**
 - Build ConfigurablePublicationDashboard
@@ -599,7 +606,7 @@ countByField(items, fieldKey): Record<string, number>
 
 ---
 
-## Session 5: Plugin Integration & Migration ⏳
+## Phase 5: Plugin Integration & Migration ⏳
 
 **Objectives:**
 - Implement plugin entry point
@@ -632,25 +639,25 @@ countByField(items, fieldKey): Record<string, number>
 
 ---
 
-## Working Across Sessions
+## Working Across Phases
 
-### Starting a New Session
-1. **Review Master Spec:** Read [PHASE-6-DATACORE-PLUGIN-MASTER-SPEC.md](.agent/catalog-overhaul/PHASE-6-DATACORE-PLUGIN-MASTER-SPEC.md) for current status
-2. **Check Completion:** Review previous session summary to understand current state
-3. **Read Objectives:** Review the specific session objectives above
+### Starting a New Phase
+1. **Review Master Spec:** Read [PHASE-6-CARTOGRAPHER-MASTER-SPEC.md](.agent/catalog-overhaul/PHASE-6-CARTOGRAPHER-MASTER-SPEC.md) for current status
+2. **Check Completion:** Review previous phase summary to understand current state
+3. **Read Objectives:** Review the specific phase objectives above
 4. **Reference Architecture:** Consult attached spec documents as needed
-5. **Begin Implementation:** Follow the session deliverables
+5. **Begin Implementation:** Follow the phase deliverables
 
-### During a Session
+### During a Phase
 1. Create/modify files in plugin project directory
 2. Test changes in Obsidian
 3. Update git as needed
 4. Document blockers or discoveries
 
-### Ending a Session
-1. Create session summary document in `.agent/` directory
+### Ending a Phase
+1. Create phase summary document in `.agent/` directory
 2. Commit working code to git
-3. Note next session starting point
+3. Note next phase starting point
 4. Update roadmap progress in master spec
 
 ---
@@ -665,14 +672,14 @@ npm run dev                    # Watch mode (rebuilds on file change)
 ```
 
 **Test Installation:**
-- Copy `main.js`, `manifest.json`, `styles.css` to `<vault>/.obsidian/plugins/datacore-plugin/`
+- Copy `main.js`, `manifest.json`, `styles.css` to `<vault>/.obsidian/plugins/cartographer/`
 - Reload Obsidian (`Cmd-R` on macOS, `Ctrl-R` on Windows/Linux)
 - Enable plugin in **Settings → Community plugins**
 
 **Master Specification:**
-- Location: `.agent/catalog-overhaul/PHASE-6-DATACORE-PLUGIN-MASTER-SPEC.md`
-- Contains: Full architecture, all specifications, detailed session plans
-- Update at end of each session with progress status
+- Location: `.agent/catalog-overhaul/PHASE-6-CARTOGRAPHER-MASTER-SPEC.md`
+- Contains: Full architecture, all specifications, detailed phase plans
+- Update at end of each phase with progress status
 
 **Key Files:**
 - Plugin entry: `src/main.ts`

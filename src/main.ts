@@ -2,11 +2,22 @@ import { Plugin } from 'obsidian';
 import { DatacoreSettings } from './types/settings';
 import { SettingsManager } from './config/settingsManager';
 import { DatacoreSettingsTab } from './config/settingsTab';
-import { StatusDashboardView, STATUS_DASHBOARD_VIEW_TYPE } from './components/StatusDashboardView';
-import { WorksTableView, WORKS_TABLE_VIEW_TYPE } from './components/WorksTableView';
+import {
+	StatusDashboardView,
+	STATUS_DASHBOARD_VIEW_TYPE
+} from './components/StatusDashboardView';
+import {
+	WorksTableView,
+	WORKS_TABLE_VIEW_TYPE
+} from './components/WorksTableView';
+import {
+	LibrarySidebarPanel,
+	LIBRARY_SIDEBAR_VIEW_TYPE
+} from './components/LibrarySidebarPanel';
+import { registerAllCommands } from './commands';
 
 
-export default class DatacorePlugin extends Plugin {
+export default class Cartographer extends Plugin {
 	settings: DatacoreSettings;
 	settingsManager: SettingsManager;
 
@@ -25,25 +36,17 @@ export default class DatacorePlugin extends Plugin {
 			(leaf) => new WorksTableView(leaf, this.settings)
 		);
 
+		// Register sidebar panel
+		this.registerView(
+			LIBRARY_SIDEBAR_VIEW_TYPE,
+			(leaf) => new LibrarySidebarPanel(leaf, this, this.settingsManager, this.settings)
+		);
+
 		// Add settings tab
 		this.addSettingTab(new DatacoreSettingsTab(this.app, this, this.settingsManager));
 
-		// Add commands to open views
-		this.addCommand({
-			id: 'datacore-open-status-dashboard',
-			name: 'Open status dashboard',
-			callback: () => {
-				void this.activateView(STATUS_DASHBOARD_VIEW_TYPE);
-			}
-		});
-
-		this.addCommand({
-			id: 'datacore-open-works-table',
-			name: 'Open works table',
-			callback: () => {
-				void this.activateView(WORKS_TABLE_VIEW_TYPE);
-			}
-		});
+		// Register all commands (core + dynamic library commands)
+		registerAllCommands(this);
 
 		// Add ribbon icon
 		this.addRibbonIcon('database', 'Datacore catalog', () => {
@@ -55,7 +58,7 @@ export default class DatacorePlugin extends Plugin {
 		// Plugin cleanup happens automatically
 	}
 
-	private async activateView(viewType: string) {
+	async activateView(viewType: string): Promise<void> {
 		const { workspace } = this.app;
 
 		const leaves = workspace.getLeavesOfType(viewType);

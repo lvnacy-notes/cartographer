@@ -86,7 +86,7 @@ string | number | boolean | string[] | Date | null
 - ✅ `AGENTS.md` - Added mandatory "No explicit or implicit `any` types" coding convention
 
 **Master Specification Updated:**
-- ✅ `PHASE-6-DATACORE-PLUGIN-MASTER-SPEC.md` - Reflected parsing completion and current build status
+- ✅ `PHASE-6-cartographer-MASTER-SPEC.md` - Reflected parsing completion and current build status
 
 ---
 
@@ -151,7 +151,7 @@ string | number | boolean | string[] | Date | null
 ### Documentation Modified
 - `AGENTS.md` - Added type safety coding convention
 - `SESSION_HANDOFF_PHASE1_CLEANUP.md` - Updated with current session progress
-- `PHASE-6-DATACORE-PLUGIN-MASTER-SPEC.md` - Reflected parsing completion status
+- `PHASE-6-CARTOGRAPHER-MASTER-SPEC.md` - Reflected parsing completion status
 
 ### Documentation Created
 - `.agent/phase-one/ERRORS_AND_PATCHES.md` - Comprehensive patch log
