@@ -9,7 +9,10 @@ import {
 	FilterState,
 	SortState
 } from '../types/dynamicWork';
-import { DatacoreSettings } from '../types/settings';
+import {
+	DatacoreSettings,
+	Library
+} from '../types/settings';
 import { parseFieldValue } from '../types/types';
 import {
 	filterByField,
@@ -17,44 +20,33 @@ import {
 } from '../queries/queryFunctions';
 
 /**
- * Load all items from the configured catalog directory
+ * Load all items from a specific library's catalog directory
  * Returns parsed CatalogItem objects from markdown files
+ * @param app - Obsidian App instance
+ * @param library - Library configuration defining the catalog path and schema
  */
 export async function loadCatalogItems(
 	app: App,
-	settings: DatacoreSettings
+	library: Library
 ): Promise<CatalogItem[]> {
 	const items: CatalogItem[] = [];
 
 	try {
-		// Get active library
-		const { activeLibraryId } = settings;
-		if (!activeLibraryId) {
-			console.log('[Datacore] No active library selected');
-			return items;
-		}
-
-		const activeLibrary = settings.libraries.find((lib) => lib.id === activeLibraryId);
-		if (!activeLibrary) {
-			console.error(`[Datacore] Active library not found: ${activeLibraryId}`);
-			return items;
-		}
-
-		console.log(`[Datacore] Starting catalog load: ${activeLibrary.path}`);
-		console.log(`[Datacore] Library: ${activeLibrary.name}`);
-		console.log(`[Datacore] Looking in vault root for: ${activeLibrary.path}`);
+		console.log(`[Datacore] Starting catalog load: ${library.path}`);
+		console.log(`[Datacore] Library: ${library.name}`);
+		console.log(`[Datacore] Looking in vault root for: ${library.path}`);
 		
 		// Get the catalog folder
-		const folder = app.vault.getAbstractFileByPath(activeLibrary.path);
+		const folder = app.vault.getAbstractFileByPath(library.path);
 		
 		if (!folder) {
-			console.error(`[Datacore] Catalog folder not found at: ${activeLibrary.path}`);
+			console.error(`[Datacore] Catalog folder not found at: ${library.path}`);
 			console.log(`[Datacore] Vault root files:`, app.vault.getRoot().children.map(f => f.path));
 			return items;
 		}
 		
 		if (!('children' in folder)) {
-			console.error(`[Datacore] Path exists but is not a folder: ${activeLibrary.path}`);
+			console.error(`[Datacore] Path exists but is not a folder: ${library.path}`);
 			return items;
 		}
 
@@ -73,7 +65,7 @@ export async function loadCatalogItems(
 			console.log(`[Datacore] Processing: ${file.name}`);
 			
 			const content = await app.vault.read(file);
-			const item = parseMarkdownToItem(file, content, settings);
+			const item = parseMarkdownToItem(file, content, library);
 
 			if (item) {
 				items.push(item);
@@ -94,11 +86,14 @@ export async function loadCatalogItems(
 /**
  * Parse a markdown file into a CatalogItem
  * Extracts YAML frontmatter and converts to CatalogItem
+ * @param file - TFile instance from vault
+ * @param content - File content as string
+ * @param library - Library configuration defining the schema for parsing
  */
 function parseMarkdownToItem(
 	file: TFile,
 	content: string,
-	settings: DatacoreSettings
+	library: Library
 ): CatalogItem | null {
 	try {
 		const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
@@ -109,13 +104,13 @@ function parseMarkdownToItem(
 		}
 
 		const frontmatterText = frontmatterMatch[1];
-		const fields = parseYamlFrontmatter(frontmatterText, settings);
+		const fields = parseYamlFrontmatter(frontmatterText, library);
 
 		// Ensure title field exists (use filename as fallback)
-		const { titleField } = settings.schema.coreFields;
+		const { titleField } = library.schema.coreFields;
 		fields[titleField] ??= file.basename;
 
-		const id = (fields[settings.schema.coreFields.idField ?? 'title'] as string | number) ?? file.path;
+		const id = (fields[library.schema.coreFields.idField ?? 'title'] as string | number) ?? file.path;
 		return new CatalogItem(String(id), fields, file.path);
 	} catch (error) {
 		console.error(`Error parsing ${file.name}:`, error);
@@ -130,10 +125,12 @@ function parseMarkdownToItem(
  * - Multi-line arrays with - item syntax
  * - Empty/null values
  * - Quoted strings with special characters (e.g., wikilinks)
+ * @param frontmatterText - Raw YAML frontmatter content
+ * @param library - Library configuration defining the schema for type-aware parsing
  */
 function parseYamlFrontmatter(
 	frontmatterText: string,
-	settings: DatacoreSettings
+	library: Library
 ): Record<string, string | number | boolean | string[] | Date | null> {
 	const fields: Record<string, string | number | boolean | string[] | Date | null> = {};
 	const lines = frontmatterText.split('\n');
@@ -161,7 +158,7 @@ function parseYamlFrontmatter(
 
 		// If we have a current array, save it and reset
 		if (currentArray.length > 0 && currentKey) {
-			const fieldDef = settings.schema.fields.find((f) => f.key === currentKey);
+			const fieldDef = library.schema.fields.find((f) => f.key === currentKey);
 			fields[currentKey] = parseFieldValue(currentArray, fieldDef?.type ?? 'array');
 			currentArray = [];
 			currentKey = null;
@@ -187,12 +184,12 @@ function parseYamlFrontmatter(
 				continue;
 			} else {
 				// Empty value
-				const fieldDef = settings.schema.fields.find((f) => f.key === key);
+				const fieldDef = library.schema.fields.find((f) => f.key === key);
 				fields[key] = parseFieldValue(null, fieldDef?.type ?? 'string');
 			}
 		} else {
 			// Inline value (may be in array or single)
-			const fieldDef = settings.schema.fields.find((f) => f.key === key);
+			const fieldDef = library.schema.fields.find((f) => f.key === key);
 
 			// Remove quotes if present
 			const cleanValue = value.replace(/^['"]|['"]$/g, '');
@@ -209,7 +206,7 @@ function parseYamlFrontmatter(
 
 	// Handle any remaining array
 	if (currentArray.length > 0 && currentKey) {
-		const fieldDef = settings.schema.fields.find((f) => f.key === currentKey);
+		const fieldDef = library.schema.fields.find((f) => f.key === currentKey);
 		fields[currentKey] = parseFieldValue(currentArray, fieldDef?.type ?? 'array');
 	}
 

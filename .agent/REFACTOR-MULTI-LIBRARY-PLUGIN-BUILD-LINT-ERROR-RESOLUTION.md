@@ -5,7 +5,7 @@ document-type: conversation-summary
 project: Cartographer Plugin
 phase: 6.1
 status: Complete
-last-updated: 2026-01-04 (Complete)
+last-updated: 2026-01-05 (Phase 1.5 - Step 5 Complete)
 ---
 
 # Build & Lint Error Resolution - Conversation Summary
@@ -379,6 +379,58 @@ Resolve **all TypeScript compilation errors** and **lint violations** in the ref
 - Optional chaining not applied where needed
 
 **Resolution Notes:** [To be filled as errors encountered]
+
+---
+
+### Category 6: JSON Parsing & Type Assertions
+**Status:** ✅ RESOLVED - Phase 1.5 Step 5
+
+**Pattern Discovered:** `JSON.parse()` always returns `any` type. When used in a return statement, TypeScript's strict mode flags it as unsafe unless explicitly cast.
+
+**Example Error:**
+```
+Unsafe return of a value of type 'any'. eslint(@typescript-eslint/no-unsafe-return)
+```
+
+**Location & Resolution:** `src/config/defaultSchemas.ts` line 351
+
+**Original Code:**
+```typescript
+export function createSchemaFromDefault(): CatalogSchema {
+	return JSON.parse(JSON.stringify(DEFAULT_LIBRARY_SCHEMA));
+}
+```
+
+**Fixed Code:**
+```typescript
+export function createSchemaFromDefault(): CatalogSchema {
+	return JSON.parse(JSON.stringify(DEFAULT_LIBRARY_SCHEMA)) as CatalogSchema;
+}
+```
+
+**Why This Fix Works:** The type assertion (`as CatalogSchema`) explicitly tells TypeScript that the parsed JSON will match the return type. This is safe because we're serializing and deserializing a valid schema object—the structure won't change.
+
+**Lesson Learned:** JSON.parse always requires explicit type handling in strict mode. Never return the raw result of JSON.parse without either:
+1. Type assertion (`as ExpectedType`)
+2. Runtime validation function
+3. Type guard with proper narrowing
+
+**Best Practice Pattern:**
+```typescript
+// Pattern for safe JSON parsing with type assertion
+export function parseJSON<T>(json: string, schema: T): T {
+  return JSON.parse(json) as T;  // Safe when you control both sides
+}
+
+// Or with validation
+export function parseJSONWithValidation<T>(json: string, validator: (x: unknown) => x is T): T {
+  const parsed = JSON.parse(json);
+  if (!validator(parsed)) {
+    throw new Error('Invalid JSON structure');
+  }
+  return parsed;
+}
+```
 
 ---
 

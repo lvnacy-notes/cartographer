@@ -348,5 +348,5 @@ export function getDefaultSchema(): CatalogSchema {
  * Ensures each library gets its own independent schema instance
  */
 export function createSchemaFromDefault(): CatalogSchema {
-	return JSON.parse(JSON.stringify(DEFAULT_LIBRARY_SCHEMA));
+	return JSON.parse(JSON.stringify(DEFAULT_LIBRARY_SCHEMA)) as CatalogSchema;
 }

@@ -1,10 +1,10 @@
 # Cartographer: Multi-Library Refactoring Plan
-**Date:** January 4, 2026  
-**Status:** IN PROGRESS - Steps 1-3 Complete & Build Verified  
+**Date:** January 4, 2026 - January 5, 2026
+**Status:** IN PROGRESS - 5 of 9 Steps Complete  
 **Scope:** Phase 1.5 Architecture Refactor
 **Plugin ID:** cartographer
 **Branch:** `feat/preset-elimination-refactor`
-**Last Commit:** `build(step-3): Rebuild settings UI and fix type/lint errors`
+**Last Commit:** `fix: Add type assertion to JSON.parse return in createSchemaFromDefault`
 
 ---
 
@@ -20,9 +20,9 @@
 - ✅ All changes committed to `feat/preset-elimination-refactor` branch
 
 **Next Action:**
-- Proceed with Step 5: Update data loading to work with active library
+- Proceed with Step 6: Update components to read from active library config
 
-**Files Changed This Session:**
+**Files Changed Session 1.5 (Steps 1-4):**
 - `src/types/settings.ts` - Type system refactored
 - `src/config/settingsManager.ts` - Enhanced with async vault path validation and error context
 - `src/config/settingsTab.ts` - Rebuilt with library management UI
@@ -31,6 +31,11 @@
 - `src/config/presets.ts` - Deleted (700+ lines)
 - Build artifacts: Clean, no errors
 - Lint: 12 console.log warnings (deferred to completion phase)
+
+**Files Changed Phase 1.5 (Step 5):**
+- `src/config/defaultSchemas.ts` - Fixed unsafe return lint error (added type assertion to JSON.parse)
+- Build: ✅ Clean, no errors
+- Lint: ✅ Clean (12 console.log warnings deferred)
 
 ---
 
@@ -171,23 +176,25 @@ export const DEFAULT_SCHEMA_TEMPLATES = {
 
 **Purpose:** Provide optional starting templates when users create new libraries (optional in dropdown)
 
-### Step 5: Update Data Loading
+### Step 5: Update Data Loading ✅ COMPLETE
 **File:** `src/hooks/useDataLoading.ts`
 
-**Status:** PENDING
+**Status:** ✅ COMPLETE - No TypeScript errors, no lint errors
 
 **Changes:**
-- Accept `library: Library` parameter (instead of full settings)
-- Load from `library.path` instead of `settings.catalogPath`
-- Update field extraction to use `library.schema`
+- ✅ Accept `library: Library` parameter (instead of full settings)
+- ✅ Load from `library.path` instead of `settings.catalogPath`
+- ✅ Update field extraction to use `library.schema`
 
-**Function Signature (new):**
+**Function Signature (implemented):**
 ```typescript
 export async function loadCatalogItems(
   app: App,
   library: Library
 ): Promise<CatalogItem[]>
 ```
+
+**Build Status:** ✅ Clean - No TypeScript errors, no lint errors
 
 ### Step 6: Update Components
 **Files:** `src/components/*.ts` (all component views)
@@ -297,8 +304,8 @@ private openLibrary(libraryId: string) {
 2. ✅ **Step 2** - Update settings manager (core logic) - COMPLETE
 3. ✅ **Step 3** - Rebuild settings UI (user interaction) - COMPLETE
 4. ✅ **Step 4** - Create default schemas (reference templates) - COMPLETE
-5. ⏳ **Step 5** - Update data loading (data flow) - NEXT
-6. ⏳ **Step 6** - Update components (presentation layer)
+5. ✅ **Step 5** - Update data loading (data flow) - COMPLETE
+6. ⏳ **Step 6** - Update components (presentation layer) - NEXT
 7. ⏳ **Step 7** - Create sidebar panel (navigation)
 8. ⏳ **Step 8** - Update plugin entry point (integration)
 9. ✅ **Step 9** - Delete presets file (cleanup) - COMPLETE

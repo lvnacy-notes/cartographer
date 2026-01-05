@@ -33,7 +33,17 @@ export class WorksTableView extends DatacoreComponentView {
 	async loadData(): Promise<void> {
 		console.log('[Datacore] WorksTableView.loadData() starting');
 		try {
-			this.items = await loadCatalogItems(this.app, this.settings);
+			// Get active library
+			const activeLibrary = this.settings.libraries.find(
+				(lib) => lib.id === this.settings.activeLibraryId
+			);
+			if (!activeLibrary) {
+				console.warn('[Datacore] No active library selected');
+				this.items = [];
+				return;
+			}
+
+			this.items = await loadCatalogItems(this.app, activeLibrary);
 			console.log(`[Datacore] WorksTableView loaded ${this.items.length} items`);
 		} catch (error) {
 			console.error('[Datacore] WorksTableView.loadData() error:', error);
