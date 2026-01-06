@@ -18,6 +18,26 @@ tags:
 
 ---
 
+## 📖 How This Document Relates to the Master Spec
+
+This is the **definitive component implementation guide** that works alongside [CARTOGRAPHER-MASTER-SPEC.md](.agent/PHASE-6-CARTOGRAPHER-MASTER-SPEC.md) and [CARTOGRAPHER-AUDIT-DATAVIEW-TO-DATACORE.md](./CARTOGRAPHER-AUDIT-DATAVIEW-TO-DATACORE.md). The relationship:
+
+- **Master Spec** = Overall architecture, decisions, roadmap
+- **Audit Doc** = Query migration strategy and data flow design  
+- **This Doc (Component Architecture)** = Complete component specifications with full code examples
+
+This document provides:
+- **Full React component implementations** with TypeScript
+- **Custom hooks library** for state management
+- **Query functions library** for filtering, sorting, grouping
+- **Type definitions** for all data structures
+- **Performance optimization patterns**
+- **Testing strategy** and implementation roadmap
+
+Use this during Sessions 2-4 as your primary reference for building each component. It's a code cookbook showing exactly how to implement each dashboard, table, filter, and visualization component.
+
+---
+
 ## 🏗️ Architecture Overview
 
 ### Design Principles

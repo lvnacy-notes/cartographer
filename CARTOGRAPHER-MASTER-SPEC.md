@@ -870,7 +870,7 @@ averageField(items, fieldKey): number
 
 **Complete Specifications Available In:**
 
-1. **PHASE-6-DATACORE-COMPONENT-ARCHITECTURE.md**
+1. **CARTOGRAPHER-COMPONENT-ARCHITECTURE.md** — Complete component specifications with full React implementations, hooks library, query functions, and type definitions for all dashboard components
    - Full component specifications with code examples
    - Query function library documentation
    - Performance optimization patterns
@@ -878,7 +878,7 @@ averageField(items, fieldKey): number
    - Testing strategy details
    - 5-session implementation breakdown (generic)
 
-2. **PHASE-6-PORTABILITY-CONFIGURATION.md**
+2. **CARTOGRAPHER-PORTABILITY-CONFIGURATION.md** — Complete implementation reference with TypeScript code examples, all interface definitions with comments, Settings Manager class with library CRUD operations, and SettingsTab UI implementation
    - Complete settings system specification
    - Preset system with all 3 bundled presets
    - Settings manager implementation
@@ -886,7 +886,7 @@ averageField(items, fieldKey): number
    - Configuration-driven component examples
    - Plugin entry point template
 
-3. **PHASE-6-AUDIT-DATAVIEW-TO-DATACORE.md**
+3. **CARTOGRAPHER-AUDIT-DATAVIEW-TO-DATACORE.md** — Query audit, migration patterns, and data flow architecture showing how to translate existing Dataview queries to React components
    - Current Dataview query audit (all 13 queries documented)
    - Query pattern analysis (3 major types identified)
    - Migration difficulty assessment (LOW)

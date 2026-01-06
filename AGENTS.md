@@ -463,230 +463,91 @@ this.registerInterval(window.setInterval(() => { /* ... */ }, 1000));
 
 # Datacore Plugin Development Roadmap
 
-> **⚠️ SESSION DIRECTIVE:** At the beginning of each session, review [PHASE-6-CARTOGRAPHER-MASTER-SPEC.md](.agent/catalog-overhaul/PHASE-6-CARTOGRAPHER-MASTER-SPEC.md) for current status, completed work, and session objectives.
+## Project Architecture (for agents)
 
-## Overview
+This is an **Obsidian community plugin** (TypeScript → bundled JavaScript) implementing a configuration-driven data cataloging system supporting **multiple libraries per vault**.
 
-This plugin is built over **5 focused phases** within the larger Pulp Fiction Phase 6 project. The plugin is configuration-driven, supporting **multiple libraries per vault** with the same codebase.
-
-**Key Principle:** No hardcoded field names or paths. All behavior configured via library definitions. Single library at a time, switchable via sidebar panel or commands.
-
-**Architecture Change (January 4, 2026):** Moved from preset-based system to user-configurable library system. Each library defines its own:
+**Core Concept:** No hardcoded field names or paths. Users create and configure libraries directly via plugin settings. Each library has:
 - Catalog path (e.g., `pulp-fiction/works`, `library`, `manuscripts`)
-- Schema with custom fields
-- Component configuration
+- Custom schema with field definitions
+- Component configuration (which dashboards, filters, tables to display)
 
-## Phase Status
+**Architecture Change (January 4, 2026):** Multi-library system. Single active library at a time, switchable via commands or sidebar panel.
 
-| Phase | Status | Deliverables | Notes |
-|---------|-------|--------|--------------|
-|---|---|---|---|
-| 1 | 🔄 **REFACTORING** | Update types, settings, data loading for multi-library support | Removing presets, adding library management |
-| 2 | ⏳ Next | Data loading, YAML parsing, 20+ query functions | Testing with real data |
-| 3 | ⏳ Next | StatusDashboard, FilterBar, WorksTable | Core UI components |
-| 4 | ⏳ Next | PublicationDashboard, AuthorCard, BackstagePipeline | Advanced components |
-| 5 | ⏳ Next | Plugin entry point, Obsidian commands, sidebar panel | Integration & migration |
-
-## Phase 1: Setup & Configuration Architecture ✅ COMPLETE
-
-**What Was Built:**
-- 15 TypeScript source files (2,840+ lines)
-- 4 production-ready presets (Pulp Fiction, General Library, Manuscripts, Custom)
-- Complete type system and interfaces
-- Settings manager with Obsidian UI
-- Data loading utilities (YAML parsing, vault subscriptions)
-- Query function library (20+ operations)
-- 2 component view scaffolds (StatusDashboard, WorksTable)
-- Responsive CSS styling (250+ lines)
-- Comprehensive documentation
-
-**Files Created:**
-- `src/main.ts` (95 lines)
-- `src/index.ts` (40+ lines)
-- `src/config/presets.ts` (700+ lines)
-- `src/config/settingsManager.ts` (200+ lines)
-- `src/types/settings.ts` (145 lines)
-- `src/types/dynamicWork.ts` (75 lines)
-- `src/types/types.ts` (95 lines)
-- `src/hooks/useDataLoading.ts` (170+ lines)
-- `src/queries/queryFunctions.ts` (350+ lines)
-- `src/components/DatacoreComponentView.ts` (120+ lines)
-- `src/components/StatusDashboardView.ts` (35 lines)
-- `src/components/WorksTableView.ts` (50 lines)
-- `styles.css` (250+ lines)
-- Plus supporting docs: README.md, BUILD_SUMMARY.md, FILE_INVENTORY.md, IMPLEMENTATION_CHECKLIST.md
-
-**Code Quality:**
-- TypeScript strict mode enabled
-- 100% type coverage
-- No external UI library dependencies (native Obsidian API)
-- Mobile-responsive design
-- Dark/light theme compatible
-
-**Next Step:** Execute `npm run build` to compile TypeScript → JavaScript, then test in Obsidian.
+**Documentation Structure:**
+- [CARTOGRAPHER-MASTER-SPEC.md](CARTOGRAPHER-MASTER-SPEC.md): Authoritative architecture, decisions, and detailed phase specifications
+- [CARTOGRAPHER-PORTABILITY-CONFIGURATION.md](CARTOGRAPHER-PORTABILITY-CONFIGURATION.md): Implementation details of settings system and library management
+- [CARTOGRAPHER-AUDIT-DATAVIEW-TO-DATACORE.md](CARTOGRAPHER-AUDIT-DATAVIEW-TO-DATACORE.md): Query layer design and data flow patterns
+- [CARTOGRAPHER-DATACORE-COMPONENT-ARCHITECTURE.md](CARTOGRAPHER-DATACORE-COMPONENT-ARCHITECTURE.md): Full component implementations with code examples
 
 ---
 
-## Phase 2: Data Access & Query Foundation ⏳
+## Phase Roadmap
 
-**Objectives:**
-- Implement data loading from vault (YAML parsing, field extraction)
-- Build type-safe CatalogItem class
-- Create useDataLoading hook for reactive data updates
-- Implement complete query function library (filters, sorts, groups, aggregates)
-- Add field type coercion and validation
+| Phase | Status | Summary |
+|-------|--------|---------|
+| 1 | ✅ COMPLETE | Multi-library refactor: types, settings, data loading architecture |
+| 2 | ⏳ Next | Data access & query foundation: YAML parsing, 20+ query functions |
+| 3 | ⏳ Next | Core components (Part 1): StatusDashboard, FilterBar, WorksTable |
+| 4 | ⏳ Next | Core components (Part 2): PublicationDashboard, AuthorCard, BackstagePipeline |
+| 5 | ⏳ Next | Plugin integration: Obsidian commands, sidebar, settings UI |
 
-**Key Functions:**
-```typescript
-useCatalogData(datacore, settings): { items, isLoading, revision }
-filterItems(items, filters): filtered
-sortItems(items, sortColumn, sortDesc): sorted
-groupByField(items, fieldKey): Map<string, items[]>
-countByField(items, fieldKey): Record<string, number>
-```
-
-**Testing:**
-- Load 30 Pulp Fiction works successfully
-- Verify all fields parsed correctly
-- Test filtering with multiple conditions
-- Benchmark sorting performance
-- Test real-time updates when files change
-
-**Estimated Time:** 1 session (3-4 hours)
+**For detailed phase objectives, deliverables, and testing criteria:** See [CARTOGRAPHER-MASTER-SPEC.md](CARTOGRAPHER-MASTER-SPEC.md) (Section: "Phase Definitions").
 
 ---
 
-## Phase 3: Core Components - Part 1 ⏳
+## Quick Reference (for agents)
 
-**Objectives:**
-- Build ConfigurableWorksTable component
-- Build ConfigurableFilterBar component
-- Build ConfigurableStatusDashboard component
-- Implement field-based configuration system
-- Add responsive design for mobile
+### Session Startup
+1. **Review current status:** [CARTOGRAPHER-MASTER-SPEC.md](CARTOGRAPHER-MASTER-SPEC.md) (Section: "Project Status")
+2. **Understand target phase:** See phase definitions in Master Spec
+3. **Reference architecture docs** as needed for technical details
 
-**Components:**
-- `ConfigurableWorksTable`: Renders columns from config, sortable headers, pagination, mobile-responsive
-- `ConfigurableFilterBar`: Renders filters from config, multiple filter types, real-time filtering, layout options
-- `ConfigurableStatusDashboard`: Groups by configured field, shows counts, optional statistics
+### Key Directories & Files
 
-**Testing:**
-- All 3 components work with Pulp Fiction preset
-- Test with General Library and Manuscript presets
-- Verify responsive behavior on mobile
-- Test with custom field combinations
-- Performance with 30+ items
+**Core Plugin:**
+- `src/main.ts` — Plugin entry point & lifecycle
+- `src/config/settingsManager.ts` — Library CRUD operations
+- `src/types/*.ts` — Type definitions (DatacoreSettings, Library, CatalogItem, etc.)
+- `src/hooks/useDataLoading.ts` — Reactive data loading from vault
+- `src/queries/queryFunctions.ts` — Filter, sort, group, aggregate operations
+- `src/components/*.ts` — View scaffolds (StatusDashboard, WorksTable)
+- `styles.css` — Responsive theming
 
-**Estimated Time:** 1 session (3-4 hours)
+**Documentation:**
+- `.agent/CARTOGRAPHER-MASTER-SPEC.md` — Single source of truth
+- `CARTOGRAPHER-*.md` — Implementation guides at plugin root
+- `.agent/DOCUMENTATION-ALIGNMENT-SESSION-1.md` — Conversation record
 
----
-
-## Phase 4: Core Components - Part 2 ⏳
-
-**Objectives:**
-- Build ConfigurablePublicationDashboard
-- Build ConfigurableAuthorCard
-- Build ConfigurableBackstagePipeline
-- Add custom hooks (useFilters, useSorting)
-- Integration testing
-
-**Components:**
-- `ConfigurablePublicationDashboard`: Works with any foreign key field, configurable display columns
-- `ConfigurableAuthorCard`: Works with any author-like field, statistics display, configurable columns
-- `ConfigurableBackstagePipeline`: Multiple configurable stages, custom filter logic per stage
-
-**Testing:**
-- All 6 components work together
-- Test all presets end-to-end
-- Verify data flows correctly through component tree
-- Test with sample data from all 3 catalog types
-- Responsive design across all components
-
-**Estimated Time:** 1 session (3-4 hours)
-
----
-
-## Phase 5: Plugin Integration & Migration ⏳
-
-**Objectives:**
-- Implement plugin entry point
-- Add Obsidian commands for opening dashboards
-- Integrate components into markdown rendering
-- Replace existing Dataview queries in Pulp Fiction.md
-- Migration to publication/author dashboards
-- Testing and optimization
-
-**Deliverables:**
-- Complete `src/main.ts` (plugin lifecycle, settings, commands)
-- Updated Pulp Fiction.md (all 5 original queries replaced)
-- Updated publication dashboard files
-- Updated author card template
-- Plugin README with configuration guide
-- Migration checklist
-- Performance benchmarks
-- Mobile testing results
-
-**Testing:**
-- Plugin installs and enables successfully
-- All Obsidian commands work
-- All dashboards render with correct data
-- Real-time updates work
-- Mobile experience is smooth
-- No console errors
-- Performance acceptable (page load < 1s)
-
-**Estimated Time:** 1 session (3-4 hours)
-
----
-
-## Working Across Phases
-
-### Starting a New Phase
-1. **Review Master Spec:** Read [PHASE-6-CARTOGRAPHER-MASTER-SPEC.md](.agent/catalog-overhaul/PHASE-6-CARTOGRAPHER-MASTER-SPEC.md) for current status
-2. **Check Completion:** Review previous phase summary to understand current state
-3. **Read Objectives:** Review the specific phase objectives above
-4. **Reference Architecture:** Consult attached spec documents as needed
-5. **Begin Implementation:** Follow the phase deliverables
-
-### During a Phase
-1. Create/modify files in plugin project directory
-2. Test changes in Obsidian
-3. Update git as needed
-4. Document blockers or discoveries
-
-### Ending a Phase
-1. Create phase summary document in `.agent/` directory
-2. Commit working code to git
-3. Note next phase starting point
-4. Update roadmap progress in master spec
-
----
-
-## Quick Reference
-
-**Build & Install:**
+### Build & Test
 ```bash
-npm install                    # Install dependencies
-npm run build                  # Compile TypeScript → main.js
-npm run dev                    # Watch mode (rebuilds on file change)
+npm install                         # Install deps
+npm run build                       # Compile TypeScript → main.js
+npm run dev                         # Watch mode (auto-rebuild)
 ```
 
-**Test Installation:**
-- Copy `main.js`, `manifest.json`, `styles.css` to `<vault>/.obsidian/plugins/cartographer/`
-- Reload Obsidian (`Cmd-R` on macOS, `Ctrl-R` on Windows/Linux)
-- Enable plugin in **Settings → Community plugins**
+**Manual Install for Testing:**
+```
+Copy main.js, manifest.json, styles.css to:
+<Vault>/.obsidian/plugins/cartographer/
+Reload Obsidian (Cmd-R / Ctrl-R)
+Enable in Settings → Community plugins
+```
 
-**Master Specification:**
-- Location: `.agent/catalog-overhaul/PHASE-6-CARTOGRAPHER-MASTER-SPEC.md`
-- Contains: Full architecture, all specifications, detailed phase plans
-- Update at end of each phase with progress status
+### Linting
+```bash
+eslint ./src                        # Analyze all source files
+```
 
-**Key Files:**
-- Plugin entry: `src/main.ts`
-- Settings: `src/config/settingsManager.ts`
-- Presets: `src/config/presets.ts`
-- Types: `src/types/*.ts`
-- Components: `src/components/*.ts`
-- Queries: `src/queries/queryFunctions.ts`
-- Data loading: `src/hooks/useDataLoading.ts`
-- Styling: `styles.css`
+### Dependency & Config Management
+- **Package manager:** npm (required, defines build scripts)
+- **Bundler:** esbuild (required, compiles TS to JS)
+- **TypeScript:** strict mode enabled, no implicit `any`
+- **Target:** Browser-compatible (Obsidian desktop/mobile)
+
+### When Adding Code
+- Keep `main.ts` focused on lifecycle only
+- One class per file, clear module boundaries
+- No linting/type-checking bypass comments (fix issues properly)
+- Use `async/await` over promise chains
+- Register all DOM/app/interval listeners with `this.register*` helpers for cleanup

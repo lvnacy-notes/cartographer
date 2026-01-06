@@ -17,12 +17,25 @@ tags:
 
 ---
 
+## � How This Document Relates to the Master Spec
+
+This audit complements [CARTOGRAPHER-MASTER-SPEC.md](.agent/PHASE-6-CARTOGRAPHER-MASTER-SPEC.md) by providing a **detailed migration pathway from existing Dataview queries to the new React-based Datacore component architecture**. While the Master Spec covers overall architecture and decisions, this document focuses on:
+
+- **Query Pattern Analysis** — Understanding existing Dataview patterns that need translation
+- **Migration Strategy** — How to map current queries to new React components
+- **Implementation Specifics** — Code examples showing the query layer architecture
+- **Data Flow Design** — How vault data flows through filters, sorts, and components
+
+Use this document during Sessions 2-3 implementation work when building the query layer and translating existing dashboards to Datacore components.
+
+---
+
 ## 📊 Executive Summary
 
-**Current Query Inventory:** 8 Dataview queries across 4 files  
-**Query Types:** 5 TABLE queries, 1 TASK query  
+**Current Query Inventory:** 13 Dataview queries across Pulp Fiction work catalog  
+**Query Types:** Mostly TABLE queries with filters and sorts  
 **Query Complexity:** Low-to-moderate (basic filtering and sorting)  
-**Total Data Points Queried:** 30 canonical works  
+**Data Scope:** Applies to any configured library (initially audited against 30 canonical works, but patterns generalize to any library)  
 
 **Migration Difficulty:** LOW
 - No complex aggregations or advanced Dataview features in use
@@ -655,10 +668,10 @@ const PublicationWorksComponent = ({ publicationName }) => {
 
 ### Phase 1: Setup & Architecture (1 session)
 - [ ] Install Datacore plugin and dependencies
-- [ ] Create Datacore configuration file
+- [ ] Configure multi-library settings in plugin (create first library pointing to catalog path)
 - [ ] Set up TypeScript/React development environment
 - [ ] Create base component library structure
-- [ ] Document API layer for vault data access
+- [ ] Document API layer for vault data access with library-aware path resolution
 
 ### Phase 2: Core Query Implementation (1-2 sessions)
 - [ ] Build data loading utility (parse YAML, extract fields)
