@@ -1,4 +1,4 @@
-# Context Library Service - Portable Query System for Libraries in the LVNACY Modular Obsidian system
+# Cartographer - Portable Query System for Libraries in the LVNACY Obsidian Apparatus
 
 A configuration-driven, multi-vault query and dashboard system for Obsidian that transforms static Dataview queries into interactive, real-time dashboards.
 
