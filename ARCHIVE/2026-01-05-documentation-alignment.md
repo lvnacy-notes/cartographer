@@ -1,7 +1,7 @@
 ---
 date: 2026-01-05
 digital-assistant: documentation-alignment
-commit-sha: 
+commit-sha: 9f1af68
 branch: main
 tags: 
   - changelog
@@ -64,7 +64,7 @@ Agent performed systematic updates to five documentation files, ensuring consist
 
 ## Commit Information
 
-**Commit SHA**: [To be filled during commit process]
+**Commit SHA**: 9f1af68ecd3a7d95aca6c31c3ccd84f182e7f723
 **Commit Message**: docs: condense AGENTS roadmap, align documentation, move CARTOGRAPHER docs to root
 
 - Condense AGENTS.md roadmap section: remove 200+ lines of duplication
@@ -76,7 +76,14 @@ Agent performed systematic updates to five documentation files, ensuring consist
 - Delete BUILD_SUMMARY.md (redundant, outdated)
 - Update DOCUMENTATION-ALIGNMENT-SESSION-1.md with final changes
 - Create changelog: 2026-01-05-documentation-alignment.md
-**Files in Commit**: [To be filled during commit process]
+**Files in Commit**: 
+- AGENTS.md
+- DOCUMENTATION-ALIGNMENT-SESSION-1.md
+- CARTOGRAPHER-MASTER-SPEC.md
+- CARTOGRAPHER-PORTABILITY-CONFIGURATION.md
+- CARTOGRAPHER-AUDIT-DATAVIEW-TO-DATACORE.md
+- CARTOGRAPHER-DATACORE-COMPONENT-ARCHITECTURE.md
+- ARCHIVE/2026-01-05-documentation-alignment.md
 
 ## Next Steps (Development-Specific)
 

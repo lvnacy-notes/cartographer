@@ -568,7 +568,15 @@ All React components read their behavior from `settings` object passed as props:
 
 ### Phase Overview
 
-This plugin is built over **5 focused sessions** within the larger Pulp Fiction Phase 6 project. Work can pause/resume between Context Library vault sessions.
+This plugin is built over **5-6 focused sessions** (including optional Session 3.5 checkpoint) within the larger Pulp Fiction Phase 6 project. Work can pause/resume between Context Library vault sessions.
+
+**Session Timeline:**
+- Session 1: Setup & Configuration Architecture ✅ COMPLETE
+- Session 2: Data Access & Query Foundation ⏳ PENDING
+- Session 3: Core Components - Phase 1 ⏳ PENDING
+- **Session 3.5: Architecture Refinement & QueryBuilder Decision** (optional checkpoint)
+- Session 4: Core Components - Phase 2 ⏳ PENDING
+- Session 5: Plugin Integration & Migration ⏳ PENDING
 
 ### Session 1: Setup & Configuration Architecture + Multi-Library Refactor
 
@@ -746,6 +754,186 @@ averageField(items, fieldKey): number
 - Performance with 30+ items
 
 **Estimated Time:** 1 session (3-4 hours)
+
+---
+
+### Session 3.5: Architecture Refinement & QueryBuilder Decision
+
+**Status:** ⏳ PENDING (Optional - execute based on Session 3 outcomes)
+
+**Purpose:**
+After Session 3, we'll have three working components with actual usage patterns visible. Session 3.5 is a strategic reflection point to evaluate:
+1. Whether a QueryBuilder abstraction would reduce boilerplate
+2. Overall component architecture quality and consistency
+3. Performance characteristics with real data
+4. Code organization and maintainability
+5. Other refinement opportunities before building more components
+
+**Prerequisites:**
+- Session 3 must be complete (all 3 core components working)
+- At least 10 works loaded with real data in test environment
+- Components actively rendering and filtering/sorting real data
+
+**Decision Framework: QueryBuilder Implementation**
+
+The QueryBuilder is an optional **fluent/chainable API** wrapper around pure query functions:
+
+```typescript
+// Current approach (pure functions):
+const filtered = filterByStatus(works, 'approved');
+const sorted = sortByField(filtered, 'year', true);
+const grouped = groupByField(sorted, 'authors');
+const paginated = paginate(grouped, 0, 20);
+
+// QueryBuilder approach (fluent API):
+const result = QueryBuilder
+  .from(works)
+  .filter('status', 'approved')
+  .sort('year', true)
+  .groupBy('authors')
+  .paginate(0, 20)
+  .execute();
+```
+
+**Implement QueryBuilder IF ANY of these conditions are true:**
+- ✅ **Condition 1: Repeated Patterns** — Components repeat the same 3+ function chains (e.g., all three components do filter→sort→paginate)
+- ✅ **Condition 2: Complex Compositions** — Any component needs 4+ chained operations in sequence
+- ✅ **Condition 3: Intermediate Results** — Components store intermediate variables from function chains (suggest boilerplate)
+- ✅ **Condition 4: Readability Issues** — Code reviewers report that pure function chains are hard to follow
+
+**Skip QueryBuilder IF ALL of these conditions are true:**
+- ✅ **Condition 1: Simple Operations** — Most component queries are 1-2 operations (single filter or sort)
+- ✅ **Condition 2: No Duplication** — Each component has unique query patterns (no repeated chains)
+- ✅ **Condition 3: Clear Intent** — Pure function chains read clearly, intent is obvious
+- ✅ **Condition 4: Test Coverage** — Query functions are well-tested independently, no testing issues with current approach
+
+**Deliverables (if QueryBuilder is implemented):**
+- `src/queries/QueryBuilder.ts` — Fluent API class with method chaining
+  - Methods: `from()`, `filter()`, `sort()`, `groupBy()`, `aggregate()`, `paginate()`, `execute()`
+  - Lazy evaluation or immediate execution (design choice)
+  - Type-safe with generics
+  - Example usage: `QueryBuilder.from(works).filter('status', 'approved').sort('year').execute()`
+
+- `src/queries/__tests__/QueryBuilder.test.ts` — Comprehensive test suite
+  - All methods tested independently
+  - Chaining combinations tested
+  - Edge cases (empty results, null values, etc.)
+  - Performance benchmarks vs. pure functions
+
+- Updated `src/queries/index.ts` — Export QueryBuilder alongside pure functions
+  - Users can choose: simple API (pure functions) or fluent API (QueryBuilder)
+  - No breaking changes to existing code
+
+- Documentation update: Comparison guide showing when to use each approach
+
+**Other Refinement Opportunities to Evaluate:**
+
+Beyond QueryBuilder, Session 3.5 should assess:
+
+1. **Performance Analysis**
+   - Measure component render times with 30+ works
+   - Identify any expensive operations
+   - Profile memory usage during filtering/sorting
+   - Check if memoization is needed in hooks
+   - **Action if needed:** Add React.memo() to components, useMemo() to expensive calculations
+
+2. **Error Handling & Edge Cases**
+   - Test with missing fields in works
+   - Test with null/undefined values in arrays (authors field)
+   - Test with very long strings (truncation handling)
+   - Test with no search results
+   - **Action if needed:** Add graceful fallbacks, error boundaries in components
+
+3. **Accessibility Review**
+   - Verify keyboard navigation in table headers (sorting)
+   - Test screen reader compatibility
+   - Check color contrast in UI elements
+   - Verify form labels and ARIA attributes
+   - **Action if needed:** Add missing ARIA labels, improve keyboard support
+
+4. **Component Consistency Audit**
+   - Verify all three components use consistent styling
+   - Check spacing, typography, color scheme uniformity
+   - Audit CSS class naming conventions
+   - Ensure responsive breakpoints are consistent
+   - **Action if needed:** Consolidate styles, create component CSS modules
+
+5. **Type Safety Deep Dive**
+   - Run `npm run build` and verify zero TypeScript errors
+   - Check for any remaining implicit `any` types
+   - Audit generic type usage in QueryBuilder-related code
+   - Verify CatalogItem field access is properly typed
+   - **Action if needed:** Add stricter type definitions, fix any type violations
+
+6. **Testing Strategy Refinement**
+   - Assess current test coverage (if any from Session 3)
+   - Identify gaps in component testing
+   - Plan integration test approach
+   - **Action if needed:** Establish testing patterns for remaining components
+
+7. **Documentation Completeness**
+   - Verify all functions have JSDoc comments
+   - Check component prop documentation
+   - Verify hook usage examples exist
+   - Create quick-start guide for building new components
+   - **Action if needed:** Add missing documentation, create component template
+
+8. **Hooks Library Organization**
+   - Review `useFilters`, `useSorting` hooks from Session 3
+   - Identify any custom hooks that might be reusable
+   - Assess hook composition and dependencies
+   - **Action if needed:** Extract common hook patterns, create utilities
+
+**Session 3.5 Workflow:**
+
+1. **Assessment Phase (30 min)**
+   - Run all 3 components from Session 3 with real data
+   - Document observed query patterns (what operations repeat?)
+   - Measure performance metrics
+   - Note any stability or edge case issues
+
+2. **QueryBuilder Decision (15 min)**
+   - Review patterns against decision framework
+   - Make implementation decision (yes/no/maybe)
+   - Document rationale
+
+3. **Implementation (if needed) (1-2 hrs)**
+   - If yes: Build QueryBuilder.ts with full test coverage
+   - Integrate into existing components (optional refactor)
+   - Add documentation and examples
+
+4. **Refinement Tasks (30-45 min per issue)**
+   - Pick 1-3 refinement opportunities (prioritize based on Session 3 findings)
+   - Implement improvements
+   - Verify fixes don't break existing functionality
+
+5. **Quality Gate (15 min)**
+   - Full build verification
+   - Run all tests (query tests + component tests if they exist)
+   - Performance re-baseline
+   - Code review checklist
+
+**Success Criteria:**
+- ✅ Decision on QueryBuilder documented with rationale
+- ✅ Any QueryBuilder implementation fully tested
+- ✅ 1-3 refinement opportunities addressed
+- ✅ Build passes without errors
+- ✅ Performance stable or improved
+- ✅ Code quality metrics maintained or improved
+
+**Decision Output:**
+Document decisions in `SESSION-3.5-DECISIONS.md`:
+- QueryBuilder: Yes/No/Deferred + reasoning
+- Performance issues: Found/Not found + actions taken
+- Refinements completed: List of improvements made
+- Blockers for Session 4: Any issues that should be resolved before building more components
+- Recommendations for Session 4: Best practices discovered, patterns to follow
+
+**Estimated Time:** 1-2 hours (0.5 hr assessment + 0.5-1.5 hr implementation/refinements)
+
+**Can Be Skipped If:** Development velocity is high and Session 3 components are clean, performant, and pose no concerns. In that case, proceed directly to Session 4.
+
+**Critical Note:** Session 3.5 is a checkpoint, not a requirement. If Session 3 completes with no obvious issues and high confidence, skip directly to Session 4. This session exists to catch architectural problems early rather than discovering them after building 6+ components.
 
 ---
 
@@ -992,17 +1180,23 @@ Proceed to Session 2 with confidence that the foundation works.
 - Performance testing with real data
 - Time: ~1-2 hours
 
-**Session 3 (Query System):**
-- Advanced filter combinations
-- Complex sorting operations
-- Aggregation functions
-- Time: ~2 hours
+**Session 3 (Core Components - Phase 1):**
+- Build three core components (WorksTable, FilterBar, StatusDashboard)
+- Implement field-based configuration system
+- Add responsive design
+- Time: ~3-4 hours
 
-**Session 4 (Components):**
-- Complete remaining component views (3 more)
-- Publication dashboard
-- Author card details
-- Backstage pipeline view
+**Session 3.5 (Architecture Refinement) — OPTIONAL CHECKPOINT**
+- Assess usage patterns from Session 3
+- Decide on QueryBuilder implementation
+- Address 1-3 refinement opportunities (performance, accessibility, consistency, etc.)
+- Document decisions for Session 4
+- Time: 1-2 hours (or skip if high confidence)
+
+**Session 4 (Core Components - Phase 2):**
+- Complete remaining component views (Publication Dashboard, Author Card, Backstage Pipeline)
+- Integrate custom hooks (useFilters, useSorting)
+- End-to-end component integration testing
 - Time: ~3-4 hours
 
 **Session 5 (Integration & Polish):**
@@ -1020,6 +1214,7 @@ Proceed to Session 2 with confidence that the foundation works.
 |---------|------|-------|-------|
 | 1.0 | 2026-01-01 | 6.A | Initial master specification combining all Phase 6 architecture documents |
 | 1.1 | 2026-01-02 | 6.1 | **Session 1 Complete:** All source files created (2,840+ lines). Code ready for build & test. |
+| 1.2 | 2026-01-05 | 6.1 | **Session 3.5 Added:** Optional checkpoint for QueryBuilder decision and architecture refinement |
 
 ---
 
