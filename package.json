@@ -7,8 +7,9 @@
 	"scripts": {
 		"dev": "node esbuild.config.js",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.js production",
-		"version": "node version-bump.mjs && git add manifest.json versions.json",
-		"lint": "eslint ."
+		"lint": "eslint .",
+		"test": "tsc -p tsconfig.test.json --outDir ./test-build && node fix-imports.js && node --test test-build/tests/*.test.js",
+		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
 	"keywords": [
 		"obsidian",

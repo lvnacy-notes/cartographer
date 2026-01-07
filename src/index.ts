@@ -5,7 +5,6 @@
 
 // Types
 export type {
-	CatalogDataState,
 	CatalogItem,
 	CatalogStatistics,
 	FilterState,
