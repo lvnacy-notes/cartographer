@@ -111,11 +111,11 @@ export function createTableElement(
 						cell.setText(String(value));
 					}
 				} else {
-					cell.setText(String(value));
+					cell.setText('-');
 				}
 			} else if (fieldDef?.type === 'array' && Array.isArray(value)) {
 				cell.setText(value.join(', '));
-			} else if (value !== null && value !== undefined) {
+			} else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
 				cell.setText(String(value));
 			} else {
 				cell.setText('-');
@@ -185,7 +185,7 @@ export function createStatusSummary(
 	showWordCounts: boolean = false
 ): void {
 	const summaryDiv = container.createDiv({ cls: 'datacore-status-summary' });
-	const groups = new Map<string | number | boolean | string[] | Date | null, CatalogItem[]>();
+	const groups = new Map<unknown, CatalogItem[]>();
 
 	// Group items
 	for (const item of items) {

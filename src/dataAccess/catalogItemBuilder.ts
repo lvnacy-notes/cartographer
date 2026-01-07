@@ -6,11 +6,12 @@
  */
 
 import {
-    buildCatalogItemFromData,
+	buildCatalogItemFromData,
 	CatalogItem,
-    CatalogSchema,
+	CatalogSchema,
 	convertFieldValue,
-    SchemaField
+	type StoredFieldValue,
+	type SchemaField
 } from '../types';
 import { parseMarkdownFile } from './fileParser';
 
@@ -38,9 +39,13 @@ export function buildCatalogItemFromMarkdown(
 	const rawData = parseMarkdownFile(fileContent);
 
 	// Generate a unique ID from the file path or title field
-	const titleField = schema.coreFields.titleField;
+	const { titleField } = schema.coreFields;
 	const idField = schema.coreFields.idField ?? titleField;
-	const id = String(rawData[idField] ?? filePath).toLowerCase().replace(/\s+/g, '-');
+	const idValue = rawData[idField];
+	const idString = typeof idValue === 'string' || typeof idValue === 'number' 
+		? String(idValue) 
+		: filePath;
+	const id = idString.toLowerCase().replace(/\s+/g, '-');
 
 	// Use the shared builder function to create the item
 	return buildCatalogItemFromData(rawData, id, filePath, schema);
@@ -67,9 +72,9 @@ export function buildCatalogItemFromMarkdown(
  * // Returns: Date object
  */
 export function applyFieldConversion(
-	rawValue: any,
+	rawValue: unknown,
 	fieldDef: SchemaField
-): any | undefined {
+): StoredFieldValue | undefined {
 	return convertFieldValue(rawValue, fieldDef);
 }
 
@@ -96,8 +101,8 @@ export function validateRequiredFields(
 	const missing: string[] = [];
 
 	for (const fieldDef of schema.fields) {
-		// Check if field is required (note: current SchemaField doesn't have required, but leaving for future)
-		if ((fieldDef as any).required === true) {
+		// Check if field is required
+		if ('required' in fieldDef && fieldDef.required === true) {
 			if (!item.hasField(fieldDef.key)) {
 				missing.push(fieldDef.key);
 			}
@@ -125,7 +130,7 @@ export function ensureTitle(
 	schema: CatalogSchema,
 	fallbackValue?: string
 ): void {
-	const titleField = schema.coreFields.titleField;
+	const { titleField } = schema.coreFields;
 	const title = item.getField<string>(titleField);
 
 	if (!title) {
@@ -219,10 +224,17 @@ export function mergeItems(...items: CatalogItem[]): CatalogItem {
 		return new CatalogItem('', '');
 	}
 
-	const baseItem = items[0]!.clone();
+	const firstItem = items[0];
+	if (!firstItem) {
+		return new CatalogItem('', '');
+	}
+	const baseItem = firstItem.clone();
 
 	for (let i = 1; i < items.length; i++) {
-		const nextItem = items[i]!;
+		const nextItem = items[i];
+		if (!nextItem) {
+			continue;
+		}
 		const nextFields = nextItem.getAllFields();
 
 		for (const [key, value] of Object.entries(nextFields)) {

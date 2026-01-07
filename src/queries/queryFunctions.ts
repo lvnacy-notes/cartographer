@@ -7,7 +7,8 @@ import {
 	coerceToValidDateValue,
 	toDate,
 	type CatalogItem,
-	type DatacoreSettings
+	type DatacoreSettings,
+	type FieldValue
 } from '../types';
 
 /**
@@ -136,10 +137,14 @@ export function createCompoundFilter(
 					const [min, max] = filter.value as [number, number];
 					return fieldValue >= min && fieldValue <= max;
 				}
-				case 'text':
-					return String(fieldValue ?? '')
+				case 'text': {
+					const fieldStr = (typeof fieldValue === 'string' || typeof fieldValue === 'number') 
+						? String(fieldValue) 
+						: '';
+					return fieldStr
 						.toLowerCase()
 						.includes(String(filter.value).toLowerCase());
+				}
 				default:
 					return true;
 			}
@@ -349,8 +354,8 @@ export function getNumericStats(
 export function getUniqueValues(
 	items: CatalogItem[],
 	fieldKey: string
-): (string | number | boolean | string[] | Date | null)[] {
-	const values = new Set<string | number | boolean | string[] | Date | null>();
+): FieldValue[] {
+	const values = new Set<unknown>();
 
 	for (const item of items) {
 		const value = item.getField(fieldKey);
@@ -361,7 +366,7 @@ export function getUniqueValues(
 		}
 	}
 
-	return Array.from(values).sort((a, b) => String(a).localeCompare(String(b)));
+	return Array.from(values).sort((a, b) => String(a).localeCompare(String(b))) as FieldValue[];
 }
 
 /**
@@ -417,8 +422,8 @@ export function groupByArrayField(
 export function groupByField(
 	items: CatalogItem[],
 	fieldKey: string
-): Map<string | number | boolean | string[] | Date | null, CatalogItem[]> {
-	const groups = new Map<string | number | boolean | string[] | Date | null, CatalogItem[]>();
+): Map<unknown, CatalogItem[]> {
+	const groups = new Map<unknown, CatalogItem[]>();
 
 	for (const item of items) {
 		const key = item.getField(fieldKey);
@@ -500,20 +505,23 @@ export function sortByField(
 		if (aVal === null && bVal === null) {return 0;}
 		if (aVal === null) {return descending ? -1 : 1;}
 		if (bVal === null) {return descending ? 1 : -1;}
+		if (aVal === undefined || bVal === undefined) {return 0;}
 
 		let comparison: number;
 
 		if (fieldType === 'number') {
 			comparison = (aVal as number) - (bVal as number);
 		} else if (fieldType === 'date') {
-			const aDateVal = coerceToValidDateValue(aVal);
-			const bDateVal = coerceToValidDateValue(bVal);
+			const aDateVal = coerceToValidDateValue(aVal as string | number | boolean | string[] | Date);
+			const bDateVal = coerceToValidDateValue(bVal as string | number | boolean | string[] | Date);
 			const aDate = aDateVal ? new Date(aDateVal).getTime() : 0;
 			const bDate = bDateVal ? new Date(bDateVal).getTime() : 0;
 			comparison = aDate - bDate;
 		} else {
 			// String comparison
-			comparison = String(aVal).localeCompare(String(bVal));
+			const aStr = typeof aVal === 'string' || typeof aVal === 'number' ? String(aVal) : '';
+			const bStr = typeof bVal === 'string' || typeof bVal === 'number' ? String(bVal) : '';
+			comparison = aStr.localeCompare(bStr);
 		}
 
 		return descending ? -comparison : comparison;

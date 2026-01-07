@@ -6,8 +6,8 @@
  */
 
 import {
-    CatalogItem,
-    CatalogSchema
+	CatalogItem,
+	CatalogSchema
 } from '../types';
 
 /**
@@ -70,10 +70,9 @@ export function excludeWhere(
  */
 export function filterByAuthor(
 	items: CatalogItem[],
-	author: string,
-	schema: CatalogSchema
+	author: string
 ): CatalogItem[] {
-	return filterByFieldIncludes(items, 'authors', author, schema);
+	return filterByFieldIncludes(items, 'authors', author);
 }
 
 /**
@@ -99,8 +98,7 @@ export function filterByDateRange(
 	items: CatalogItem[],
 	fieldKey: string,
 	startDate: Date,
-	endDate: Date,
-	schema: CatalogSchema
+	endDate: Date
 ): CatalogItem[] {
 	const startTime = startDate.getTime();
 	const endTime = endDate.getTime();
@@ -111,9 +109,21 @@ export function filterByDateRange(
 			return false;
 		}
 
-		const date = value instanceof Date ? value : new Date(String(value));
-		const time = date.getTime();
-		return time >= startTime && time <= endTime;
+		if (value instanceof Date) {
+			const time = value.getTime();
+			return time >= startTime && time <= endTime;
+		}
+
+		if (typeof value === 'string' || typeof value === 'number') {
+			const date = new Date(value);
+			if (isNaN(date.getTime())) {
+				return false;
+			}
+			const time = date.getTime();
+			return time >= startTime && time <= endTime;
+		}
+
+		return false;
 	});
 }
 
@@ -136,8 +146,7 @@ export function filterByDateRange(
 export function filterByField<T>(
 	items: CatalogItem[],
 	fieldKey: string,
-	value: T,
-	schema: CatalogSchema
+	value: T
 ): CatalogItem[] {
 	return items.filter(item => {
 		const itemValue = item.getField(fieldKey);
@@ -154,7 +163,6 @@ export function filterByField<T>(
  * @param items - Array of items to filter
  * @param fieldKey - The field key to filter on
  * @param value - The value to search for
- * @param schema - The catalog schema
  * @returns - New array containing matching items
  *
  * @example
@@ -164,8 +172,7 @@ export function filterByField<T>(
 export function filterByFieldIncludes(
 	items: CatalogItem[],
 	fieldKey: string,
-	value: any,
-	schema: CatalogSchema
+	value: string | number | boolean
 ): CatalogItem[] {
 	const searchValue = String(value).toLowerCase();
 
@@ -174,7 +181,12 @@ export function filterByFieldIncludes(
 
 		if (Array.isArray(itemValue)) {
 			// For arrays, check if any element matches
-			return itemValue.some(v => String(v).toLowerCase().includes(searchValue));
+			return itemValue.some(v => {
+				if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') {
+					return String(v).toLowerCase().includes(searchValue);
+				}
+				return false;
+			});
 		}
 
 		if (itemValue === null || itemValue === undefined) {
@@ -182,7 +194,11 @@ export function filterByFieldIncludes(
 		}
 
 		// For strings, check substring containment
-		return String(itemValue).toLowerCase().includes(searchValue);
+		if (typeof itemValue === 'string' || typeof itemValue === 'number' || typeof itemValue === 'boolean') {
+			return String(itemValue).toLowerCase().includes(searchValue);
+		}
+
+		return false;
 	});
 }
 
@@ -193,7 +209,6 @@ export function filterByFieldIncludes(
  * @param fieldKey - The field key to filter on (should be numeric type)
  * @param min - Minimum value (inclusive)
  * @param max - Maximum value (inclusive)
- * @param schema - The catalog schema
  * @returns - New array containing items where min <= field <= max
  *
  * @example
@@ -204,8 +219,7 @@ export function filterByFieldRange(
 	items: CatalogItem[],
 	fieldKey: string,
 	min: number,
-	max: number,
-	schema: CatalogSchema
+	max: number
 ): CatalogItem[] {
 	return items.filter(item => {
 		const value = item.getField<number>(fieldKey);
@@ -225,10 +239,7 @@ export function filterByFieldRange(
  * @example
  * const approved = filterBPApproved(items, schema);
  */
-export function filterBPApproved(
-	items: CatalogItem[],
-	schema: CatalogSchema
-): CatalogItem[] {
+export function filterBPApproved(items: CatalogItem[]): CatalogItem[] {
 	return items.filter(item => {
 		const value = item.getField<boolean>('bp-approved');
 		return value === true;
@@ -241,16 +252,12 @@ export function filterBPApproved(
  * Looks for items where bp-candidate field is true.
  *
  * @param items - Array of items to filter
- * @param schema - The catalog schema
  * @returns - New array containing BP candidate items
  *
  * @example
  * const candidates = filterBPCandidates(items, schema);
  */
-export function filterBPCandidates(
-	items: CatalogItem[],
-	schema: CatalogSchema
-): CatalogItem[] {
+export function filterBPCandidates(items: CatalogItem[],): CatalogItem[] {
 	return items.filter(item => {
 		const value = item.getField<boolean>('bp-candidate');
 		return value === true;
@@ -264,7 +271,6 @@ export function filterBPCandidates(
  *
  * @param items - Array of items to filter
  * @param publication - Publication name or wikilink to match (e.g., 'Weird Tales')
- * @param schema - The catalog schema
  * @returns - New array containing items published in the specified publication
  *
  * @example
@@ -273,10 +279,9 @@ export function filterBPCandidates(
  */
 export function filterByPublication(
 	items: CatalogItem[],
-	publication: string,
-	schema: CatalogSchema
+	publication: string
 ): CatalogItem[] {
-	return filterByFieldIncludes(items, 'publications', publication, schema);
+	return filterByFieldIncludes(items, 'publications', publication);
 }
 
 /**
@@ -286,7 +291,6 @@ export function filterByPublication(
  *
  * @param items - Array of items to filter
  * @param stage - The pipeline stage to match (e.g., 'candidates', 'approved', 'archived')
- * @param schema - The catalog schema
  * @returns - New array containing items at the specified pipeline stage
  *
  * @example
@@ -295,10 +299,9 @@ export function filterByPublication(
  */
 export function filterByPipelineStage(
 	items: CatalogItem[],
-	stage: string,
-	schema: CatalogSchema
+	stage: string
 ): CatalogItem[] {
-	return filterByField(items, 'bp-pipeline-stage', stage, schema);
+	return filterByField(items, 'bp-pipeline-stage', stage);
 }
 
 /**
@@ -320,11 +323,11 @@ export function filterByStatus(
 	status: string,
 	schema: CatalogSchema
 ): CatalogItem[] {
-	const statusField = schema.coreFields.statusField;
+	const { statusField } = schema.coreFields;
 	if (!statusField) {
 		return [];
 	}
-	return filterByField(items, statusField, status, schema);
+	return filterByField(items, statusField, status);
 }
 
 /**

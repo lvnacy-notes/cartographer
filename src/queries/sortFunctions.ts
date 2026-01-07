@@ -5,10 +5,7 @@
  * All functions are immutable and maintain stable sort order.
  */
 
-import {
-	CatalogItem,
-	CatalogSchema
-} from '../types';
+import { CatalogItem } from '../types';
 
 /**
  * Sort items by date field value.
@@ -34,12 +31,33 @@ export function sortByDate(
 		const bValue = b.getField(fieldKey);
 
 		// Null/undefined values always sort to end
-		if (aValue === null || aValue === undefined) return 1;
-		if (bValue === null || bValue === undefined) return -1;
+		if (aValue === null || aValue === undefined) {
+			return 1;
+		}
+		if (bValue === null || bValue === undefined) {
+			return -1;
+		}
 
 		// Convert to Date objects if needed
-		const aDate = aValue instanceof Date ? aValue : new Date(String(aValue));
-		const bDate = bValue instanceof Date ? bValue : new Date(String(bValue));
+		let aDate: Date | null = null;
+		let bDate: Date | null = null;
+
+		if (aValue instanceof Date) {
+			aDate = aValue;
+		} else if (typeof aValue === 'string' || typeof aValue === 'number') {
+			aDate = new Date(aValue);
+		}
+
+		if (bValue instanceof Date) {
+			bDate = bValue;
+		} else if (typeof bValue === 'string' || typeof bValue === 'number') {
+			bDate = new Date(bValue);
+		}
+
+		// Skip if invalid dates
+		if (!aDate || !bDate || isNaN(aDate.getTime()) || isNaN(bDate.getTime())) {
+			return 0;
+		}
 
 		// Date comparison by timestamp
 		const comparison = aDate.getTime() - bDate.getTime();
@@ -75,8 +93,12 @@ export function sortByField<T>(
 		const bValue = b.getField<T>(fieldKey);
 
 		// Null/undefined values always sort to end
-		if (aValue === null || aValue === undefined) return 1;
-		if (bValue === null || bValue === undefined) return -1;
+		if (aValue === null || aValue === undefined) {
+			return 1;
+		}
+		if (bValue === null || bValue === undefined) {
+			return -1;
+		}
 
 		// Standard comparison
 		let comparison: number;
@@ -149,8 +171,12 @@ export function sortByNumber(
 		const bValue = b.getField<number>(fieldKey);
 
 		// Null/undefined values always sort to end
-		if (aValue === null || aValue === undefined) return 1;
-		if (bValue === null || bValue === undefined) return -1;
+		if (aValue === null || aValue === undefined) {
+			return 1;
+		}
+		if (bValue === null || bValue === undefined) {
+			return -1;
+		}
 
 		// Numeric comparison
 		const comparison = aValue - bValue;
@@ -183,8 +209,12 @@ export function sortByString(
 		const bValue = b.getField<string>(fieldKey);
 
 		// Null/undefined values always sort to end
-		if (aValue === null || aValue === undefined) return 1;
-		if (bValue === null || bValue === undefined) return -1;
+		if (aValue === null || aValue === undefined) {
+			return 1;
+		}
+		if (bValue === null || bValue === undefined) {
+			return -1;
+		}
 
 		// Locale-aware case-insensitive comparison
 		const comparison = aValue.localeCompare(bValue, undefined, { sensitivity: 'base' });

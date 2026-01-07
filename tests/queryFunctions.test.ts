@@ -143,8 +143,8 @@ describe('Filter Functions', () => {
 
 			const result = filterByStatus(items, 'approved', schema);
 			assert.strictEqual(result.length, 2, 'Should find 2 approved items');
-			assert.strictEqual(result[0].getField('title'), 'The Shadow Over Innsmouth');
-			assert.strictEqual(result[1].getField('title'), 'Future World Chronicles');
+			assert.strictEqual(result[0]?.getField('title'), 'The Shadow Over Innsmouth');
+			assert.strictEqual(result[1]?.getField('title'), 'Future World Chronicles');
 		});
 
 		test('should filter items by raw status', () => {
@@ -167,27 +167,24 @@ describe('Filter Functions', () => {
 	describe('filterByAuthor', () => {
 		test('should filter items by author', () => {
 			items = createTestItems();
-			schema = createTestSchema();
 
-			const result = filterByAuthor(items, 'Lovecraft, H.P.', schema);
+			const result = filterByAuthor(items, 'Lovecraft, H.P.');
 			assert.strictEqual(result.length, 1);
-			assert.strictEqual(result[0].getField('title'), 'The Shadow Over Innsmouth');
+			assert.strictEqual(result[0]?.getField('title'), 'The Shadow Over Innsmouth');
 		});
 
 		test('should handle multiple authors in single item', () => {
 			items = createTestItems();
-			schema = createTestSchema();
 
-			const result = filterByAuthor(items, 'Poe, Edgar Allen', schema);
+			const result = filterByAuthor(items, 'Poe, Edgar Allen');
 			assert.strictEqual(result.length, 1);
-			assert.strictEqual(result[0].getField('title'), 'The Mystery Mansion');
+			assert.strictEqual(result[0]?.getField('title'), 'The Mystery Mansion');
 		});
 
 		test('should return empty array for non-existent author', () => {
 			items = createTestItems();
-			schema = createTestSchema();
 
-			const result = filterByAuthor(items, 'Unknown Author', schema);
+			const result = filterByAuthor(items, 'Unknown Author');
 			assert.strictEqual(result.length, 0);
 		});
 	});
@@ -195,26 +192,23 @@ describe('Filter Functions', () => {
 	describe('filterByPublication', () => {
 		test('should filter items by publication', () => {
 			items = createTestItems();
-			schema = createTestSchema();
 
-			const result = filterByPublication(items, 'Weird Tales', schema);
+			const result = filterByPublication(items, 'Weird Tales');
 			assert.strictEqual(result.length, 2);
 		});
 
 		test('should handle items with multiple publications', () => {
 			items = createTestItems();
-			schema = createTestSchema();
 
-			const result = filterByPublication(items, 'Strange Tales', schema);
+			const result = filterByPublication(items, 'Strange Tales');
 			assert.strictEqual(result.length, 1);
-			assert.strictEqual(result[0].getField('title'), 'The Jungle Adventure');
+			assert.strictEqual(result[0]?.getField('title'), 'The Jungle Adventure');
 		});
 
 		test('should return empty array for non-existent publication', () => {
 			items = createTestItems();
-			schema = createTestSchema();
 
-			const result = filterByPublication(items, 'Nonexistent Mag', schema);
+			const result = filterByPublication(items, 'Nonexistent Mag');
 			assert.strictEqual(result.length, 0);
 		});
 	});
@@ -222,25 +216,22 @@ describe('Filter Functions', () => {
 	describe('filterByFieldRange', () => {
 		test('should filter by numeric range', () => {
 			items = createTestItems();
-			schema = createTestSchema();
 
-			const result = filterByFieldRange(items, 'year', 1940, 1950, schema);
+			const result = filterByFieldRange(items, 'year', 1940, 1950);
 			assert.strictEqual(result.length, 3, 'Should find items from 1940-1950');
 		});
 
 		test('should include boundary values', () => {
 			items = createTestItems();
-			schema = createTestSchema();
 
-			const result = filterByFieldRange(items, 'year', 1942, 1942, schema);
+			const result = filterByFieldRange(items, 'year', 1942, 1942);
 			assert.strictEqual(result.length, 1);
 		});
 
 		test('should handle word count range', () => {
 			items = createTestItems();
-			schema = createTestSchema();
 
-			const result = filterByFieldRange(items, 'word-count', 5000, 9000, schema);
+			const result = filterByFieldRange(items, 'word-count', 5000, 9000);
 			assert.strictEqual(result.length, 3);
 		});
 	});
@@ -248,31 +239,28 @@ describe('Filter Functions', () => {
 	describe('filterByDateRange', () => {
 		test('should filter items by date range', () => {
 			items = createTestItems();
-			schema = createTestSchema();
 
 			const start = new Date('2025-06-01');
 			const end = new Date('2025-07-15');
-			const result = filterByDateRange(items, 'date-read', start, end, schema);
+			const result = filterByDateRange(items, 'date-read', start, end);
 			assert.strictEqual(result.length, 2, 'Should find items read in June-July');
 		});
 
 		test('should include boundary dates', () => {
 			items = createTestItems();
-			schema = createTestSchema();
 
 			const start = new Date('2025-06-15');
 			const end = new Date('2025-06-15');
-			const result = filterByDateRange(items, 'date-read', start, end, schema);
+			const result = filterByDateRange(items, 'date-read', start, end);
 			assert.strictEqual(result.length, 1);
 		});
 
 		test('should handle null dates gracefully', () => {
 			items = createTestItems();
-			schema = createTestSchema();
 
 			const start = new Date('2025-01-01');
 			const end = new Date('2025-12-31');
-			const result = filterByDateRange(items, 'date-read', start, end, schema);
+			const result = filterByDateRange(items, 'date-read', start, end);
 			assert.ok(result.length >= 0, 'Should not throw error with null dates');
 		});
 	});
@@ -280,25 +268,22 @@ describe('Filter Functions', () => {
 	describe('filterByField', () => {
 		test('should filter by string field', () => {
 			items = createTestItems();
-			schema = createTestSchema();
 
-			const result = filterByField(items, 'title', 'The Shadow Over Innsmouth', schema);
+			const result = filterByField(items, 'title', 'The Shadow Over Innsmouth');
 			assert.strictEqual(result.length, 1);
 		});
 
 		test('should filter by number field', () => {
 			items = createTestItems();
-			schema = createTestSchema();
 
-			const result = filterByField(items, 'year', 1935, schema);
+			const result = filterByField(items, 'year', 1935);
 			assert.strictEqual(result.length, 1);
 		});
 
 		test('should filter by boolean field', () => {
 			items = createTestItems();
-			schema = createTestSchema();
 
-			const result = filterByField(items, 'bp-approved', true, schema);
+			const result = filterByField(items, 'bp-approved', true);
 			assert.strictEqual(result.length, 2);
 		});
 	});
@@ -318,8 +303,8 @@ describe('Sort Functions', () => {
 			schema = createTestSchema();
 
 			const result = sortByField(items, 'title', true);
-			assert.strictEqual(result[0].getField('title'), 'Future World Chronicles');
-			assert.strictEqual(result[result.length - 1].getField('title'), 'Unknown Horror Tale');
+			assert.strictEqual(result[0]?.getField('title'), 'Future World Chronicles');
+			assert.strictEqual(result[result.length - 1]?.getField('title'), 'Unknown Horror Tale');
 		});
 
 		test('should sort by title descending', () => {
@@ -327,8 +312,8 @@ describe('Sort Functions', () => {
 			schema = createTestSchema();
 
 			const result = sortByField(items, 'title', false);
-			assert.strictEqual(result[0].getField('title'), 'Unknown Horror Tale');
-			assert.strictEqual(result[result.length - 1].getField('title'), 'Future World Chronicles');
+			assert.strictEqual(result[0]?.getField('title'), 'Unknown Horror Tale');
+			assert.strictEqual(result[result.length - 1]?.getField('title'), 'Future World Chronicles');
 		});
 	});
 
@@ -338,8 +323,8 @@ describe('Sort Functions', () => {
 			schema = createTestSchema();
 
 			const result = sortByNumber(items, 'year', true);
-			assert.strictEqual(result[0].getField('year'), 1928);
-			assert.strictEqual(result[result.length - 1].getField('year'), 1950);
+			assert.strictEqual(result[0]?.getField('year'), 1928);
+			assert.strictEqual(result[result.length - 1]?.getField('year'), 1950);
 		});
 
 		test('should sort by year descending', () => {
@@ -347,8 +332,8 @@ describe('Sort Functions', () => {
 			schema = createTestSchema();
 
 			const result = sortByNumber(items, 'year', false);
-			assert.strictEqual(result[0].getField('year'), 1950);
-			assert.strictEqual(result[result.length - 1].getField('year'), 1928);
+			assert.strictEqual(result[0]?.getField('year'), 1950);
+			assert.strictEqual(result[result.length - 1]?.getField('year'), 1928);
 		});
 
 		test('should handle null values', () => {
@@ -384,7 +369,7 @@ describe('Sort Functions', () => {
 			schema = createTestSchema();
 
 			const result = sortByString(items, 'catalog-status', true);
-			assert.strictEqual(result[0].getField('catalog-status'), 'approved');
+			assert.strictEqual(result[0]?.getField('catalog-status'), 'approved');
 		});
 	});
 });
@@ -644,7 +629,7 @@ describe('Edge Cases', () => {
 		test('should handle null field values', () => {
 			const item = new CatalogItem('001', 'test.md');
 			item.setField('authors', null);
-			const result = filterByAuthor([item], 'Some Author', createTestSchema());
+			const result = filterByAuthor([item], 'Some Author');
 			assert.strictEqual(result.length, 0);
 		});
 
@@ -663,7 +648,7 @@ describe('Edge Cases', () => {
 			const filtered = filterByStatus(items, 'approved', schema);
 			const sorted = sortByNumber(filtered, 'year', true);
 			assert.strictEqual(sorted.length, 2);
-			assert.strictEqual(sorted[0].getField('year'), 1942);
+			assert.strictEqual(sorted[0]?.getField('year'), 1942);
 		});
 
 		test('should chain filter and group operations', () => {
@@ -680,7 +665,7 @@ describe('Edge Cases', () => {
 			const items = createTestItems();
 			const schema = createTestSchema();
 
-			const filtered = filterByFieldRange(items, 'word-count', 5000, 10000, schema);
+			const filtered = filterByFieldRange(items, 'word-count', 5000, 10000);
 			const sorted = sortByNumber(filtered, 'year', false);
 			const count = countByStatus(sorted, schema);
 			assert.ok(typeof count === 'object');

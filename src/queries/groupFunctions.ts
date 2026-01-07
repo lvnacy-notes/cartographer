@@ -7,7 +7,8 @@
 
 import {
 	CatalogItem,
-	CatalogSchema
+	CatalogSchema,
+	type FieldValue
 } from '../types';
 
 /**
@@ -23,7 +24,7 @@ import {
  * const allItems = flattenGroups(byStatus);
  */
 export function flattenGroups(
-	groups: Map<any, CatalogItem[]>
+	groups: Map<FieldValue | null, CatalogItem[]>
 ): CatalogItem[] {
 	const result: CatalogItem[] = [];
 	for (const groupItems of groups.values()) {
@@ -46,9 +47,9 @@ export function flattenGroups(
  * const statusOrder = getGroupKeys(byStatus);
  */
 export function getGroupKeys(
-	groups: Map<any, CatalogItem[]>,
+	groups: Map<FieldValue, CatalogItem[]>,
 	ascending: boolean = true
-): any[] {
+): FieldValue[] {
 	const keys = Array.from(groups.keys());
 	return ascending ? keys.sort() : keys.sort().reverse();
 }
@@ -82,10 +83,12 @@ export function groupByAuthor(
 		const authors = item.getField<string[]>('authors');
 		if (Array.isArray(authors)) {
 			for (const author of authors) {
-				if (!groups.has(author)) {
-					groups.set(author, []);
+				let authorGroup = groups.get(author);
+				if (!authorGroup) {
+					authorGroup = [];
+					groups.set(author, authorGroup);
 				}
-				groups.get(author)!.push(item);
+				authorGroup.push(item);
 			}
 		}
 	}
@@ -118,10 +121,12 @@ export function groupByCustom<K>(
 	for (const item of items) {
 		const key = keyFn(item);
 
-		if (!groups.has(key)) {
-			groups.set(key, []);
+		let keyGroup = groups.get(key);
+		if (!keyGroup) {
+			keyGroup = [];
+			groups.set(key, keyGroup);
 		}
-		groups.get(key)!.push(item);
+		keyGroup.push(item);
 	}
 
 	return groups;
@@ -151,20 +156,28 @@ export function groupByDateMonth(
 	for (const item of items) {
 		const value = item.getField(fieldKey);
 		if (value === null || value === undefined) {
-			if (!groups.has(null)) {
-				groups.set(null, []);
+			let nullGroup = groups.get(null);
+			if (!nullGroup) {
+				nullGroup = [];
+				groups.set(null, nullGroup);
 			}
-			groups.get(null)!.push(item);
+			nullGroup.push(item);
 			continue;
 		}
 
-		const date = value instanceof Date ? value : new Date(String(value));
+		const date = value instanceof Date ? value : (typeof value === 'string' || typeof value === 'number') ? new Date(value) : null;
+		if (!date || isNaN(date.getTime())) {
+			// Invalid date, skip
+			continue;
+		}
 		const yearMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 
-		if (!groups.has(yearMonth)) {
-			groups.set(yearMonth, []);
+		let yearMonthGroup = groups.get(yearMonth);
+		if (!yearMonthGroup) {
+			yearMonthGroup = [];
+			groups.set(yearMonth, yearMonthGroup);
 		}
-		groups.get(yearMonth)!.push(item);
+		yearMonthGroup.push(item);
 	}
 
 	// Convert to sorted Map (descending order)
@@ -175,11 +188,15 @@ export function groupByDateMonth(
 		.reverse();
 
 	for (const key of keys) {
-		sortedGroups.set(key, groups.get(key)!);
+		const keyGroup = groups.get(key);
+		if (keyGroup) {
+			sortedGroups.set(key, keyGroup);
+		}
 	}
 
-	if (groups.has(null)) {
-		sortedGroups.set(null, groups.get(null)!);
+	const nullGroup = groups.get(null);
+	if (nullGroup) {
+		sortedGroups.set(null, nullGroup);
 	}
 
 	return sortedGroups;
@@ -213,10 +230,12 @@ export function groupByField<T>(
 		const value = item.getField<T>(fieldKey);
 		const key = value === undefined ? null : value;
 
-		if (!groups.has(key)) {
-			groups.set(key, []);
+		let keyGroup = groups.get(key);
+		if (!keyGroup) {
+			keyGroup = [];
+			groups.set(key, keyGroup);
 		}
-		groups.get(key)!.push(item);
+		keyGroup.push(item);
 	}
 
 	return groups;
@@ -251,10 +270,12 @@ export function groupByPublication(
 		const publications = item.getField<string[]>('publications');
 		if (Array.isArray(publications)) {
 			for (const pub of publications) {
-				if (!groups.has(pub)) {
-					groups.set(pub, []);
+				let pubGroup = groups.get(pub);
+				if (!pubGroup) {
+					pubGroup = [];
+					groups.set(pub, pubGroup);
 				}
-				groups.get(pub)!.push(item);
+				pubGroup.push(item);
 			}
 		}
 	}
@@ -279,7 +300,7 @@ export function groupByStatus(
 	items: CatalogItem[],
 	schema: CatalogSchema
 ): Map<string | null, CatalogItem[]> {
-	const statusField = schema.coreFields.statusField;
+	const { statusField } = schema.coreFields;
 	if (!statusField) {
 		return new Map();
 	}
@@ -320,12 +341,16 @@ export function groupByYear(
 
 	// Add non-null keys first
 	for (const key of keys) {
-		sortedGroups.set(key, groups.get(key)!);
+		const keyGroup = groups.get(key);
+		if (keyGroup) {
+			sortedGroups.set(key, keyGroup);
+		}
 	}
 
 	// Add null key last if present
-	if (groups.has(null)) {
-		sortedGroups.set(null, groups.get(null)!);
+	const nullGroup = groups.get(null);
+	if (nullGroup) {
+		sortedGroups.set(null, nullGroup);
 	}
 
 	return sortedGroups;

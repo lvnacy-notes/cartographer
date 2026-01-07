@@ -18,6 +18,8 @@ export {
 	itemToObject,
 	buildCatalogItemFromData,
 	convertFieldValue,
+	type FieldValue,
+	type StoredFieldValue
 } from './dynamicWork';
 
 /**

@@ -7,7 +7,8 @@
 
 import {
 	CatalogItem,
-	CatalogSchema
+	CatalogSchema,
+	type FieldValue
 } from '../types';
 
 /**
@@ -72,7 +73,7 @@ export function countByAuthor(
 		const authors = item.getField<string[]>('authors');
 		if (Array.isArray(authors)) {
 			for (const author of authors) {
-				counts[author] = (counts[author] || 0) + 1;
+				counts[author] = (counts[author] ?? 0) + 1;
 			}
 		}
 	}
@@ -101,9 +102,16 @@ export function countByField(
 
 	for (const item of items) {
 		const value = item.getField(fieldKey);
-		const key = value === null || value === undefined ? 'null' : String(value);
+		let key: string;
+		if (value === null || value === undefined) {
+			key = 'null';
+		} else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+			key = String(value);
+		} else {
+			continue;
+		}
 
-		counts[key] = (counts[key] || 0) + 1;
+		counts[key] = (counts[key] ?? 0) + 1;
 	}
 
 	return counts;
@@ -130,7 +138,7 @@ export function countByPublication(
 		const publications = item.getField<string[]>('publications');
 		if (Array.isArray(publications)) {
 			for (const pub of publications) {
-				counts[pub] = (counts[pub] || 0) + 1;
+				counts[pub] = (counts[pub] ?? 0) + 1;
 			}
 		}
 	}
@@ -155,7 +163,7 @@ export function countByStatus(
 	items: CatalogItem[],
 	schema: CatalogSchema
 ): Record<string, number> {
-	const statusField = schema.coreFields.statusField;
+	const { statusField } = schema.coreFields;
 	if (!statusField) {
 		return {};
 	}
@@ -203,13 +211,23 @@ export function getDateRange(
 			continue;
 		}
 
-		const date = value instanceof Date ? value : new Date(String(value));
-		if (isNaN(date.getTime())) {
+		let date: Date | null = null;
+		if (value instanceof Date) {
+			date = value;
+		} else if (typeof value === 'string' || typeof value === 'number') {
+			date = new Date(value);
+		}
+
+		if (!date || isNaN(date.getTime())) {
 			continue;
 		}
 
-		if (minDate === null || date < minDate) minDate = date;
-		if (maxDate === null || date > maxDate) maxDate = date;
+		if (minDate === null || date < minDate) {
+			minDate = date;
+		}
+		if (maxDate === null || date > maxDate) {
+			maxDate = date;
+		}
 	}
 
 	if (minDate === null || maxDate === null) {
@@ -235,23 +253,33 @@ export function getDateRange(
 export function getMostCommon(
 	items: CatalogItem[],
 	fieldKey: string
-): any | null {
+): FieldValue {
 	if (items.length === 0) {
 		return null;
 	}
 
 	const counts: Record<string, number> = {};
 	let maxCount = 0;
-	let mostCommonValue: any = null;
+	let mostCommonValue: FieldValue = null;
 
 	for (const item of items) {
 		const value = item.getField(fieldKey);
-		const key = value === null || value === undefined ? 'null' : String(value);
+		let key: string;
+		if (value === null || value === undefined) {
+			key = 'null';
+		} else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+			key = String(value);
+		} else {
+			continue;
+		}
 
-		counts[key] = (counts[key] || 0) + 1;
-		if (counts[key] > maxCount) {
-			maxCount = counts[key];
-			mostCommonValue = value;
+		const currentCount = counts[key] ?? 0;
+		const newCount = currentCount + 1;
+		counts[key] = newCount;
+		if (newCount > maxCount) {
+			maxCount = newCount;
+			// Type guard: getField returns unknown, but we know it's a FieldValue
+			mostCommonValue = (value as FieldValue) ?? null;
 		}
 	}
 
@@ -281,8 +309,12 @@ export function getRangeField(
 	for (const item of items) {
 		const value = item.getField<number>(fieldKey);
 		if (value !== null && value !== undefined && typeof value === 'number') {
-			if (min === null || value < min) min = value;
-			if (max === null || value > max) max = value;
+			if (min === null || value < min) {
+				min = value;
+			}
+			if (max === null || value > max) {
+				max = value;
+			}
 		}
 	}
 

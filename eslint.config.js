@@ -10,11 +10,13 @@ export default defineConfig([
 	{
 		ignores: [
 			'node_modules/**',
-			'test/**',
+			'tests/**',
+			'test-build/**',
 			'main.js',
 			'*.map',
 			'esbuild.config.js',
 			'eslint.config.js',
+			'fix-imports.js',
 			'version-bump.js'
 		]
 	},

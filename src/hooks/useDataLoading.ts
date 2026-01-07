@@ -111,7 +111,11 @@ function parseMarkdownToItem(
 		fields[titleField] ??= file.basename;
 
 		const id = (fields[library.schema.coreFields.idField ?? 'title'] as string | number) ?? file.path;
-		return new CatalogItem(String(id), fields, file.path);
+		const item = new CatalogItem(String(id), file.path);
+		for (const [key, value] of Object.entries(fields)) {
+			item.setField(key, value);
+		}
+		return item;
 	} catch (error) {
 		console.error(`Error parsing ${file.name}:`, error);
 		return null;
@@ -312,8 +316,12 @@ export function getFieldValues(
 	for (const item of items) {
 		const value = item.getField(fieldKey);
 		if (Array.isArray(value)) {
-			value.forEach((v) => values.add(String(v)));
-		} else if (value !== null && value !== undefined) {
+			value.forEach((v) => {
+				if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') {
+					values.add(String(v));
+				}
+			});
+		} else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
 			values.add(String(value));
 		}
 	}

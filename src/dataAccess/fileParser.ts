@@ -19,8 +19,17 @@
  * // Returns: "title: My Note\nauthor: Me"
  */
 export function extractFrontmatter(fileContent: string): string | null {
+	// Match frontmatter between opening and closing --- delimiters
+	// Handles both empty frontmatter (---\n---) and content-filled frontmatter
 	const match = fileContent.match(/^---\n([\s\S]*?)\n---/);
-	return match?.[1] ?? null;
+	if (match?.[1] !== undefined) {
+		return match[1];
+	}
+	// Also check for empty frontmatter case: ---\n--- (no content between)
+	if (fileContent.match(/^---\n---/)) {
+		return '';
+	}
+	return null;
 }
 
 /**
@@ -46,8 +55,8 @@ export function extractFrontmatter(fileContent: string): string | null {
  * const obj = parseYAML(yaml);
  * // Returns: { title: 'My Note', author: 'Me', tags: ['note', 'draft'] }
  */
-export function parseYAML(yamlString: string): Record<string, any> {
-	const fields: Record<string, any> = {};
+export function parseYAML(yamlString: string): Record<string, unknown> {
+	const fields: Record<string, unknown> = {};
 	const lines = yamlString.split('\n');
 	let currentKey: string | null = null;
 	let currentArray: string[] = [];
@@ -87,7 +96,7 @@ export function parseYAML(yamlString: string): Record<string, any> {
 			continue;
 		}
 
-		const key = match[1]!.trim();
+		const key = match[1].trim();
 		const value = (match[2] ?? '').trim();
 
 		// Check if this starts an array (empty value, next line might be array item)
@@ -157,8 +166,18 @@ function parseYAMLValue(valueString: string): string | number | boolean | null {
 		return null;
 	}
 
+	// Check if value is quoted (before removing quotes)
+	const isQuoted =
+		(trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+		(trimmed.startsWith("'") && trimmed.endsWith("'"));
+
 	// Remove quotes if present
 	const unquoted = removeQuotes(trimmed);
+
+	// If originally quoted, return as string (preserve type indicated by quotes)
+	if (isQuoted) {
+		return unquoted;
+	}
 
 	// Boolean values
 	const lowerValue = unquoted.toLowerCase();
@@ -169,7 +188,7 @@ function parseYAMLValue(valueString: string): string | number | boolean | null {
 		return false;
 	}
 
-	// Try to parse as number
+	// Try to parse as number (only for unquoted values)
 	const num = Number(unquoted);
 	if (!isNaN(num) && unquoted !== '') {
 		return num;
@@ -224,7 +243,7 @@ function removeQuotes(str: string): string {
  * const data = parseMarkdownFile(content);
  * // Returns: { title: 'Note' }
  */
-export function parseMarkdownFile(fileContent: string): Record<string, any> {
+export function parseMarkdownFile(fileContent: string): Record<string, unknown> {
 	const frontmatterText = extractFrontmatter(fileContent);
 	if (!frontmatterText) {
 		return {};

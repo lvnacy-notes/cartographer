@@ -573,7 +573,7 @@ describe('Catalog Item Builder Functions', () => {
 
 			const item2 = new CatalogItem('id2', 'path2.md');
 			item2.setField('title', null);
-			item2.setField('year', undefined);
+		item2.setField('year', null);
 
 			const result = mergeItems(item1, item2);
 			assert.strictEqual(result.getField<string>('title'), 'Original');

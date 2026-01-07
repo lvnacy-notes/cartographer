@@ -26,7 +26,7 @@ import type {
 export class CatalogItem {
 	id: string;
 	filePath: string;
-	private fields: Record<string, any> = {};
+	private fields: Record<string, StoredFieldValue> = {};
 
 	/**
 	 * Create a new CatalogItem.
@@ -75,7 +75,7 @@ export class CatalogItem {
 	 * item.setField('word-count', 5000);
 	 * item.setField('authors', ['Lovecraft, H. P.']);
 	 */
-	setField(fieldKey: string, value: any): void {
+	setField(fieldKey: string, value: StoredFieldValue): void {
 		this.fields[fieldKey] = value;
 	}
 
@@ -98,7 +98,7 @@ export class CatalogItem {
 	 *
 	 * @returns - Object with all field keys and values
 	 */
-	getAllFields(): Record<string, any> {
+	getAllFields(): Record<string, StoredFieldValue> {
 		return { ...this.fields };
 	}
 
@@ -116,7 +116,7 @@ export class CatalogItem {
 	 *
 	 * @returns - Plain object with id, filePath, and all fields
 	 */
-	toJSON(): Record<string, any> {
+	toJSON(): Record<string, StoredFieldValue | null | string> {
 		return {
 			id: this.id,
 			filePath: this.filePath,
@@ -136,6 +136,42 @@ export class CatalogItem {
 		cloned.fields = { ...this.fields };
 		return cloned;
 	}
+}
+
+/**
+ * Build a CatalogItem from raw frontmatter data and schema.
+ *
+ * Applies type conversions and field validation based on schema definition.
+ * This is the primary way to construct CatalogItems from parsed markdown files.
+ *
+ * @param rawData - Parsed frontmatter data (key-value object)
+ * @param id - Unique identifier for this item
+ * @param filePath - Vault-relative path to the markdown file
+ * @param schema - The catalog schema for type information
+ * @returns - A new CatalogItem with all fields set according to schema
+ *
+ * @example
+ * const parsedYAML = { title: 'Story', authors: ['Author 1'], 'word-count': 5000 };
+ * const item = buildCatalogItemFromData(parsedYAML, 'id-001', 'works/story.md', schema);
+ */
+export function buildCatalogItemFromData(
+	rawData: Record<string, unknown>,
+	id: string,
+	filePath: string,
+	schema: CatalogSchema
+): CatalogItem {
+	const item = new CatalogItem(id, filePath);
+
+	// Set each field from raw data, applying schema-based type conversion
+	for (const fieldDef of schema.fields) {
+		const rawValue = rawData[fieldDef.key];
+		const typedValue = convertFieldValue(rawValue, fieldDef);
+		if (typedValue !== undefined) {
+			item.setField(fieldDef.key, typedValue);
+		}
+	}
+
+	return item;
 }
 
 /**
@@ -183,15 +219,15 @@ export function getTypedField<T>(
 export function itemToObject(
 	item: CatalogItem,
 	schema: CatalogSchema
-): Record<string, any> {
-	const obj: Record<string, any> = {
+): Record<string, StoredFieldValue | null | string> {
+	const obj: Record<string, StoredFieldValue | null | string> = {
 		id: item.id,
 		filePath: item.filePath,
 	};
 
 	// Add all schema fields (with null for missing fields)
 	for (const fieldDef of schema.fields) {
-		const value = item.getField(fieldDef.key);
+		const value = item.getField<StoredFieldValue>(fieldDef.key);
 		obj[fieldDef.key] = value ?? null;
 	}
 
@@ -199,39 +235,15 @@ export function itemToObject(
 }
 
 /**
- * Build a CatalogItem from raw frontmatter data and schema.
- *
- * Applies type conversions and field validation based on schema definition.
- * This is the primary way to construct CatalogItems from parsed markdown files.
- *
- * @param rawData - Parsed frontmatter data (key-value object)
- * @param id - Unique identifier for this item
- * @param filePath - Vault-relative path to the markdown file
- * @param schema - The catalog schema for type information
- * @returns - A new CatalogItem with all fields set according to schema
- *
- * @example
- * const parsedYAML = { title: 'Story', authors: ['Author 1'], 'word-count': 5000 };
- * const item = buildCatalogItemFromData(parsedYAML, 'id-001', 'works/story.md', schema);
+ * Statistics summary for a catalog
  */
-export function buildCatalogItemFromData(
-	rawData: Record<string, any>,
-	id: string,
-	filePath: string,
-	schema: CatalogSchema
-): CatalogItem {
-	const item = new CatalogItem(id, filePath);
-
-	// Set each field from raw data, applying schema-based type conversion
-	for (const fieldDef of schema.fields) {
-		const rawValue = rawData[fieldDef.key];
-		const typedValue = convertFieldValue(rawValue, fieldDef);
-		if (typedValue !== undefined) {
-			item.setField(fieldDef.key, typedValue);
-		}
-	}
-
-	return item;
+export interface CatalogStatistics {
+	total: number;
+	byStatus?: Record<string, number>;
+	byAuthor?: Record<string, number>;
+	yearRange?: [number, number];
+	totalWordCount?: number;
+	averageWordCount?: number;
 }
 
 /**
@@ -245,26 +257,34 @@ export function buildCatalogItemFromData(
  * @returns - Converted value, or undefined if conversion fails
  */
 export function convertFieldValue(
-	rawValue: any,
+	rawValue: unknown,
 	fieldDef: SchemaField
-): any | undefined {
+): StoredFieldValue | undefined {
 	// Null/undefined pass through
 	if (rawValue === null || rawValue === undefined) {
 		return undefined;
 	}
 
 	switch (fieldDef.type) {
-		case 'string':
-			return String(rawValue);
+		case 'string': {
+			if (typeof rawValue === 'string') {
+				return rawValue;
+			}
+			if (typeof rawValue === 'number' || typeof rawValue === 'boolean') {
+				return String(rawValue);
+			}
+			return undefined;
+		}
 
-		case 'number':
+		case 'number': {
 			if (typeof rawValue === 'number') {
 				return rawValue;
 			}
 			const num = Number(rawValue);
 			return isNaN(num) ? undefined : num;
+		}
 
-		case 'boolean':
+		case 'boolean': {
 			if (typeof rawValue === 'boolean') {
 				return rawValue;
 			}
@@ -272,45 +292,86 @@ export function convertFieldValue(
 				return rawValue.toLowerCase() === 'true';
 			}
 			return Boolean(rawValue);
+		}
 
-		case 'date':
+		case 'date': {
 			if (rawValue instanceof Date) {
 				return rawValue;
 			}
-			try {
-				return new Date(String(rawValue));
-			} catch {
-				return undefined;
+			if (typeof rawValue === 'string' || typeof rawValue === 'number') {
+				try {
+					return new Date(rawValue);
+				} catch {
+					return undefined;
+				}
 			}
+			return undefined;
+		}
 
-		case 'array':
+		case 'array': {
 			if (Array.isArray(rawValue)) {
 				// Convert array items if needed
 				if (fieldDef.arrayItemType === 'string') {
-					return rawValue.map(v => String(v));
+					const mapped: string[] = rawValue.map((v: unknown) => {
+						if (typeof v === 'string') {
+							return v;
+						}
+						if (typeof v === 'number' || typeof v === 'boolean') {
+							return String(v);
+						}
+						return String(v);
+					});
+					return mapped;
 				}
-				return rawValue;
+				// Return array as-is when no specific item type conversion needed
+				return rawValue as unknown[] as string[];
 			}
 			// Single value becomes single-item array
-			return [rawValue];
-
-		case 'wikilink-array':
-			if (Array.isArray(rawValue)) {
-				return rawValue.map(v => String(v));
-			}
-			// Single wikilink becomes single-item array
-			return [String(rawValue)];
-
-		case 'object':
-			if (typeof rawValue === 'object' && rawValue !== null) {
-				return rawValue;
+			if (typeof rawValue === 'string' || typeof rawValue === 'number' || typeof rawValue === 'boolean') {
+				return [String(rawValue)];
 			}
 			return undefined;
+		}
 
-		default:
-			return rawValue;
+		case 'wikilink-array': {
+			if (Array.isArray(rawValue)) {
+				const mapped: string[] = rawValue.map((v: unknown) => {
+					if (typeof v === 'string') {
+						return v;
+					}
+					if (typeof v === 'number' || typeof v === 'boolean') {
+						return String(v);
+					}
+					return String(v);
+				});
+				return mapped;
+			}
+			// Single wikilink becomes single-item array
+			if (typeof rawValue === 'string' || typeof rawValue === 'number' || typeof rawValue === 'boolean') {
+				return [String(rawValue)];
+			}
+			return undefined;
+		}
+
+		case 'object': {
+			if (typeof rawValue === 'object' && rawValue !== null && !Array.isArray(rawValue)) {
+				return rawValue as Record<string, unknown>;
+			}
+			return undefined;
+		}
+
+		default: {
+			const _exhaustive: never = fieldDef.type;
+			return _exhaustive;
+		}
 	}
 }
+
+/**
+ * Valid field value type - represents all possible types that can be stored in catalog fields.
+ * Used throughout query functions for type consistency.
+ */
+export type FieldValue = string | number | boolean | string[] | Date | null;
 
 /**
  * Filter state for component use
@@ -332,13 +393,7 @@ export interface SortState {
 }
 
 /**
- * Statistics summary for a catalog
+ * Stored field value - includes object types for complex fields.
+ * Used internally for field storage and retrieval.
  */
-export interface CatalogStatistics {
-	total: number;
-	byStatus?: Record<string, number>;
-	byAuthor?: Record<string, number>;
-	yearRange?: [number, number];
-	totalWordCount?: number;
-	averageWordCount?: number;
-}
+export type StoredFieldValue = FieldValue | Record<string, unknown>;
