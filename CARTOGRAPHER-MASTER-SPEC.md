@@ -511,7 +511,7 @@ const myLibrary = {
 
 ### Component Specifications (Configuration-Driven)
 
-All React components read their behavior from `settings` object passed as props:
+All Preact components read their behavior from `settings` object passed as props:
 
 **ConfigurableWorksTable**
 - Displays columns specified in `worksTable.defaultColumns` 
@@ -731,37 +731,36 @@ listUniqueValues(items, fieldKey): any[]
 ### Session 3: Core Components - Phase 1
 
 **Objectives:**
-- Build ConfigurableWorksTable component
-- Build ConfigurableFilterBar component
-- Build ConfigurableStatusDashboard component
+- Build StatusDashboard, WorksTable, FilterBar components with Preact
 - Implement field-based configuration system
 - Add responsive design for mobile
 
 **Deliverables:**
-- `src/components/ConfigurableWorksTable.tsx`
+- `src/components/StatusDashboard.tsx` (Preact)
+  - Groups by configured field
+  - Shows counts per group
+  - Optional statistics display
+  - Mobile-responsive layout
+  
+- `src/components/WorksTable.tsx` (Preact)
   - Renders columns from config
   - Sortable headers
   - Pagination support
   - Mobile-responsive layout
   
-- `src/components/ConfigurableFilterBar.tsx`
+- `src/components/FilterBar.tsx` (Preact)
   - Renders filters from config
   - Handles multiple filter types (select, checkbox, range, text)
   - Real-time filtering
   - Layout options (vertical/horizontal/dropdown)
-  
-- `src/components/ConfigurableStatusDashboard.tsx`
-  - Groups by configured field
-  - Shows counts per group
-  - Optional statistics display
-  - Mobile-responsive
 
+- `src/types/componentTypes.ts` (Props interfaces)
+- `src/components/index.ts` (Barrel export)
 - `src/styles/components.css` (component styling)
 - Storybook examples or test pages
 
 **Testing:**
-- All 3 components work with Pulp Fiction preset
-- Test with General Library preset
+- All 3 components work with default library schema
 - Verify responsive behavior on mobile
 - Test with custom field combinations
 - Performance with 30+ items
@@ -848,7 +847,7 @@ Beyond QueryBuilder, Session 3.5 should assess:
    - Identify any expensive operations
    - Profile memory usage during filtering/sorting
    - Check if memoization is needed in hooks
-   - **Action if needed:** Add React.memo() to components, useMemo() to expensive calculations
+   - **Action if needed:** Add Preact.memo() to components, useMemo() to expensive calculations
 
 2. **Error Handling & Edge Cases**
    - Test with missing fields in works
@@ -953,24 +952,22 @@ Document decisions in `SESSION-3.5-DECISIONS.md`:
 ### Session 4: Core Components - Phase 2
 
 **Objectives:**
-- Build ConfigurablePublicationDashboard
-- Build ConfigurableAuthorCard
-- Build ConfigurableBackstagePipeline
+- Build PublicationDashboard, AuthorCard, BackstagePipeline components with Preact
 - Add custom hooks (useFilters, useSorting)
 - Integration testing
 
 **Deliverables:**
-- `src/components/ConfigurablePublicationDashboard.tsx`
+- `src/components/PublicationDashboard.tsx` (Preact)
   - Works with any foreign key field
   - Configurable display columns
   - Works for Pulp Fiction (publications), scalable to other catalogs
   
-- `src/components/ConfigurableAuthorCard.tsx`
+- `src/components/AuthorCard.tsx` (Preact)
   - Works with any author-like field
   - Statistics display (count, year range, total words)
   - Configurable columns
   
-- `src/components/ConfigurableBackstagePipeline.tsx`
+- `src/components/BackstagePipeline.tsx` (Preact)
   - Multiple configurable stages
   - Custom filter logic per stage
   - Stage-specific columns

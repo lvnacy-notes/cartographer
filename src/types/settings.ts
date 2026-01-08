@@ -1,4 +1,24 @@
 /**
+ * Configuration for the Status/Pipeline dashboard.
+ * Controls grouping, statistics, and display options for status overview.
+ * 
+ * Interfaces:
+ * - AuthorCardConfig - configuration for the Author Card component
+ * - BackstagePassPipelineConfig - configuration for the Backstage Pass publication pipeline
+ * - CatalogSchema - schema definition for a catalog/library
+ * - DashboardConfigs - configurations for all dashboards and components
+ * - DatacoreSettings - root settings object for Cartographer plugin
+ * - FilterBarConfig - configuration for the Filter Bar component
+ * - FilterDefinition - definition of a filter in the Filter Bar
+ * - Library - configuration for a single library/catalog
+ * - PipelineStage - definition of a stage in the Backstage Pass pipeline
+ * - PublicationDashboardConfig - configuration for the Publication dashboard
+ * - SchemaField - definition of an individual field in the catalog schema
+ * - StatusDashboardConfig - configuration for the Status/Pipeline dashboard
+ * - WorksTableConfig - configuration for the Works table view
+ */
+
+/**
  * Configuration for the Author Card component.
  * Controls display, layout, and data presentation for author information.
  */
@@ -233,6 +253,10 @@ export interface StatusDashboardConfig {
 	groupByField: string; // Which field to group by (usually 'catalog-status')
 	showTotalStats: boolean;
 	showWordCounts: boolean;
+	sortBy?: 'alphabetical' | 'count-desc' | 'count-asc';
+	displayStats?: ('count' | 'percentage' | 'yearRange' | 'averageWords')[];
+	wordCountField?: string;
+	yearField?: string;
 }
 
 export interface WorksTableConfig {

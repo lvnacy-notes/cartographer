@@ -397,3 +397,781 @@ Comprehensive styling for all Datacore components, views, and dashboards
 .modal-button-container button.mod-cta:hover {
 	opacity: 0.9;
 }
+
+/* StatusDashboard Component Styles */
+
+.cartographer-status-dashboard {
+	margin: 1rem 0;
+	padding: 1.5rem;
+	background-color: var(--background-secondary);
+	border-radius: 4px;
+	border: 1px solid var(--divider-color);
+}
+
+.cartographer-status-dashboard--empty {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 200px;
+	color: var(--text-muted);
+	font-style: italic;
+}
+
+.cartographer-status-dashboard__title {
+	margin: 0 0 1.5rem 0;
+	font-size: 1.1em;
+	font-weight: 600;
+	color: var(--text-normal);
+}
+
+/* Desktop Table Layout */
+
+.cartographer-status-dashboard__table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.95em;
+	background-color: var(--background-primary);
+	border: 1px solid var(--divider-color);
+	border-radius: 3px;
+	overflow: hidden;
+}
+
+.cartographer-status-dashboard__header-cell {
+	padding: 0.85rem;
+	text-align: left;
+	background-color: var(--background-tertiary);
+	font-weight: 600;
+	color: var(--text-normal);
+	border-bottom: 2px solid var(--divider-color);
+	user-select: none;
+}
+
+.cartographer-status-dashboard__header-cell--numeric {
+	text-align: right;
+	padding-right: 1rem;
+}
+
+.cartographer-status-dashboard__row {
+	border-bottom: 1px solid var(--divider-color);
+	transition: background-color 0.15s ease;
+}
+
+.cartographer-status-dashboard__row:hover {
+	background-color: var(--background-tertiary);
+}
+
+.cartographer-status-dashboard__cell {
+	padding: 0.75rem 0.85rem;
+	color: var(--text-normal);
+}
+
+.cartographer-status-dashboard__cell:first-child {
+	font-weight: 500;
+	color: var(--text-accent);
+	cursor: pointer;
+	transition: color 0.15s ease;
+}
+
+.cartographer-status-dashboard__cell:first-child:hover {
+	color: var(--interactive-accent);
+	text-decoration: underline;
+}
+
+.cartographer-status-dashboard__cell--numeric {
+	text-align: right;
+	padding-right: 1rem;
+	font-family: 'Courier New', monospace;
+	color: var(--text-muted);
+}
+
+.cartographer-status-dashboard__total-row {
+	background-color: var(--background-tertiary);
+	font-weight: 600;
+}
+
+.cartographer-status-dashboard__footer-cell {
+	padding: 0.85rem;
+	background-color: var(--background-tertiary);
+	color: var(--text-normal);
+	border-top: 2px solid var(--divider-color);
+	text-align: left;
+}
+
+.cartographer-status-dashboard__footer-cell--numeric {
+	text-align: right;
+	padding-right: 1rem;
+	font-family: 'Courier New', monospace;
+	color: var(--text-muted);
+}
+
+/* Mobile Card Layout */
+
+.cartographer-status-dashboard__cards {
+	display: none;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.cartographer-status-dashboard__card {
+	padding: 1.25rem;
+	background-color: var(--background-primary);
+	border: 1px solid var(--divider-color);
+	border-radius: 4px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.cartographer-status-dashboard__card:hover {
+	background-color: var(--background-tertiary);
+	border-color: var(--interactive-accent);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cartographer-status-dashboard__card--total {
+	margin-top: 0.5rem;
+	padding: 1.5rem;
+	background-color: var(--background-tertiary);
+	border: 2px solid var(--divider-color);
+	cursor: default;
+}
+
+.cartographer-status-dashboard__card--total:hover {
+	background-color: var(--background-tertiary);
+	border-color: var(--divider-color);
+	box-shadow: none;
+}
+
+.cartographer-status-dashboard__card-header {
+	font-weight: 600;
+	font-size: 1em;
+	color: var(--text-accent);
+	margin-bottom: 0.75rem;
+	padding-bottom: 0.5rem;
+	border-bottom: 1px solid var(--divider-color);
+}
+
+.cartographer-status-dashboard__card-header--total {
+	color: var(--text-normal);
+	font-size: 1.05em;
+}
+
+.cartographer-status-dashboard__card-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.5rem 0;
+	font-size: 0.95em;
+}
+
+.cartographer-status-dashboard__card-label {
+	color: var(--text-muted);
+	font-weight: 500;
+	flex-shrink: 0;
+	margin-right: 1rem;
+}
+
+.cartographer-status-dashboard__card-value {
+	color: var(--text-normal);
+	font-weight: 500;
+	text-align: right;
+	font-family: 'Courier New', monospace;
+	flex-grow: 1;
+}
+
+/* Responsive Design - Mobile breakpoint at 600px */
+
+@media (max-width: 600px) {
+	.cartographer-status-dashboard {
+		padding: 1rem;
+	}
+
+	.cartographer-status-dashboard__title {
+		font-size: 1em;
+		margin-bottom: 1rem;
+	}
+
+	/* Hide table on mobile */
+	.cartographer-status-dashboard__table {
+		display: none;
+	}
+
+	/* Show cards on mobile */
+	.cartographer-status-dashboard__cards {
+		display: flex;
+	}
+
+	.cartographer-status-dashboard__card {
+		padding: 1rem;
+	}
+
+	.cartographer-status-dashboard__card--total {
+		padding: 1.25rem;
+	}
+
+	.cartographer-status-dashboard__card-header {
+		font-size: 0.95em;
+		margin-bottom: 0.5rem;
+		padding-bottom: 0.5rem;
+	}
+
+	.cartographer-status-dashboard__card-row {
+		padding: 0.45rem 0;
+		font-size: 0.9em;
+	}
+
+	.cartographer-status-dashboard__card-label {
+		margin-right: 0.75rem;
+	}
+}
+
+/* WorksTable Component Styles */
+
+.cartographer-works-table {
+	margin: 1rem 0;
+	padding: 1.5rem;
+	background-color: var(--background-secondary);
+	border-radius: 4px;
+	border: 1px solid var(--divider-color);
+}
+
+.cartographer-works-table--empty {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 200px;
+	color: var(--text-muted);
+	font-style: italic;
+}
+
+.cartographer-works-table__title {
+	margin: 0 0 1.5rem 0;
+	font-size: 1.1em;
+	font-weight: 600;
+	color: var(--text-normal);
+}
+
+/* Desktop Table Layout */
+
+.cartographer-works-table__table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.95em;
+	background-color: var(--background-primary);
+	border: 1px solid var(--divider-color);
+	border-radius: 3px;
+	overflow: hidden;
+}
+
+.cartographer-works-table__header-cell {
+	padding: 0.85rem;
+	text-align: left;
+	background-color: var(--background-tertiary);
+	font-weight: 600;
+	color: var(--text-normal);
+	border-bottom: 2px solid var(--divider-color);
+	user-select: none;
+	cursor: pointer;
+	transition: background-color 0.15s ease;
+}
+
+.cartographer-works-table__header-cell:hover {
+	background-color: var(--interactive-hover);
+}
+
+.cartographer-works-table__header-cell--sortable {
+	cursor: pointer;
+	position: relative;
+}
+
+.cartographer-works-table__sort-indicator {
+	display: inline-block;
+	margin-left: 0.5rem;
+	font-size: 0.85em;
+	color: var(--text-muted);
+}
+
+.cartographer-works-table__header-cell--numeric {
+	text-align: right;
+	padding-right: 1rem;
+}
+
+.cartographer-works-table__row {
+	border-bottom: 1px solid var(--divider-color);
+	transition: background-color 0.15s ease;
+}
+
+.cartographer-works-table__row:hover {
+	background-color: var(--background-tertiary);
+}
+
+.cartographer-works-table__cell {
+	padding: 0.75rem 0.85rem;
+	color: var(--text-normal);
+	word-break: break-word;
+	overflow-wrap: break-word;
+}
+
+.cartographer-works-table__cell--numeric {
+	text-align: right;
+	padding-right: 1rem;
+	font-family: 'Courier New', monospace;
+	color: var(--text-muted);
+}
+
+.cartographer-works-table__cell--date {
+	font-family: 'Courier New', monospace;
+	color: var(--text-muted);
+}
+
+.cartographer-works-table__cell--boolean {
+	color: var(--text-accent);
+	font-weight: 500;
+}
+
+.cartographer-works-table__cell--array {
+	color: var(--text-muted);
+	font-size: 0.9em;
+}
+
+.cartographer-works-table__cell--wikilink {
+	color: var(--text-accent);
+	cursor: pointer;
+	transition: color 0.15s ease;
+}
+
+.cartographer-works-table__cell--wikilink:hover {
+	color: var(--interactive-accent);
+	text-decoration: underline;
+}
+
+/* Pagination Controls */
+
+.cartographer-works-table__pagination {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 1rem;
+	margin-top: 1.5rem;
+	padding-top: 1rem;
+	border-top: 1px solid var(--divider-color);
+}
+
+.cartographer-works-table__pagination-button {
+	padding: 0.5rem 1rem;
+	background-color: var(--background-tertiary);
+	border: 1px solid var(--divider-color);
+	border-radius: 3px;
+	color: var(--text-normal);
+	cursor: pointer;
+	font-size: 0.95em;
+	transition: all 0.15s ease;
+	user-select: none;
+}
+
+.cartographer-works-table__pagination-button:hover:not(:disabled) {
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+	border-color: var(--interactive-accent);
+}
+
+.cartographer-works-table__pagination-button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.cartographer-works-table__pagination-info {
+	color: var(--text-muted);
+	font-size: 0.9em;
+	min-width: 100px;
+	text-align: center;
+}
+
+/* Mobile Card Layout */
+
+.cartographer-works-table__cards {
+	display: none;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.cartographer-works-table__card {
+	padding: 1.25rem;
+	background-color: var(--background-primary);
+	border: 1px solid var(--divider-color);
+	border-radius: 4px;
+	transition: all 0.2s ease;
+}
+
+.cartographer-works-table__card:hover {
+	background-color: var(--background-tertiary);
+	border-color: var(--interactive-accent);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cartographer-works-table__card-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	padding: 0.5rem 0;
+	font-size: 0.95em;
+	gap: 1rem;
+}
+
+.cartographer-works-table__card-label {
+	color: var(--text-muted);
+	font-weight: 500;
+	flex-shrink: 0;
+	min-width: 100px;
+}
+
+.cartographer-works-table__card-value {
+	color: var(--text-normal);
+	font-weight: 500;
+	text-align: right;
+	flex-grow: 1;
+}
+
+/* Responsive Design - Mobile breakpoint at 600px */
+
+@media (max-width: 600px) {
+	.cartographer-works-table {
+		padding: 1rem;
+	}
+
+	.cartographer-works-table__title {
+		font-size: 1em;
+		margin-bottom: 1rem;
+	}
+
+	/* Hide table on mobile */
+	.cartographer-works-table__table {
+		display: none;
+	}
+
+	/* Show cards on mobile */
+	.cartographer-works-table__cards {
+		display: flex;
+	}
+
+	.cartographer-works-table__card {
+		padding: 1rem;
+	}
+
+	.cartographer-works-table__card-row {
+		padding: 0.45rem 0;
+		font-size: 0.9em;
+	}
+
+	.cartographer-works-table__card-label {
+		min-width: 80px;
+	}
+
+	.cartographer-works-table__pagination {
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.cartographer-works-table__pagination-button {
+		width: 100%;
+	}
+}
+
+/* FilterBar Component Styles */
+
+.cartographer-filter-bar {
+	margin: 1rem 0;
+	padding: 1.5rem;
+	background-color: var(--background-secondary);
+	border-radius: 4px;
+	border: 1px solid var(--divider-color);
+}
+
+.cartographer-filter-bar--empty {
+	color: var(--text-muted);
+	font-style: italic;
+	padding: 1rem;
+}
+
+.cartographer-filter-bar__title {
+	margin: 0 0 1.25rem 0;
+	font-size: 1.05em;
+	font-weight: 600;
+	color: var(--text-normal);
+}
+
+/* Filter Layout Options */
+
+.cartographer-filter-bar__filters--vertical {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+
+.cartographer-filter-bar__filters--horizontal {
+	display: flex;
+	flex-direction: row;
+	gap: 2rem;
+	flex-wrap: wrap;
+	align-items: flex-start;
+}
+
+.cartographer-filter-bar__filters--mobile {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+/* Individual Filter Container */
+
+.cartographer-filter-bar__filter {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.cartographer-filter-bar__filter--horizontal {
+	flex-direction: row;
+	align-items: center;
+	gap: 1rem;
+}
+
+.cartographer-filter-bar__label {
+	font-weight: 600;
+	font-size: 0.95em;
+	color: var(--text-normal);
+	user-select: none;
+}
+
+/* Select Filter */
+
+.cartographer-filter-bar__select {
+	padding: 0.5rem;
+	background-color: var(--background-primary);
+	border: 1px solid var(--divider-color);
+	border-radius: 3px;
+	color: var(--text-normal);
+	font-size: 0.95em;
+	cursor: pointer;
+	transition: border-color 0.15s ease;
+}
+
+.cartographer-filter-bar__select:hover {
+	border-color: var(--interactive-accent);
+}
+
+.cartographer-filter-bar__select:focus {
+	outline: none;
+	border-color: var(--interactive-accent);
+	box-shadow: 0 0 0 2px var(--background-modifier-accent);
+}
+
+/* Checkbox Filter */
+
+.cartographer-filter-bar__checkbox-group {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	max-height: 250px;
+	overflow-y: auto;
+}
+
+.cartographer-filter-bar__checkbox-item {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.35rem 0;
+	user-select: none;
+}
+
+.cartographer-filter-bar__checkbox-item input {
+	cursor: pointer;
+	accent-color: var(--interactive-accent);
+}
+
+.cartographer-filter-bar__checkbox-label {
+	color: var(--text-normal);
+	font-size: 0.95em;
+	cursor: pointer;
+	flex-grow: 1;
+}
+
+.cartographer-filter-bar__checkbox-count {
+	color: var(--text-muted);
+	font-size: 0.85em;
+	margin-left: 0.5rem;
+}
+
+/* Range Filter */
+
+.cartographer-filter-bar__range-container {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
+.cartographer-filter-bar__range-inputs {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+}
+
+.cartographer-filter-bar__range-input {
+	padding: 0.5rem;
+	background-color: var(--background-primary);
+	border: 1px solid var(--divider-color);
+	border-radius: 3px;
+	color: var(--text-normal);
+	font-size: 0.9em;
+	font-family: 'Courier New', monospace;
+	width: 80px;
+	transition: border-color 0.15s ease;
+}
+
+.cartographer-filter-bar__range-input:hover {
+	border-color: var(--interactive-accent);
+}
+
+.cartographer-filter-bar__range-input:focus {
+	outline: none;
+	border-color: var(--interactive-accent);
+	box-shadow: 0 0 0 2px var(--background-modifier-accent);
+}
+
+.cartographer-filter-bar__range-separator {
+	color: var(--text-muted);
+	font-weight: 600;
+}
+
+.cartographer-filter-bar__range-display {
+	color: var(--text-muted);
+	font-size: 0.85em;
+}
+
+/* Text Filter */
+
+.cartographer-filter-bar__text-input {
+	padding: 0.5rem 0.75rem;
+	background-color: var(--background-primary);
+	border: 1px solid var(--divider-color);
+	border-radius: 3px;
+	color: var(--text-normal);
+	font-size: 0.95em;
+	transition: border-color 0.15s ease;
+	width: 100%;
+}
+
+.cartographer-filter-bar__text-input::placeholder {
+	color: var(--text-muted);
+}
+
+.cartographer-filter-bar__text-input:hover {
+	border-color: var(--interactive-accent);
+}
+
+.cartographer-filter-bar__text-input:focus {
+	outline: none;
+	border-color: var(--interactive-accent);
+	box-shadow: 0 0 0 2px var(--background-modifier-accent);
+}
+
+/* Clear Filters Button */
+
+.cartographer-filter-bar__actions {
+	display: flex;
+	gap: 0.75rem;
+	margin-top: 1.5rem;
+	padding-top: 1rem;
+	border-top: 1px solid var(--divider-color);
+}
+
+.cartographer-filter-bar__button {
+	padding: 0.65rem 1.25rem;
+	background-color: var(--background-tertiary);
+	border: 1px solid var(--divider-color);
+	border-radius: 3px;
+	color: var(--text-normal);
+	font-size: 0.95em;
+	cursor: pointer;
+	transition: all 0.15s ease;
+	user-select: none;
+	font-weight: 500;
+}
+
+.cartographer-filter-bar__button:hover {
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+	border-color: var(--interactive-accent);
+}
+
+.cartographer-filter-bar__button:active {
+	opacity: 0.8;
+}
+
+.cartographer-filter-bar__button--danger {
+	background-color: var(--background-tertiary);
+	border-color: var(--text-error);
+	color: var(--text-error);
+}
+
+.cartographer-filter-bar__button--danger:hover {
+	background-color: var(--text-error);
+	color: var(--text-on-error);
+	border-color: var(--text-error);
+}
+
+/* Responsive Design - Mobile breakpoint at 600px */
+
+@media (max-width: 600px) {
+	.cartographer-filter-bar {
+		padding: 1rem;
+	}
+
+	.cartographer-filter-bar__title {
+		font-size: 1em;
+		margin-bottom: 1rem;
+	}
+
+	/* Switch to mobile layout */
+	.cartographer-filter-bar__filters--vertical,
+	.cartographer-filter-bar__filters--horizontal {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.cartographer-filter-bar__filter--horizontal {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.5rem;
+	}
+
+	.cartographer-filter-bar__select,
+	.cartographer-filter-bar__text-input {
+		width: 100%;
+	}
+
+	.cartographer-filter-bar__checkbox-group {
+		max-height: 200px;
+	}
+
+	.cartographer-filter-bar__range-inputs {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.cartographer-filter-bar__range-input {
+		width: 100%;
+	}
+
+	.cartographer-filter-bar__range-separator {
+		display: none;
+	}
+
+	.cartographer-filter-bar__actions {
+		flex-direction: column;
+	}
+
+	.cartographer-filter-bar__button {
+		width: 100%;
+	}
+}

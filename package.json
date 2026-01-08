@@ -33,6 +33,7 @@
 		"typescript-eslint": "8.35.1"
 	},
 	"dependencies": {
-		"obsidian": "latest"
+		"obsidian": "latest",
+		"preact": "^10.19.0"
 	}
 }
