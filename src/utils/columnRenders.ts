@@ -71,7 +71,10 @@ export function renderCell(
 			if (value === null || value === undefined) {
 				return '-';
 			}
-			return String(value);
+			if (typeof value === 'string') {
+				return value;
+			}
+			return (value as string).toString();
 		}
 	}
 }

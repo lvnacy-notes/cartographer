@@ -21,13 +21,14 @@ export default defineConfig([
 		]
 	},
 	{
-		files: ['**/*.ts', '**/*.js'],
+		files: ['**/*.ts', '**/*.tsx', '**/*.js'],
 		languageOptions: {
 			parser: tsparser,
 			parserOptions: {
 				ecmaVersion: 2020,
 				sourceType: 'module',
-				project: './tsconfig.json'
+				project: './tsconfig.json',
+				tsconfigRootDir: import.meta.dirname
 			},
 			globals: {
 				console: 'readonly',
@@ -98,7 +99,7 @@ export default defineConfig([
 					'varsIgnorePattern': '^_'
 				}
 			],
-			'@typescript-eslint/no-explicit-any': 'warn',
+			'@typescript-eslint/no-explicit-any': 'error',
 			'@typescript-eslint/no-non-null-assertion': 'warn',
 			'@typescript-eslint/prefer-nullish-coalescing': 'error',
 			'@typescript-eslint/prefer-optional-chain': 'error',

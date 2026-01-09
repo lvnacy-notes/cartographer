@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { h } from 'preact';
 import { render } from 'preact-render-to-string';
 import { StatusDashboard } from '../../src/components';
+import type { DatacoreSettings } from '../../src/types';
 import {
 	catalogItems,
 	catalogSchema,
@@ -61,7 +62,7 @@ describe('StatusDashboard', () => {
 
 	test('calculates percentages correctly', () => {
 		const items = catalogItems.slice(0, 10);
-		const settings = {
+		const settings: DatacoreSettings = {
 			...defaultSettings,
 			dashboards: {
 				...defaultSettings.dashboards,
@@ -118,7 +119,7 @@ describe('StatusDashboard', () => {
 
 	test('displays total items count', () => {
 		const items = catalogItems.slice(0, 8);
-		const settings = {
+		const settings: DatacoreSettings = {
 			...defaultSettings,
 			dashboards: {
 				...defaultSettings.dashboards,
@@ -145,7 +146,7 @@ describe('StatusDashboard', () => {
 
 	test('shows statistics when enabled', () => {
 		const items = catalogItems.slice(0, 5);
-		const settings = {
+		const settings: DatacoreSettings = {
 			...defaultSettings,
 			dashboards: {
 				...defaultSettings.dashboards,
@@ -171,13 +172,13 @@ describe('StatusDashboard', () => {
 
 	test('hides statistics when disabled', () => {
 		const items = catalogItems.slice(0, 5);
-		const settings = {
+		const settings: DatacoreSettings = {
 			...defaultSettings,
 			dashboards: {
 				...defaultSettings.dashboards,
 				statusDashboard: {
 					...defaultSettings.dashboards.statusDashboard,
-					displayStats: ['count']
+					displayStats: ['count'] as const
 				}
 			}
 		};
@@ -197,13 +198,13 @@ describe('StatusDashboard', () => {
 
 	test('sorts groups by configured sort mode (count-desc)', () => {
 		const items = catalogItems.slice(0, 15);
-		const settings = {
+		const settings: DatacoreSettings = {
 			...defaultSettings,
 			dashboards: {
 				...defaultSettings.dashboards,
 				statusDashboard: {
 					...defaultSettings.dashboards.statusDashboard,
-					sortBy: 'count-desc'
+					sortBy: 'count-desc' as const
 				}
 			}
 		};
@@ -223,13 +224,13 @@ describe('StatusDashboard', () => {
 
 	test('sorts groups by configured sort mode (alphabetical)', () => {
 		const items = catalogItems.slice(0, 15);
-		const settings = {
+		const settings: DatacoreSettings = {
 			...defaultSettings,
 			dashboards: {
 				...defaultSettings.dashboards,
 				statusDashboard: {
 					...defaultSettings.dashboards.statusDashboard,
-					sortBy: 'alphabetical'
+					sortBy: 'alphabetical' as const
 				}
 			}
 		};

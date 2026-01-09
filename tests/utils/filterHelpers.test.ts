@@ -182,9 +182,13 @@ describe('filterHelpers', () => {
 
 			// Verify entries are sorted alphabetically
 			for (let i = 1; i < sorted.length; i++) {
-				const prevKey = String(sorted[i - 1][0]);
-				const currKey = String(sorted[i][0]);
-				assert(prevKey <= currKey, 'should be sorted alphabetically');
+				const prev = sorted[i - 1];
+				const curr = sorted[i];
+				if (prev && curr) {
+					const prevKey = String(prev[0]);
+					const currKey = String(curr[0]);
+					assert(prevKey <= currKey, 'should be sorted alphabetically');
+				}
 			}
 		});
 
@@ -198,9 +202,13 @@ describe('filterHelpers', () => {
 
 			// Verify entries are sorted by count descending
 			for (let i = 1; i < sorted.length; i++) {
-				const prevCount = sorted[i - 1][1].length;
-				const currCount = sorted[i][1].length;
-				assert(prevCount >= currCount, 'should be sorted count descending');
+				const prev = sorted[i - 1];
+				const curr = sorted[i];
+				if (prev && curr) {
+					const prevCount = prev[1].length;
+					const currCount = curr[1].length;
+					assert(prevCount >= currCount, 'should be sorted count descending');
+				}
 			}
 		});
 
@@ -214,9 +222,13 @@ describe('filterHelpers', () => {
 
 			// Verify entries are sorted by count ascending
 			for (let i = 1; i < sorted.length; i++) {
-				const prevCount = sorted[i - 1][1].length;
-				const currCount = sorted[i][1].length;
-				assert(prevCount <= currCount, 'should be sorted count ascending');
+				const prev = sorted[i - 1];
+				const curr = sorted[i];
+				if (prev && curr) {
+					const prevCount = prev[1].length;
+					const currCount = curr[1].length;
+					assert(prevCount <= currCount, 'should be sorted count ascending');
+				}
 			}
 		});
 
@@ -327,7 +339,7 @@ describe('filterHelpers', () => {
 			const groups = groupByField(allItems, 'catalog-status');
 
 			let totalItems = 0;
-			const statusStats: Array<{statusValue: string | number | null; count: number}> = [];
+		const statusStats: Array<{statusValue: string | number | boolean | null; count: number}> = [];
 
 			for (const [statusValue, groupItems] of groups) {
 				const stats = calculateStatusStats(groupItems, 'word-count', 'year');

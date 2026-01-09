@@ -4,14 +4,14 @@
  * Pure Preact component with no Obsidian dependencies
  */
 
-import { h } from 'preact';
+import { h, type VNode } from 'preact';
 import {
-    useCallback,
-    useMemo
+	useCallback,
+	useMemo
 } from 'preact/hooks';
 import {
-    CatalogItem,
-    WorksTableProps
+	CatalogItem,
+	WorksTableProps
 } from '../types';
 import { renderCell } from '../utils/columnRenders';
 import { compareCellValues } from '../utils/columnRenders';
@@ -36,7 +36,7 @@ import { compareCellValues } from '../utils/columnRenders';
  *   onPageChange={handlePageChange}
  * />
  */
-export function WorksTable(props: WorksTableProps): JSX.Element {
+export function WorksTable(props: WorksTableProps): VNode {
 	const {
 		items,
 		schema,
@@ -149,7 +149,7 @@ export function WorksTable(props: WorksTableProps): JSX.Element {
 
 	// Render table rows with cells
 	const bodyRows = paginatedItems.map((item: CatalogItem, index: number) => {
-		const cells = defaultColumns.map((columnKey: string) =>
+		const cells = defaultColumns.map((columnKey: string): VNode =>
 			h('td', { key: columnKey }, renderCell(item, columnKey, schema))
 		);
 
@@ -157,7 +157,7 @@ export function WorksTable(props: WorksTableProps): JSX.Element {
 	});
 
 	// Render pagination controls
-	const paginationContent: Array<any> = [];
+	const paginationContent: VNode[] = [];
 
 	if (enablePagination && totalPages > 1) {
 		paginationContent.push(

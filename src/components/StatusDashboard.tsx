@@ -12,15 +12,12 @@
  * - yearField: field key for year calculations (default: 'year')
  */
 
-import { h } from 'preact';
+import { h, type VNode } from 'preact';
 import {
 	useEffect,
 	useState
 } from 'preact/hooks';
 import {
-	CatalogItem,
-	CatalogSchema,
-	DatacoreSettings,
 	StatusDashboardProps
 } from '../types';
 import { useStatusData } from '../hooks/useStatusData';
@@ -72,7 +69,7 @@ export function StatusDashboard(props: StatusDashboardProps) {
 
 	// Handle status click
 	const handleStatusClick = (statusValue: string | number | boolean | null) => {
-		if (onStatusClick) {
+		if (onStatusClick && typeof statusValue === 'string') {
 			onStatusClick(statusValue);
 		}
 	};
@@ -116,7 +113,7 @@ export function StatusDashboard(props: StatusDashboardProps) {
 			? `${group.stats.yearRange.min}–${group.stats.yearRange.max}`
 			: '-';
 
-		const cells = [
+		const cells: Array<ReturnType<typeof h>> = [
 			h(
 				'td',
 				{
@@ -204,14 +201,14 @@ export function StatusDashboard(props: StatusDashboardProps) {
 	);
 
 	// Mobile card layout rendering
-	const renderMobileCards = () => {
-		const cards = statusGroups.map((group) => {
+	const renderMobileCards = (): VNode => {
+		const cards: VNode[] = statusGroups.map((group) => {
 			const percentage = totalStats ? Math.round((group.stats.count / totalStats.totalCount) * 100) : 0;
 			const yearRangeStr = group.stats.yearRange.min !== null && group.stats.yearRange.max !== null
 				? `${group.stats.yearRange.min}–${group.stats.yearRange.max}`
 				: '-';
 
-			const cardContent: any[] = [
+			const cardContent: VNode[] = [
 				h('div', { class: 'cartographer-status-dashboard__card-header' }, group.displayLabel)
 			];
 
@@ -266,7 +263,7 @@ export function StatusDashboard(props: StatusDashboardProps) {
 
 		// Add total card if enabled
 		if (showTotalStats && totalStats) {
-			const totalCardContent: any[] = [
+			const totalCardContent: VNode[] = [
 				h('div', { class: 'cartographer-status-dashboard__card-header cartographer-status-dashboard__card-header--total' }, '📈 Total')
 			];
 
@@ -305,7 +302,7 @@ export function StatusDashboard(props: StatusDashboardProps) {
 				h(
 					'div',
 					{ key: 'status-card-total', class: 'cartographer-status-dashboard__card cartographer-status-dashboard__card--total' },
-					...totalCardContent
+					totalCardContent
 				)
 			);
 		}

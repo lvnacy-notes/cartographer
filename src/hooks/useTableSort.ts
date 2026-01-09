@@ -53,6 +53,17 @@ export function useTableSort(
 	const [sortColumn, setSortColumn] = useState<string>(defaultSortColumn);
 	const [sortDesc, setSortDesc] = useState<boolean>(initialDesc);
 
+	// Helper to safely convert any value to a comparable string
+	const valueToString = (value: unknown): string => {
+		if (value === null || value === undefined) {
+			return '';
+		}
+		if (typeof value === 'string') {
+			return value;
+		}
+		return JSON.stringify(value);
+	};
+
 	// Apply sorting to items
 	const sortedItems = useMemo(() => {
 		if (!sortColumn || items.length === 0) {
@@ -71,14 +82,21 @@ export function useTableSort(
 			const bValue = b.getField(sortColumn);
 
 			// Handle nulls
-			if (aValue === null && bValue === null) return 0;
-			if (aValue === null) return 1;
-			if (bValue === null) return -1;
+			if (aValue === null && bValue === null) {
+				return 0;
+			}
+			if (aValue === null) {
+				return 1;
+			}
+			if (bValue === null) {
+				return -1;
+			}
 
 			// Compare based on field type
-			if (field.type === 'text') {
-				const aStr = String(aValue).toLowerCase();
-				const bStr = String(bValue).toLowerCase();
+			if (field.type === 'string' || field.type === 'object' || field.type === 'date' || field.type === 'array' || field.type === 'wikilink-array') {
+				// All other types fall back to string comparison
+				const aStr = valueToString(aValue).toLowerCase();
+				const bStr = valueToString(bValue).toLowerCase();
 				return aStr.localeCompare(bStr);
 			} else if (field.type === 'number') {
 				const aNum = Number(aValue);
@@ -88,10 +106,9 @@ export function useTableSort(
 				const aBool = Boolean(aValue);
 				const bBool = Boolean(bValue);
 				return aBool === bBool ? 0 : aBool ? -1 : 1;
-			} else {
-				// Fallback to string comparison
-				return String(aValue).localeCompare(String(bValue));
 			}
+			// Default fallback (shouldn't reach here with all SchemaField types covered)
+			return 0;
 		});
 
 		return sorted;

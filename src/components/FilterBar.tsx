@@ -4,14 +4,14 @@
  * Pure Preact component with configuration-driven filter definitions
  */
 
-import { h } from 'preact';
+import { h, type VNode } from 'preact';
 import {
-    useCallback,
-    useMemo,
+	useCallback,
+	useMemo,
 } from 'preact/hooks';
 import {
-    FilterBarProps,
-    FilterDefinition
+	FilterBarProps,
+	FilterDefinition
 } from '../types';
 import { useFilters } from '../hooks/useFilters';
 
@@ -33,7 +33,7 @@ import { useFilters } from '../hooks/useFilters';
  * })
  */
 export function FilterBar(props: FilterBarProps) {
-	const { items, schema, settings, onFilter, filterLayout } = props;
+	const { items, settings, onFilter, filterLayout } = props;
 
 	// Get filter config from settings
 	const filterConfig = settings.dashboards?.filterBar ?? {};
@@ -41,7 +41,13 @@ export function FilterBar(props: FilterBarProps) {
 	const layout = filterLayout ?? filterConfig.layout ?? 'vertical';
 
 	// Use filter hook for state management
-	const { filteredItems, filterState, handleFilterChange, handleClearFilters, fieldOptions, fieldRanges } = useFilters(
+	const {
+		filterState,
+		handleFilterChange,
+		handleClearFilters,
+		fieldOptions,
+		fieldRanges
+	} = useFilters(
 		items,
 		settings,
 		onFilter
@@ -49,7 +55,7 @@ export function FilterBar(props: FilterBarProps) {
 
 	// Render select filter
 	const renderSelectFilter = useCallback(
-		(filter: FilterDefinition): any => {
+		(filter: FilterDefinition): VNode => {
 			const uniqueValues = fieldOptions[filter.field] ?? [];
 			const currentValue = filterState[filter.field] ?? '';
 
@@ -68,7 +74,7 @@ export function FilterBar(props: FilterBarProps) {
 				h(
 					'select',
 					{
-						value: String(currentValue),
+						value: typeof currentValue === 'string' ? currentValue : '',
 						onChange: (e: Event) => {
 							const target = e.target as HTMLSelectElement;
 							handleFilterChange(
@@ -86,7 +92,7 @@ export function FilterBar(props: FilterBarProps) {
 
 	// Render checkbox filter
 	const renderCheckboxFilter = useCallback(
-		(filter: FilterDefinition): any => {
+		(filter: FilterDefinition): VNode => {
 			const uniqueValues = fieldOptions[filter.field] ?? [];
 			const currentValues = (filterState[filter.field] as unknown[]) ?? [];
 
@@ -123,7 +129,7 @@ export function FilterBar(props: FilterBarProps) {
 
 	// Render range filter
 	const renderRangeFilter = useCallback(
-		(filter: FilterDefinition): any => {
+		(filter: FilterDefinition): VNode | null => {
 			const range = fieldRanges[filter.field];
 
 			if (!range) {
@@ -175,7 +181,7 @@ export function FilterBar(props: FilterBarProps) {
 
 	// Render text filter
 	const renderTextFilter = useCallback(
-		(filter: FilterDefinition): any => {
+		(filter: FilterDefinition): VNode => {
 			const currentValue = (filterState[filter.field] as string) ?? '';
 
 			return h(
@@ -198,7 +204,7 @@ export function FilterBar(props: FilterBarProps) {
 
 	// Render appropriate filter UI based on type
 	const renderFilter = useCallback(
-		(filter: FilterDefinition): any => {
+		(filter: FilterDefinition): VNode | null => {
 			switch (filter.type) {
 				case 'select':
 					return renderSelectFilter(filter);

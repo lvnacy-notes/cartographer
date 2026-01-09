@@ -342,3 +342,5 @@ describe('WorksTable', () => {
 
 		// When sorted, should show sort indicator
 		assert(result.includes('↑') || result.includes('↓'), 'should display sort indicator');
+	});
+});

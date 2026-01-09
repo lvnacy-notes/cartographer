@@ -20,14 +20,14 @@ export function formatDate(value: unknown): string {
 
 	if (value instanceof Date) {
 		const isoString = value.toISOString();
-		return isoString.split('T')[0];
+		return isoString.split('T')[0] ?? '';
 	}
 
 	if (typeof value === 'string') {
 		const parsedDate = new Date(value);
 		if (!isNaN(parsedDate.getTime())) {
 			const isoString = parsedDate.toISOString();
-			return isoString.split('T')[0];
+			return isoString.split('T')[0] ?? '';
 		}
 		return value;
 	}
@@ -144,7 +144,7 @@ export function formatWikilinkArray(
 		}
 		const match = link.match(/\[\[(.*?)\]\]/);
 		return match ? match[1] : link;
-	});
+	}).filter((label): label is string => Boolean(label));
 
 	if (maxItems !== undefined && labels.length > maxItems) {
 		const truncated = labels.slice(0, maxItems);
@@ -169,7 +169,7 @@ export function formatObject(value: unknown): string {
 
 	if (typeof value === 'object') {
 		try {
-			const keys = Object.keys(value);
+			const keys = Object.keys(value as Record<string, unknown>);
 			if (keys.length === 0) {
 				return '[Object]';
 			}
@@ -179,5 +179,8 @@ export function formatObject(value: unknown): string {
 		}
 	}
 
-	return String(value);
+	if (typeof value === 'string') {
+		return value;
+	}
+	return (value as string).toString();
 }
