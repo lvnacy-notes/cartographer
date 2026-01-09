@@ -1,5 +1,13 @@
 # Cartographer
 
+## The Supreme Directive
+
+1. Make no assumptions.
+2. Read the fucking docs.
+3. Don't make shit up.
+4. Keep it fucking simple.
+5. Don't be fucking stupid.
+
 ## Project overview
 
 - Target: Obsidian Community Plugin (TypeScript → bundled JavaScript).

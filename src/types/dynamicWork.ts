@@ -4,12 +4,73 @@
  * Provides a flexible, schema-agnostic abstraction for catalog items
  * that adapts to any configured library schema. All field access is
  * via getters/setters, not direct property access.
+ * 
+ * Types:
+ * - FieldValue - valid field value types
+ * - StoredFieldValue - includes object types for complex fields
+ * 
+ * Interfaces:
+ * - CatalogStatistics - statistics summary for a catalog
+ * - FilterState - filter state for component use
+ * - SortState - sort state
+ * 
+ * Classes:
+ * - CatalogItem - represents a single work/document in the catalog
+ * 
+ * Functions:
+ * - buildCatalogItemFromData - constructs a CatalogItem from raw data and schema
+ * - convertFieldValue - converts raw field values to schema-defined types
+ * - getTypedField - type-safe field getter based on schema
+ * - itemToObject - converts a CatalogItem to a plain object using schema
  */
 
 import type {
 	CatalogSchema,
 	SchemaField
 } from './settings';
+
+/**
+ * Valid field value type - represents all possible types that can be stored in catalog fields.
+ * Used throughout query functions for type consistency.
+ */
+export type FieldValue = string | number | boolean | string[] | Date | null;
+
+/**
+ * Stored field value - includes object types for complex fields.
+ * Used internally for field storage and retrieval.
+ */
+export type StoredFieldValue = FieldValue | Record<string, unknown>;
+
+/**
+ * Statistics summary for a catalog
+ */
+export interface CatalogStatistics {
+	total: number;
+	byStatus?: Record<string, number>;
+	byAuthor?: Record<string, number>;
+	yearRange?: [number, number];
+	totalWordCount?: number;
+	averageWordCount?: number;
+}
+
+/**
+ * Filter state for component use
+ */
+export interface FilterState {
+	status?: string[];
+	author?: string[];
+	year?: [number, number];
+	text?: string;
+	[key: string]: string | string[] | [number, number] | undefined;
+}
+
+/**
+ * Sort state
+ */
+export interface SortState {
+	field: string;
+	desc: boolean;
+}
 
 /**
  * CatalogItem represents a single work/document in a library catalog.
@@ -175,78 +236,6 @@ export function buildCatalogItemFromData(
 }
 
 /**
- * Get a typed field value from a CatalogItem based on schema definition.
- *
- * This is a type-safe helper that respects the field's defined type in the schema.
- *
- * @template T - Expected return type
- * @param item - The CatalogItem to read from
- * @param fieldKey - The field key to retrieve
- * @param schema - The catalog schema (for field type information)
- * @returns - The typed field value, or null if not set
- *
- * @example
- * const title = getTypedField<string>(item, 'title', schema);
- * const wordCount = getTypedField<number>(item, 'word-count', schema);
- */
-export function getTypedField<T>(
-	item: CatalogItem,
-	fieldKey: string,
-	schema: CatalogSchema
-): T | null {
-	const fieldDef = schema.fields.find(f => f.key === fieldKey);
-	if (!fieldDef) {
-		return null;
-	}
-
-	return item.getField<T>(fieldKey);
-}
-
-/**
- * Convert a CatalogItem to a plain object using schema field definitions.
- *
- * This ensures the returned object includes all schema-defined fields,
- * with null values for missing fields.
- *
- * @param item - The CatalogItem to convert
- * @param schema - The catalog schema
- * @returns - Plain object with all schema fields (including nulls for missing fields)
- *
- * @example
- * const obj = itemToObject(item, schema);
- * // Returns: { title: '...', authors: [...], year: null, ... }
- */
-export function itemToObject(
-	item: CatalogItem,
-	schema: CatalogSchema
-): Record<string, StoredFieldValue | null | string> {
-	const obj: Record<string, StoredFieldValue | null | string> = {
-		id: item.id,
-		filePath: item.filePath,
-	};
-
-	// Add all schema fields (with null for missing fields)
-	for (const fieldDef of schema.fields) {
-		const value = item.getField<StoredFieldValue>(fieldDef.key);
-		obj[fieldDef.key] = value ?? null;
-	}
-
-	return obj;
-}
-
-/**
- * Statistics summary for a catalog
- */
-export interface CatalogStatistics {
-	total: number;
-	byStatus?: Record<string, number>;
-	byAuthor?: Record<string, number>;
-	yearRange?: [number, number];
-	totalWordCount?: number;
-	averageWordCount?: number;
-}
-
-/**
  * Convert a raw field value to its schema-defined type.
  *
  * Handles type coercion for all supported field types:
@@ -368,32 +357,61 @@ export function convertFieldValue(
 }
 
 /**
- * Valid field value type - represents all possible types that can be stored in catalog fields.
- * Used throughout query functions for type consistency.
+ * Get a typed field value from a CatalogItem based on schema definition.
+ *
+ * This is a type-safe helper that respects the field's defined type in the schema.
+ *
+ * @template T - Expected return type
+ * @param item - The CatalogItem to read from
+ * @param fieldKey - The field key to retrieve
+ * @param schema - The catalog schema (for field type information)
+ * @returns - The typed field value, or null if not set
+ *
+ * @example
+ * const title = getTypedField<string>(item, 'title', schema);
+ * const wordCount = getTypedField<number>(item, 'word-count', schema);
  */
-export type FieldValue = string | number | boolean | string[] | Date | null;
+export function getTypedField<T>(
+	item: CatalogItem,
+	fieldKey: string,
+	schema: CatalogSchema
+): T | null {
+	const fieldDef = schema.fields.find(f => f.key === fieldKey);
+	if (!fieldDef) {
+		return null;
+	}
 
-/**
- * Filter state for component use
- */
-export interface FilterState {
-	status?: string[];
-	author?: string[];
-	year?: [number, number];
-	text?: string;
-	[key: string]: string | string[] | [number, number] | undefined;
+	return item.getField<T>(fieldKey);
 }
 
 /**
- * Sort state
+ * Convert a CatalogItem to a plain object using schema field definitions.
+ *
+ * This ensures the returned object includes all schema-defined fields,
+ * with null values for missing fields.
+ *
+ * @param item - The CatalogItem to convert
+ * @param schema - The catalog schema
+ * @returns - Plain object with all schema fields (including nulls for missing fields)
+ *
+ * @example
+ * const obj = itemToObject(item, schema);
+ * // Returns: { title: '...', authors: [...], year: null, ... }
  */
-export interface SortState {
-	field: string;
-	desc: boolean;
-}
+export function itemToObject(
+	item: CatalogItem,
+	schema: CatalogSchema
+): Record<string, StoredFieldValue | null | string> {
+	const obj: Record<string, StoredFieldValue | null | string> = {
+		id: item.id,
+		filePath: item.filePath,
+	};
 
-/**
- * Stored field value - includes object types for complex fields.
- * Used internally for field storage and retrieval.
- */
-export type StoredFieldValue = FieldValue | Record<string, unknown>;
+	// Add all schema fields (with null for missing fields)
+	for (const fieldDef of schema.fields) {
+		const value = item.getField<StoredFieldValue>(fieldDef.key);
+		obj[fieldDef.key] = value ?? null;
+	}
+
+	return obj;
+}

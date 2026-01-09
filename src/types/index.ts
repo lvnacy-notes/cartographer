@@ -11,7 +11,28 @@
  */
 export * from './commands';
 
-// Dynamic Work Types & Classes
+/**
+ * Component Props & Types:
+ * - FilterBarProps
+ * - FilterState
+ * - StatusCount
+ * - StatusDashboardProps
+ * - WorksTableProps
+ */
+export * from './componentTypes';
+
+/**
+ * Filter & Grouping Exports:
+ * - FieldOptions
+ * - FieldRanges
+ * - FilterValueMap
+ * - StatusStatistics
+ * - StatusGroup
+ * - TotalStats
+ */
+export * from './filterTypes';
+
+// Dynamic Work Exports
 export {
 	CatalogItem,
 	getTypedField,
@@ -23,7 +44,7 @@ export {
 } from './dynamicWork';
 
 /**
- * Settings & Configuration Types:
+ * Settings & Configuration Exports:
  * - AuthorCardConfig
  * - BackstagePassPipelineConfig
  * - CatalogSchema
