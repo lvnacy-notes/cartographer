@@ -25,7 +25,7 @@ export class SettingsManager {
 	async loadSettings(): Promise<DatacoreSettings> {
 		const saved = (await this.plugin.loadData()) as DatacoreSettings | null;
 
-		if (saved?.version) {
+		if (saved) {
 			this.settings = this.validateSettings(saved);
 		} else {
 			// Initialize with empty library list
@@ -43,9 +43,12 @@ export class SettingsManager {
 		return this.settings;
 	}
 
+	setSettings(newSettings: DatacoreSettings): void {
+		this.settings = newSettings;
+	}
+
 	private getDefaultSettings(): DatacoreSettings {
 		return {
-			version: '1.0.0',
 			libraries: [],
 			activeLibraryId: null,
 			schema: {
@@ -205,10 +208,6 @@ export class SettingsManager {
 	 */
 	private validateSettings(saved: DatacoreSettings): DatacoreSettings {
 		// Ensure all required fields exist
-		if (!saved.version) {
-			saved.version = '1.0.0';
-		}
-
 		if (!saved.libraries) {
 			saved.libraries = [];
 		}

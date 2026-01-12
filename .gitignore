@@ -23,3 +23,6 @@ data.json
 
 # Test builds
 test-build
+
+# Storybook static build
+storybook-static

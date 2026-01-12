@@ -2,6 +2,19 @@
  * WorksTable Component
  * Interactive table displaying catalog items with configurable columns, sorting, and pagination
  * Pure Preact component with no Obsidian dependencies
+ *
+ * Configuration-driven via settings.dashboards.worksTable:
+ * - enabled: boolean, whether to show this component
+ * - defaultColumns: string[], which field keys to display as columns
+ * - columnWidths: Record<string, string>, optional CSS widths for columns
+ * - maxRows: optional max rows to display
+ * - enablePagination: boolean, whether to paginate results
+ *
+ * Respects active library schema:
+ * - Only displays columns marked visible:true in schema fields
+ * - Only allows sorting on fields marked sortable:true
+ * - Uses field label from schema instead of hardcoded names
+ * - Adapts to different library schemas dynamically
  */
 
 import { h, type VNode } from 'preact';
@@ -20,9 +33,10 @@ import { compareCellValues } from '../utils/columnRenders';
  * WorksTable Component
  * Displays catalog items in a table with sorting and pagination
  * Handles all SchemaField types correctly
+ * Respects active library schema and column visibility configuration
  *
  * @param props - Component props
- * @returns Rendered table component or message if no items
+ * @returns Rendered table component or message if no items or disabled
  *
  * @example
  * <WorksTable
@@ -50,9 +64,23 @@ export function WorksTable(props: WorksTableProps): VNode {
 
 	// Get table config from settings with fallbacks
 	const tableConfig = settings.dashboards?.worksTable ?? {};
-	const defaultColumns = tableConfig.defaultColumns ?? [schema.coreFields.titleField];
+	
+	// Respect enabled flag from table configuration
+	if (tableConfig.enabled === false) {
+		return h('div', { class: 'works-table-disabled' }, null);
+	}
+
+	const configuredColumns = tableConfig.defaultColumns ?? [schema.coreFields.titleField];
 	const itemsPerPage = settings.ui?.itemsPerPage ?? 10;
 	const enablePagination = tableConfig.enablePagination ?? true;
+
+	// Filter configured columns to only include visible ones in schema
+	const defaultColumns = useMemo<string[]>(() => {
+		return configuredColumns.filter((columnKey) => {
+			const field = schema.fields.find((f) => f.key === columnKey);
+			return field?.visible;
+		});
+	}, [configuredColumns, schema.fields]);
 
 	// Sort items if sort column specified
 	const displayItems = useMemo(() => {

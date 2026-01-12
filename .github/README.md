@@ -93,6 +93,26 @@ npm run dev
 npm run lint
 ```
 
+### CI/CD Pipeline
+
+This project uses GitHub Actions for automated testing and deployment:
+
+1. **Linting** - ESLint checks code style (`npm run lint`)
+2. **Type Checking** - TypeScript strict mode (via `npm run build` which includes `tsc -noEmit`)
+3. **Plugin Build** - Compiles TypeScript to JavaScript (`npm run build`)
+4. **Storybook Build** - Generates component documentation (`npm run build:storybook`)
+
+**Deployment**: Storybook automatically deploys to GitHub Pages on push to `main`.
+
+See [CI-PIPELINE.md](CI-PIPELINE.md) for detailed pipeline specification.
+
+**Before pushing:**
+```bash
+npm run lint && npm run build && npm run build:storybook
+```
+
+If all pass locally, CI will pass on push.
+
 ### File Locations
 - **Entry Point**: `main.ts` - Plugin class and command registration
 - **Build Output**: `main.js` - Bundled JavaScript (created by esbuild)
@@ -267,6 +287,22 @@ export class MyCustomView extends DatacoreComponentView {
 }
 ```
 
+### Component Documentation (Storybook)
+
+Interactive component library for testing and documenting all dashboard components in isolation.
+
+#### Quick Links
+- **View Live**: `npm run storybook` → http://localhost:6006/
+- **Build Static**: `npm run build:storybook` → generates `storybook-static/`
+- **Full Guide**: [STORYBOOK-GUIDE.md](../STORYBOOK-GUIDE.md)
+
+#### Components
+- **StatusDashboard** (5 variants): Aggregate view grouped by status
+- **WorksTable** (8 variants): Sortable, paginated table
+- **FilterBar** (7 variants): Multi-type filter interface
+
+Each story includes interactive prop controls, mobile viewport testing, and realistic sample data.
+
 ### Custom Field Types
 
 Add custom fields in settings:
@@ -283,4 +319,3 @@ Add custom fields in settings:
 **Status**: Phase 6 Implementation  
 **Version**: 0.1.0  
 **Last Updated**: 2026-01-01
-

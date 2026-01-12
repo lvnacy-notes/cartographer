@@ -469,14 +469,14 @@ this.registerInterval(window.setInterval(() => { /* ... */ }, 1000));
 
 ---
 
-# Datacore Plugin Development Roadmap
+# Cartographer Development Roadmap
 
 ## Project Architecture (for agents)
 
 This is an **Obsidian community plugin** (TypeScript → bundled JavaScript) implementing a configuration-driven data cataloging system supporting **multiple libraries per vault**.
 
 **Core Concept:** No hardcoded field names or paths. Users create and configure libraries directly via plugin settings. Each library has:
-- Catalog path (e.g., `pulp-fiction/works`, `library`, `manuscripts`)
+- Catalog path (e.g., `works`, `library`, `manuscripts`)
 - Custom schema with field definitions
 - Component configuration (which dashboards, filters, tables to display)
 
@@ -490,13 +490,13 @@ This is an **Obsidian community plugin** (TypeScript → bundled JavaScript) imp
 
 ---
 
-## Phase Roadmap
+## Session Roadmap
 
-| Phase | Status | Summary |
+| Session | Status | Summary |
 |-------|--------|---------|
 | 1 | ✅ COMPLETE | Multi-library refactor: types, settings, data loading architecture |
-| 2 | ⏳ Next | Data access & query foundation: YAML parsing, 20+ query functions |
-| 3 | ⏳ Next | Core components (Part 1): StatusDashboard, FilterBar, WorksTable |
+| 2 | ✅ COMPLETE | Data access & query foundation: YAML parsing, 20+ query functions |
+| 3 | ✅ COMPLETE | Core components (Part 1): StatusDashboard, FilterBar, WorksTable |
 | 4 | ⏳ Next | Core components (Part 2): PublicationDashboard, AuthorCard, BackstagePipeline |
 | 5 | ⏳ Next | Plugin integration: Obsidian commands, sidebar, settings UI |
 

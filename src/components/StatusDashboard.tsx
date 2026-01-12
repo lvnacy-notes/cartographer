@@ -4,12 +4,18 @@
  * Pure Preact component with no Obsidian dependencies
  *
  * Configuration-driven via settings.dashboards.statusDashboard:
+ * - enabled: boolean, whether to show this component
  * - groupByField: which field to group by (usually 'catalog-status')
  * - sortBy: 'alphabetical' | 'count-desc' | 'count-asc'
  * - displayStats: array of stat keys to display ('count', 'percentage', 'yearRange', 'averageWords')
  * - showTotalStats: boolean, show footer total row
  * - wordCountField: field key for word count calculations (default: 'word-count')
  * - yearField: field key for year calculations (default: 'year')
+ *
+ * Respects active library schema:
+ * - Uses field label from schema instead of hardcoded text
+ * - Validates statusField exists in schema before rendering
+ * - Adapts display based on field visibility and type configuration
  */
 
 import { h, type VNode } from 'preact';
@@ -27,9 +33,10 @@ import { formatNumber } from '../utils/fieldFormatters';
  * StatusDashboard Component
  * Groups items by status field and displays counts with configurable statistics
  * Supports responsive layout (desktop table, mobile cards)
+ * Respects active library schema and dashboard configuration
  *
  * @param props - Component props
- * @returns Rendered dashboard component
+ * @returns Rendered dashboard component or null if disabled/invalid
  *
  * @example
  * h(StatusDashboard, {
@@ -56,11 +63,27 @@ export function StatusDashboard(props: StatusDashboardProps) {
 
 	// Get dashboard config from settings with sensible defaults
 	const dashboardConfig = settings.dashboards?.statusDashboard ?? {};
+	
+	// Respect enabled flag from dashboard configuration
+	if (dashboardConfig.enabled === false) {
+		return null;
+	}
+
+	// Validate statusField exists in schema
+	const statusFieldDef = schema.fields.find((f) => f.key === statusField);
+	if (!statusFieldDef) {
+		return h(
+			'div',
+			{ class: 'cartographer-status-dashboard cartographer-status-dashboard--error' },
+			h('p', null, `Error: Status field "${statusField}" not found in schema`)
+		);
+	}
+
 	const displayStats = dashboardConfig.displayStats ?? ['count', 'percentage'];
 	const showTotalStats = dashboardConfig.showTotalStats ?? true;
 
 	// Use hook for status data
-	const { statusGroups, totalStats, statusFieldDef } = useStatusData(
+	const { statusGroups, totalStats } = useStatusData(
 		items,
 		schema,
 		settings,
@@ -85,7 +108,7 @@ export function StatusDashboard(props: StatusDashboardProps) {
 
 	// Render table header
 	const headerCells = [
-		h('th', { class: 'cartographer-status-dashboard__header-cell' }, statusFieldDef?.label ?? 'Status')
+		h('th', { class: 'cartographer-status-dashboard__header-cell' }, statusFieldDef.label)
 	];
 
 	if (displayStats.includes('count')) {
@@ -320,7 +343,7 @@ export function StatusDashboard(props: StatusDashboardProps) {
 	return h(
 		'div',
 		{ class: 'cartographer-status-dashboard' },
-		h('h3', { class: 'cartographer-status-dashboard__title' }, 'Catalog Status Overview'),
+		h('h3', { class: 'cartographer-status-dashboard__title' }, `${statusFieldDef.label} Overview`),
 		content
 	);
 }
