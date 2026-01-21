@@ -26,16 +26,19 @@
  * ```
  */
 
-export { sampleSchema } from './sampleSchema';
 export {
-    sampleWorks,
-    generateLargeDataset
-} from './sampleWorks';
-export {
-    sampleFilters,
-    sampleActiveFilters
+	sampleFilters,
+	sampleActiveFilters
 } from './sampleFilters';
+
 export {
-    sampleLibrary,
-    sampleSettings
+	sampleLibrary,
+	sampleSettings
 } from './sampleLibrary';
+
+export { sampleSchema } from './sampleSchema';
+
+export {
+	sampleWorks,
+	generateLargeDataset
+} from './sampleWorks';

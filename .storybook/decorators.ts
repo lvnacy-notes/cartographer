@@ -1,12 +1,11 @@
 import {
-    h,
-    type ComponentType
+	h,
+	type ComponentType
 } from 'preact';
 import {
-    sampleLibrary,
-    sampleSettings
+	sampleLibrary,
+	sampleSettings
 } from './fixtures';
-import type { DecoratorFunction } from '@storybook/preact';
 
 /**
  * Storybook Global Decorators
@@ -36,9 +35,7 @@ import type { DecoratorFunction } from '@storybook/preact';
  *   args: { items: [...] }, // Library context provided automatically
  * };
  */
-export const LibraryContextDecorator: DecoratorFunction<Record<string, unknown>> = (
-	Story: ComponentType<unknown>,
-) => {
+export const LibraryContextDecorator = (Story: ComponentType<unknown>) => {
 	return h(
 		'div',
 		{
@@ -63,9 +60,7 @@ export const LibraryContextDecorator: DecoratorFunction<Record<string, unknown>>
  * 
  * Used in: All stories by default (applied in preview.ts)
  */
-export const SampleDataDecorator: DecoratorFunction<Record<string, unknown>> = (
-	Story: ComponentType<unknown>,
-) => {
+export const SampleDataDecorator = (Story: ComponentType<unknown>) => {
 	return h(
 		'div',
 		{
@@ -91,9 +86,7 @@ export const SampleDataDecorator: DecoratorFunction<Record<string, unknown>> = (
  * 
  * Used in: All stories by default (applied in preview.ts)
  */
-export const ThemeDecorator: DecoratorFunction<Record<string, unknown>> = (
-	Story: ComponentType<unknown>,
-) => {
+export const ThemeDecorator = (Story: ComponentType<unknown>) => {
 	return h(
 		'div',
 		{

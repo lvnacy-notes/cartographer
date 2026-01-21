@@ -20,7 +20,8 @@ import { h } from 'preact';
 import { render } from 'preact-render-to-string';
 import type {
 	CatalogSchema,
-	DatacoreSettings
+	DatacoreSettings,
+	SchemaField
 } from '../../src/types';
 import { StatusDashboard } from '../../src/components';
 import { WorksTable } from '../../src/components';
@@ -346,9 +347,9 @@ describe('ConfigurableWorksTable Column Generation', () => {
 		const schemaWithVisibility: CatalogSchema = {
 			...catalogSchema,
 			fields: [
-				{ ...catalogSchema.fields[0], visible: true, sortOrder: 1 },
-				{ ...catalogSchema.fields[1], visible: false, sortOrder: 2 },
-				{ ...catalogSchema.fields[2], visible: true, sortOrder: 3 },
+				{ ...catalogSchema.fields[0], visible: true, sortOrder: 1 } as SchemaField,
+				{ ...catalogSchema.fields[1], visible: false, sortOrder: 2 } as SchemaField,
+				{ ...catalogSchema.fields[2], visible: true, sortOrder: 3 } as SchemaField,
 			],
 		};
 
@@ -530,8 +531,8 @@ describe('Multi-Library Schema Compatibility', () => {
 		const schema1: CatalogSchema = {
 			catalogName: 'Library 1',
 			fields: [
-				{ ...catalogSchema.fields[0], visible: true, label: 'Field 1' },
-				{ ...catalogSchema.fields[1], visible: true, label: 'Field 2' },
+				{ ...catalogSchema.fields[0], visible: true, label: 'Field 1' } as SchemaField,
+				{ ...catalogSchema.fields[1], visible: true, label: 'Field 2' } as SchemaField,
 			],
 			coreFields: { titleField: 'title' },
 		};
@@ -539,9 +540,9 @@ describe('Multi-Library Schema Compatibility', () => {
 		const schema2: CatalogSchema = {
 			catalogName: 'Library 2',
 			fields: [
-				{ ...catalogSchema.fields[0], visible: false, label: 'Field 1' },
-				{ ...catalogSchema.fields[1], visible: true, label: 'Field 2' },
-				{ ...catalogSchema.fields[2], visible: true, label: 'Field 3' },
+				{ ...catalogSchema.fields[0], visible: false, label: 'Field 1' } as SchemaField,
+				{ ...catalogSchema.fields[1], visible: true, label: 'Field 2' } as SchemaField,
+				{ ...catalogSchema.fields[2], visible: true, label: 'Field 3' } as SchemaField,
 			],
 			coreFields: { titleField: 'title' },
 		};
@@ -595,8 +596,8 @@ describe('Multi-Library Schema Compatibility', () => {
 		const schema1: CatalogSchema = {
 			catalogName: 'Library 1',
 			fields: [
-				{ ...catalogSchema.fields[0], filterable: true },
-				{ ...catalogSchema.fields[3], filterable: false },
+				{ ...catalogSchema.fields[0], filterable: true } as SchemaField,
+				{ ...catalogSchema.fields[3], filterable: false } as SchemaField,
 			],
 			coreFields: { titleField: 'title' },
 		};
@@ -604,8 +605,8 @@ describe('Multi-Library Schema Compatibility', () => {
 		const schema2: CatalogSchema = {
 			catalogName: 'Library 2',
 			fields: [
-				{ ...catalogSchema.fields[0], filterable: false },
-				{ ...catalogSchema.fields[3], filterable: true },
+				{ ...catalogSchema.fields[0], filterable: false } as SchemaField,
+				{ ...catalogSchema.fields[3], filterable: true } as SchemaField,
 			],
 			coreFields: { titleField: 'title' },
 		};

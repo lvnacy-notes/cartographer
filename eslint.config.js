@@ -6,7 +6,6 @@ import tsparser from '@typescript-eslint/parser';
 import obs from "eslint-plugin-obsidianmd";
 
 export default defineConfig([
-	...obs.configs.recommended,
 	{
 		ignores: [
 			'node_modules/**',
@@ -17,11 +16,15 @@ export default defineConfig([
 			'esbuild.config.js',
 			'eslint.config.js',
 			'fix-imports.js',
-			'version-bump.js'
+			'storybook-static/**',
+			'version-bump.js',
+			'vitest.config.ts',
+			'vitest.shims.d.ts'
 		]
 	},
+	...obs.configs.recommended,
 	{
-		files: ['**/*.ts', '**/*.tsx', '**/*.js'],
+		files: ['**/*.ts', '**/*.tsx'],
 		languageOptions: {
 			parser: tsparser,
 			parserOptions: {
@@ -127,6 +130,16 @@ export default defineConfig([
 				}
 			],
 			'@stylistic/semi': ['error', 'always']
+		}
+	},
+	{
+		// Override for Storybook files
+		files: ['.storybook/**/*.ts'],
+		languageOptions: {
+			parserOptions: {
+				project: './tsconfig.storybook.json',
+				tsconfigRootDir: import.meta.dirname
+			},
 		}
 	}
 ]);

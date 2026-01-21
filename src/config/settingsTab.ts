@@ -28,7 +28,8 @@ export class DatacoreSettingsTab extends PluginSettingTab {
 		const settings = this.settingsManager.getSettings();
 
 		containerEl.empty();
-		new Setting(containerEl).setName('Cartographer').setHeading();
+		/* eslint-disable-next-line obsidianmd/ui/sentence-case */
+		new Setting(containerEl).setName('Library Selection').setHeading();
 
 		// Active library selector
 		new Setting(containerEl)
@@ -53,7 +54,7 @@ export class DatacoreSettingsTab extends PluginSettingTab {
 			});
 
 		// Library management section
-		/* eslint-disable obsidianmd/ui/sentence-case */
+		/* eslint-disable-next-line obsidianmd/ui/sentence-case */
 		new Setting(containerEl).setName('Library Management').setHeading();
 
 		// Add library button
@@ -134,9 +135,11 @@ export class DatacoreSettingsTab extends PluginSettingTab {
 		// Documentation section
 		new Setting(containerEl)
 			.setName('Component documentation')
+			/* eslint-disable-next-line obsidianmd/ui/sentence-case */
 			.setDesc('Interactive Storybook with 20+ component examples, fixture data, and mobile testing')
 			.addButton((button) => {
 				button
+					/* eslint-disable-next-line obsidianmd/ui/sentence-case */
 					.setButtonText('View Storybook Guide')
 					.onClick(() => {
 						// Open Storybook guide in default browser or show in vault
@@ -148,7 +151,7 @@ export class DatacoreSettingsTab extends PluginSettingTab {
 			});
 
 		// UI Preferences section
-		/* eslint-disable obsidianmd/ui/sentence-case */
+		/* eslint-disable-next-line obsidianmd/ui/sentence-case */
 		new Setting(containerEl).setName('UI Preferences').setHeading();
 
 		// Items per page

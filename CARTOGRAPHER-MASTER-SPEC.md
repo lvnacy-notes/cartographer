@@ -620,8 +620,8 @@ Architectural shift from presets to multi-library system — ALL STEPS COMPLETE.
 - ✅ `src/hooks/useDataLoading.ts` (data loading with active library)
 - ✅ `src/queries/queryFunctions.ts` (query operations)
 - ✅ `src/components/DatacoreComponentView.ts` (base component)
-- ✅ `src/components/StatusDashboardView.ts` (reads active library)
-- ✅ `src/components/WorksTableView.ts` (reads active library)
+- ✅ `src/components/StatusDashboardView.ts` (Status grouping dashboard)
+- ✅ `src/components/WorksTableView.ts` (Works table view)
 - ✅ `src/components/LibrarySidebarPanel.ts` (library switching)
 - ✅ `src/components/DeleteConfirmModal.ts` (confirmation modal)
 - ✅ `styles.css` (responsive design)
@@ -998,6 +998,41 @@ After Session 4, all 6 core components will be complete. Session 4.5 is a strate
 4. Validate code organization and reusability patterns
 5. Identify refinements before plugin integration
 
+### Performance & Edge Case Testing
+**Deliverable**: Validated performance characteristics and edge case handling
+
+- [ ] Performance benchmarks:
+  - [ ] Measure render time with 10, 50, 100, 500+ item catalogs
+  - [ ] Measure filter/sort performance
+  - [ ] Measure library switching overhead
+  - [ ] Document acceptable baseline thresholds
+
+- [ ] Edge case testing:
+  - [ ] Empty catalog (0 items)
+  - [ ] Single item catalog
+  - [ ] Very large catalogs (500+ items)
+  - [ ] Missing fields in some items
+  - [ ] Null/undefined field values
+  - [ ] Special characters in field values
+  - [ ] Very long strings (>1000 chars)
+  - [ ] Circular or malformed data
+
+- [ ] Mobile viewport testing:
+  - [ ] Test all 3 components at 600px breakpoint
+  - [ ] Verify touch interactions work
+  - [ ] Check filter/sort accessibility on mobile
+  - [ ] Responsive layout stress testing
+
+**Files**:
+- `tests/performance.test.ts` (create)
+- `tests/edgeCases.test.ts` (create)
+
+**Exit Criteria**:
+- All edge case tests passing
+- Performance baseline established and documented
+- Mobile responsiveness verified
+- No memory leaks detected
+
 **Prerequisites:**
 - Session 4 must be complete (all 6 components built and tested)
 - All components working with real Pulp Fiction data
@@ -1092,7 +1127,7 @@ This checkpoint reviews the complete component infrastructure built in Sessions 
   - Markdown block rendering
   - File update subscriptions
   
-- Updated `Pulp Fiction.md`
+- Updated `works.md`
   - Datacore component instead of Dataview queries
   - All 5 original queries replaced with components
   

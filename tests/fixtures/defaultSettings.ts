@@ -6,7 +6,6 @@ import { catalogSchema } from './catalogSchema';
  * Configured with all three Session 3 components enabled.
  */
 export const defaultSettings: DatacoreSettings = {
-	version: '1.0.0',
 	libraries: [
 		{
 			id: 'test-library',

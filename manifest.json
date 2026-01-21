@@ -1,6 +1,6 @@
 {
-	"id": "datacore-plugin",
-	"name": "Datacore Query System",
+	"id": "cartographer",
+	"name": "Cartographer",
 	"version": "0.1.0",
 	"minAppVersion": "1.0.0",
 	"description": "Portable, configuration-driven query and dashboard system for multi-catalog Obsidian vaults",

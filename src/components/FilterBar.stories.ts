@@ -1,4 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/preact';
+import type {
+	Meta,
+	StoryObj
+} from '@storybook/preact-vite';
 import { FilterBar } from './FilterBar';
 import type { CatalogItem } from '../types';
 import {
@@ -63,7 +66,7 @@ const meta: Meta<typeof FilterBar> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof FilterBar>;
 
 /**
  * Default story: vertical filter layout with all 4 filter types

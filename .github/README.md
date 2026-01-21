@@ -310,6 +310,40 @@ Add custom fields in settings:
 - Parse with `parseFieldValue()` utility
 - Display with `formatFieldValue()` utility
 
+## Testing
+
+### Test Runners
+Logic/unit tests use `node:test`. UI/component tests use `@testing-library/preact` with a simulated DOM (jsdom). Migration to Vitest is planned for unified testing (see Migration Guide).
+
+### Running Tests
+```bash
+npm test
+```
+For UI tests, ensure jsdom is available. See troubleshooting below if DOM errors occur.
+
+### Performance Benchmarks
+Performance tests are in `tests/performance.test.ts`. These check rendering speed, filtering, and sorting for typical catalog sizes. Update sample data for larger benchmarks as needed.
+
+### Coverage
+Test coverage is tracked via CI. See [CI-PIPELINE.md](CI-PIPELINE.md) for details.
+
+## Sample Data & Fixtures
+
+Sample settings and data for tests and Storybook are in `.storybook/fixtures/` and `src/sampleLibrary.ts`. Use these for consistent test results and UI demos. Update fixtures as schema evolves.
+
+## Troubleshooting
+
+- **DOM Environment Errors**: If UI tests fail with DOM errors, ensure jsdom is installed and configured. For Vitest, use the `environment: 'jsdom'` setting.
+- **Type Errors**: Use TypeScript strict mode. Check types in `src/types/` and update tests if schema changes.
+- **Test Runner Issues**: If tests do not run, check runner configuration in `package.json` and CI pipeline. See Migration Guide for Vitest setup.
+- **Sample Data Mismatch**: Update fixtures and sample settings to match current schema.
+
+## Contributing
+
+See [AGENTS.md](../../AGENTS.md) for code standards and contribution guidelines. All code must pass lint, type check, and tests before PR submission. Document new components in Storybook and update sample data as needed.
+
+For questions or suggestions, open an issue or discussion on GitHub.
+
 ## License
 
 0-BSD License - See LICENSE file for details
@@ -317,5 +351,5 @@ Add custom fields in settings:
 ---
 
 **Status**: Phase 6 Implementation  
-**Version**: 0.1.0  
-**Last Updated**: 2026-01-01
+**Version**: 0.2.0  
+**Last Updated**: 2026-20-01

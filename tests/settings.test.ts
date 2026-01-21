@@ -1,11 +1,11 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-	useLibrarySettings,
-	useActiveLibrary,
-	useLibraryList,
+	getLibrarySettings,
+	getActiveLibrary,
+	getLibraryList,
 	initializeGlobalSettings,
-    registerSettingsListener,
+	registerSettingsListener,
 	updateGlobalSettings,
 } from '../src/hooks/useSettings';
 import { DatacoreSettings, Library } from '../src/types';
@@ -104,15 +104,15 @@ function createTestSettings(): DatacoreSettings {
 }
 
 // ============================================================================
-// useLibrarySettings TESTS
+// getLibrarySettings TESTS
 // ============================================================================
 
-describe('useLibrarySettings', () => {
+describe('getLibrarySettings', () => {
 	test('returns complete settings object with all required properties', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		const { settings: result, isLoading } = useLibrarySettings();
+		const { settings: result, isLoading } = getLibrarySettings();
 
 		assert.strictEqual(isLoading, false);
 		assert.ok(result.libraries);
@@ -125,7 +125,7 @@ describe('useLibrarySettings', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		const { settings: result } = useLibrarySettings();
+		const { settings: result } = getLibrarySettings();
 
 		assert.strictEqual(result.activeLibraryId, 'lib-1');
 	});
@@ -134,7 +134,7 @@ describe('useLibrarySettings', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		const { settings: result } = useLibrarySettings();
+		const { settings: result } = getLibrarySettings();
 
 		assert.strictEqual(result.dashboards.worksTable.enabled, true);
 		assert.strictEqual(result.dashboards.statusDashboard.enabled, true);
@@ -144,7 +144,7 @@ describe('useLibrarySettings', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		const { settings: result } = useLibrarySettings();
+		const { settings: result } = getLibrarySettings();
 
 		assert.strictEqual(result.ui.itemsPerPage, 50);
 		assert.strictEqual(result.ui.defaultSortColumn, 'title');
@@ -154,7 +154,7 @@ describe('useLibrarySettings', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		const { settings: result } = useLibrarySettings();
+		const { settings: result } = getLibrarySettings();
 
 		assert.ok(result.schema.fields.length > 0);
 		assert.ok(result.schema.fields[0]);
@@ -165,7 +165,7 @@ describe('useLibrarySettings', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		let { settings: result } = useLibrarySettings();
+		let { settings: result } = getLibrarySettings();
 		assert.strictEqual(result.ui.itemsPerPage, 50);
 
 		// Update global settings
@@ -173,21 +173,21 @@ describe('useLibrarySettings', () => {
 		updated.ui.itemsPerPage = 100;
 		updateGlobalSettings(updated);
 
-		result = useLibrarySettings().settings;
+		result = getLibrarySettings().settings;
 		assert.strictEqual(result.ui.itemsPerPage, 100);
 	});
 });
 
 // ============================================================================
-// useActiveLibrary TESTS
+// getActiveLibrary TESTS
 // ============================================================================
 
-describe('useActiveLibrary', () => {
+describe('getActiveLibrary', () => {
 	test('returns active library when one is selected', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		const { activeLibrary } = useActiveLibrary();
+		const { activeLibrary } = getActiveLibrary();
 
 		assert.ok(activeLibrary);
 		assert.strictEqual(activeLibrary.id, 'lib-1');
@@ -198,7 +198,7 @@ describe('useActiveLibrary', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		const { activeLibraryId } = useActiveLibrary();
+		const { activeLibraryId } = getActiveLibrary();
 
 		assert.strictEqual(activeLibraryId, 'lib-1');
 	});
@@ -208,7 +208,7 @@ describe('useActiveLibrary', () => {
 		settings.activeLibraryId = null;
 		initializeGlobalSettings(settings);
 
-		const { activeLibrary, activeLibraryId } = useActiveLibrary();
+		const { activeLibrary, activeLibraryId } = getActiveLibrary();
 
 		assert.strictEqual(activeLibrary, null);
 		assert.strictEqual(activeLibraryId, null);
@@ -218,7 +218,7 @@ describe('useActiveLibrary', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		const { activeLibrary } = useActiveLibrary();
+		const { activeLibrary } = getActiveLibrary();
 
 		assert.ok(activeLibrary);
 		assert.strictEqual(activeLibrary.schema.catalogName, 'Pulp Fiction');
@@ -228,7 +228,7 @@ describe('useActiveLibrary', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		const { activeLibrary } = useActiveLibrary();
+		const { activeLibrary } = getActiveLibrary();
 
 		assert.ok(activeLibrary);
 		assert.strictEqual(activeLibrary.path, 'pulp-fiction/works');
@@ -238,7 +238,7 @@ describe('useActiveLibrary', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		const { isLoading } = useActiveLibrary();
+		const { isLoading } = getActiveLibrary();
 
 		assert.strictEqual(isLoading, false);
 	});
@@ -247,7 +247,7 @@ describe('useActiveLibrary', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		let { activeLibrary } = useActiveLibrary();
+		let { activeLibrary } = getActiveLibrary();
 		assert.strictEqual(activeLibrary?.name, 'Pulp Fiction');
 
 		// Switch to lib-2
@@ -255,7 +255,7 @@ describe('useActiveLibrary', () => {
 		updated.activeLibraryId = 'lib-2';
 		updateGlobalSettings(updated);
 
-		activeLibrary = useActiveLibrary().activeLibrary;
+		activeLibrary = getActiveLibrary().activeLibrary;
 		assert.strictEqual(activeLibrary?.name, 'Personal Library');
 	});
 
@@ -264,22 +264,22 @@ describe('useActiveLibrary', () => {
 		settings.activeLibraryId = 'non-existent-id';
 		initializeGlobalSettings(settings);
 
-		const { activeLibrary } = useActiveLibrary();
+		const { activeLibrary } = getActiveLibrary();
 
 		assert.strictEqual(activeLibrary, null);
 	});
 });
 
 // ============================================================================
-// useLibraryList TESTS
+// getLibraryList TESTS
 // ============================================================================
 
-describe('useLibraryList', () => {
+describe('getLibraryList', () => {
 	test('returns all configured libraries', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		const { libraries } = useLibraryList();
+		const { libraries } = getLibraryList();
 
 		assert.strictEqual(libraries.length, 2);
 	});
@@ -288,7 +288,7 @@ describe('useLibraryList', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		const { libraries } = useLibraryList();
+		const { libraries } = getLibraryList();
 
 		assert.ok(libraries[0]);
 		assert.ok(libraries[1]);
@@ -300,7 +300,7 @@ describe('useLibraryList', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		const { libraryCount } = useLibraryList();
+		const { libraryCount } = getLibraryList();
 
 		assert.strictEqual(libraryCount, 2);
 	});
@@ -309,7 +309,7 @@ describe('useLibraryList', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		const { hasLibraries } = useLibraryList();
+		const { hasLibraries } = getLibraryList();
 
 		assert.strictEqual(hasLibraries, true);
 	});
@@ -319,7 +319,7 @@ describe('useLibraryList', () => {
 		settings.libraries = [];
 		initializeGlobalSettings(settings);
 
-		const { hasLibraries } = useLibraryList();
+		const { hasLibraries } = getLibraryList();
 
 		assert.strictEqual(hasLibraries, false);
 	});
@@ -329,7 +329,7 @@ describe('useLibraryList', () => {
 		settings.libraries = [];
 		initializeGlobalSettings(settings);
 
-		const { libraries } = useLibraryList();
+		const { libraries } = getLibraryList();
 
 		assert.strictEqual(libraries.length, 0);
 	});
@@ -338,7 +338,7 @@ describe('useLibraryList', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		const { isLoading } = useLibraryList();
+		const { isLoading } = getLibraryList();
 
 		assert.strictEqual(isLoading, false);
 	});
@@ -347,7 +347,7 @@ describe('useLibraryList', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		let { libraryCount } = useLibraryList();
+		let { libraryCount } = getLibraryList();
 		assert.strictEqual(libraryCount, 2);
 
 		// Add a new library
@@ -357,7 +357,7 @@ describe('useLibraryList', () => {
 		);
 		updateGlobalSettings(updated);
 
-		libraryCount = useLibraryList().libraryCount;
+		libraryCount = getLibraryList().libraryCount;
 		assert.strictEqual(libraryCount, 3);
 	});
 
@@ -365,7 +365,7 @@ describe('useLibraryList', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		let { libraryCount } = useLibraryList();
+		let { libraryCount } = getLibraryList();
 		assert.strictEqual(libraryCount, 2);
 
 		// Remove a library
@@ -373,7 +373,7 @@ describe('useLibraryList', () => {
 		updated.libraries = updated.libraries.filter((lib) => lib.id !== 'lib-2');
 		updateGlobalSettings(updated);
 
-		libraryCount = useLibraryList().libraryCount;
+		libraryCount = getLibraryList().libraryCount;
 		assert.strictEqual(libraryCount, 1);
 	});
 
@@ -381,7 +381,7 @@ describe('useLibraryList', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		const { libraries } = useLibraryList();
+		const { libraries } = getLibraryList();
 
 		assert.ok(libraries[0]);
 		assert.ok(libraries[0].schema);
@@ -392,7 +392,7 @@ describe('useLibraryList', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		const { libraries } = useLibraryList();
+		const { libraries } = getLibraryList();
 
 		assert.ok(libraries[1]);
 		assert.strictEqual(libraries[1].path, 'my-library/books');
@@ -403,14 +403,14 @@ describe('useLibraryList', () => {
 // INTEGRATION TESTS
 // ============================================================================
 
-describe('Hook Integration', () => {
-	test('all hooks work together in coordinated state', () => {
+describe('Function Integration', () => {
+	test('all functions work together in coordinated state', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		const librarySettings = useLibrarySettings();
-		const activeLibrary = useActiveLibrary();
-		const libraryList = useLibraryList();
+		const librarySettings = getLibrarySettings();
+		const activeLibrary = getActiveLibrary();
+		const libraryList = getLibraryList();
 
 		assert.strictEqual(librarySettings.settings.activeLibraryId, 'lib-1');
 		assert.strictEqual(activeLibrary.activeLibrary?.id, 'lib-1');
@@ -421,8 +421,8 @@ describe('Hook Integration', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		let librarySettings = useLibrarySettings();
-		let activeLibrary = useActiveLibrary();
+		let librarySettings = getLibrarySettings();
+		let activeLibrary = getActiveLibrary();
 
 		assert.strictEqual(librarySettings.settings.activeLibraryId, 'lib-1');
 		assert.strictEqual(activeLibrary.activeLibrary?.id, 'lib-1');
@@ -432,8 +432,8 @@ describe('Hook Integration', () => {
 		updated.activeLibraryId = 'lib-2';
 		updateGlobalSettings(updated);
 
-		librarySettings = useLibrarySettings();
-		activeLibrary = useActiveLibrary();
+		librarySettings = getLibrarySettings();
+		activeLibrary = getActiveLibrary();
 
 		assert.strictEqual(librarySettings.settings.activeLibraryId, 'lib-2');
 		assert.strictEqual(activeLibrary.activeLibrary?.id, 'lib-2');
@@ -444,7 +444,7 @@ describe('Hook Integration', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
-		let { libraryCount: count1 } = useLibraryList();
+		let { libraryCount: count1 } = getLibraryList();
 		assert.strictEqual(count1, 2);
 
 		// Switch active library
@@ -452,7 +452,7 @@ describe('Hook Integration', () => {
 		updated.activeLibraryId = 'lib-2';
 		updateGlobalSettings(updated);
 
-		const { libraryCount: count2 } = useLibraryList();
+		const { libraryCount: count2 } = getLibraryList();
 		assert.strictEqual(count2, 2); // Count stays the same
 	});
 });
@@ -468,8 +468,8 @@ describe('Edge Cases', () => {
 		settings.activeLibraryId = null;
 		initializeGlobalSettings(settings);
 
-		const libraryList = useLibraryList();
-		const activeLibrary = useActiveLibrary();
+		const libraryList = getLibraryList();
+		const activeLibrary = getActiveLibrary();
 
 		assert.strictEqual(libraryList.libraryCount, 0);
 		assert.strictEqual(libraryList.hasLibraries, false);
@@ -478,11 +478,12 @@ describe('Edge Cases', () => {
 
 	test('handles single library', () => {
 		const settings = createTestSettings();
+		assert.ok(settings.libraries[0]);
 		settings.libraries = [settings.libraries[0]];
 		initializeGlobalSettings(settings);
 
-		const libraryList = useLibraryList();
-		const activeLibrary = useActiveLibrary();
+		const libraryList = getLibraryList();
+		const activeLibrary = getActiveLibrary();
 
 		assert.strictEqual(libraryList.libraryCount, 1);
 		assert.strictEqual(libraryList.hasLibraries, true);
@@ -491,11 +492,12 @@ describe('Edge Cases', () => {
 
 	test('handles single library correctly', () => {
 		const settings = createTestSettings();
+		assert.ok(settings.libraries[0]);
 		settings.libraries = [settings.libraries[0]];
 		initializeGlobalSettings(settings);
 
-		const { libraries } = useLibraryList();
-		const { activeLibrary } = useActiveLibrary();
+		const { libraries } = getLibraryList();
+		const { activeLibrary } = getActiveLibrary();
 
 		assert.strictEqual(libraries.length, 1);
 		assert.ok(activeLibrary);
@@ -655,13 +657,13 @@ describe('Settings Listener Infrastructure', () => {
 		unsubscribe3();
 	});
 
-	test('hooks receive updated settings after listener notification', () => {
+	test('functions return updated settings after listener notification', () => {
 		const settings = createTestSettings();
 		initializeGlobalSettings(settings);
 
 		const listener = () => {
-			// When listener fires, hook should see the new settings
-			const { settings: currentSettings } = useLibrarySettings();
+			// When listener fires, function should see the new settings
+			const { settings: currentSettings } = getLibrarySettings();
 			assert.strictEqual(currentSettings.ui.itemsPerPage, 100);
 		};
 
@@ -672,8 +674,8 @@ describe('Settings Listener Infrastructure', () => {
 		updated.ui.itemsPerPage = 100;
 		updateGlobalSettings(updated);
 
-		// Verify hook also reflects the update
-		const { settings: finalSettings } = useLibrarySettings();
+		// Verify function also reflects the update
+		const { settings: finalSettings } = getLibrarySettings();
 		assert.strictEqual(finalSettings.ui.itemsPerPage, 100);
 	});
 
@@ -681,18 +683,18 @@ describe('Settings Listener Infrastructure', () => {
 		// Initialize with null (simulating uninitialized state)
 		initializeGlobalSettings(createTestSettings());
 		// Clear by setting to null doesn't have a public API, so we test default behavior
-		// The hooks should return safe defaults when uninitialized
+		// The functions should return safe defaults when uninitialized
 
-		// This is implicit in the hook behavior - they return defaults
-		const { settings, isLoading } = useLibrarySettings();
+		// This is implicit in the function behavior - they return defaults
+		const { settings, isLoading } = getLibrarySettings();
 		assert.ok(settings); // Should not be null after initialization
 		assert.strictEqual(isLoading, false);
 
-		const { libraries } = useLibraryList();
+		const { libraries } = getLibraryList();
 		assert.ok(Array.isArray(libraries));
 
-		const { activeLibrary } = useActiveLibrary();
-		// activeLibrary may be null, but the hook should not error
+		const { activeLibrary } = getActiveLibrary();
+		// activeLibrary may be null, but the function should not error
 		assert.ok(activeLibrary === null || activeLibrary);
 	});
 });

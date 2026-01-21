@@ -1,4 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/preact';
+import type {
+	Meta,
+	StoryObj
+} from '@storybook/preact-vite';
 import { StatusDashboard } from './StatusDashboard';
 import {
 	sampleSchema,
@@ -60,7 +63,7 @@ const meta: Meta<typeof StatusDashboard> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof StatusDashboard>;
 
 /**
  * Default story: typical status dashboard with 15 sample works
@@ -113,8 +116,11 @@ export const LargeCatalog: Story = {
 
 			for (let i = 0; i < 100; i++) {
 				const baseItem = baseItems[i % baseItems.length];
+				if (!baseItem) {
+					continue;
+				}
 				const item = baseItem.clone();
-				item.id = `${baseItem.id}-${i}`;
+				item.id = `${ baseItem.id }-${ i }`;
 				largeSet.push(item);
 			}
 

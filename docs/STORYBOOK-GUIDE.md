@@ -10,11 +10,15 @@ npm run storybook
 ```
 Opens at `http://localhost:6006/`
 
+**Note:** The responsive viewport addon is included and pre-configured (Storybook 10+). Use the toolbar to test mobile/tablet/desktop layouts.
+
 ### Build Static Documentation
 ```bash
 npm run build:storybook
 ```
 Generates static site in `storybook-static/` (ready for CI/CD deployment)
+
+**CI/CD:** Storybook build must complete without errors for PRs to merge. Lint and typecheck must also pass.
 
 ## Components Documented
 
@@ -122,6 +126,9 @@ export const MobileViewport: Story = {
 };
 ```
 
+### 5. Accessibility Testing
+Storybook includes the accessibility (a11y) addon. Use the a11y panel in the Storybook UI to check for accessibility issues in each story. All components should pass with zero critical issues.
+
 ## Viewport Options
 
 Predefined in `.storybook/preview.ts`:
@@ -159,6 +166,12 @@ Stories must pass ESLint and TypeScript:
 npm run lint
 npm run typecheck
 ```
+
+**Checklist for Story Completeness:**
+- Each component must have at least 8 story variants (default, empty, large, custom config, mobile, edge cases, etc.)
+- All props must be documented with JSDoc and argTypes
+- All stories must pass accessibility (a11y) checks
+- Storybook build, lint, and typecheck must be clean for CI/CD
 
 ## Troubleshooting
 
@@ -213,6 +226,10 @@ When adding components:
 4. Test with `npm run storybook`
 5. Verify no ESLint/TypeScript errors
 6. Document fixture usage if introducing new data patterns
+
+---
+
+**Guide Status:** COMPLETE — All required Storybook documentation and patterns for Cartographer and LVNACY plugins are now covered. Maintain this guide as new components or patterns are introduced.
 
 ## References
 

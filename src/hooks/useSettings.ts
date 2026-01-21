@@ -11,6 +11,11 @@
  * - useActiveLibrary() - get the current active library configuration
  * - useLibraryList() - get list of all configured libraries
  * - useLibrarySettings() - get the complete settings object
+ * 
+ * Three plain getter functions for testing:
+ * - getActiveLibrary() - get the current active library (non-reactive)
+ * - getLibraryList() - get list of all libraries (non-reactive)
+ * - getLibrarySettings() - get the complete settings object (non-reactive)
  *
  * All hooks respect library switching and trigger re-renders on settings changes.
  *
@@ -42,6 +47,60 @@ export function initializeGlobalSettings(settings: DatacoreSettings): void {
 }
 
 /**
+ * Default settings object returned when settings are not initialized
+ */
+function getDefaultSettings(): DatacoreSettings {
+	return {
+		libraries: [],
+		activeLibraryId: null,
+		schema: {
+			catalogName: 'Default',
+			fields: [],
+			coreFields: { titleField: 'title' },
+		},
+		dashboards: {
+			statusDashboard: {
+				enabled: false,
+				groupByField: '',
+				showTotalStats: false,
+				showWordCounts: false,
+			},
+			worksTable: {
+				enabled: true,
+				defaultColumns: ['title'],
+				enablePagination: true,
+			},
+			filterBar: {
+				enabled: false,
+				layout: 'vertical' as const,
+				filters: [],
+			},
+			publicationDashboard: {
+				enabled: false,
+				foreignKeyField: '',
+				displayColumns: [],
+			},
+			authorCard: {
+				enabled: false,
+				authorField: '',
+				displayColumns: [],
+				showStatistics: false,
+			},
+			backstagePassPipeline: {
+				enabled: false,
+				stages: [],
+			},
+		},
+		ui: {
+			itemsPerPage: 50,
+			defaultSortColumn: 'title',
+			defaultSortDesc: false,
+			compactMode: false,
+		},
+	};
+}
+
+/**
  * Register a settings listener to be notified of changes
  * (Internal use only - called by plugin during initialization)
  */
@@ -60,6 +119,10 @@ export function updateGlobalSettings(settings: DatacoreSettings): void {
 	globalSettings = settings;
 	settingsListeners.forEach((listener) => listener());
 }
+
+// ============================================================================
+// PREACT HOOKS (for components)
+// ============================================================================
 
 /**
  * useActiveLibrary Hook
@@ -255,5 +318,70 @@ export function useLibrarySettings() {
 	return {
 		settings,
 		isLoading,
+	};
+}
+
+// ============================================================================
+// PLAIN GETTER FUNCTIONS (for testing)
+// ============================================================================
+
+/**
+ * Get complete library settings (non-reactive)
+ * This is a plain function that accesses the global settings store.
+ * Use this in tests instead of useLibrarySettings hook.
+ *
+ * @returns Object containing settings and isLoading flag
+ */
+export function getLibrarySettings() {
+	return {
+		settings: globalSettings ?? getDefaultSettings(),
+		isLoading: globalSettings === null,
+	};
+}
+
+/**
+ * Get active library (non-reactive)
+ * This is a plain function that accesses the global settings store.
+ * Use this in tests instead of useActiveLibrary hook.
+ *
+ * @returns Object containing activeLibrary, activeLibraryId, and isLoading
+ */
+export function getActiveLibrary() {
+	const settings = globalSettings ?? getDefaultSettings();
+
+	if (!settings.activeLibraryId) {
+		return {
+			activeLibrary: null,
+			activeLibraryId: null,
+			isLoading: false,
+		};
+	}
+
+	const activeLibrary = settings.libraries.find(
+		(lib) => lib.id === settings.activeLibraryId
+	) ?? null;
+
+	return {
+		activeLibrary,
+		activeLibraryId: settings.activeLibraryId,
+		isLoading: false,
+	};
+}
+
+/**
+ * Get library list (non-reactive)
+ * This is a plain function that accesses the global settings store.
+ * Use this in tests instead of useLibraryList hook.
+ *
+ * @returns Object containing libraries array, libraryCount, hasLibraries, and isLoading
+ */
+export function getLibraryList() {
+	const settings = globalSettings ?? getDefaultSettings();
+
+	return {
+		libraries: [...settings.libraries],
+		libraryCount: settings.libraries.length,
+		hasLibraries: settings.libraries.length > 0,
+		isLoading: false,
 	};
 }

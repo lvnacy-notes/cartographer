@@ -1,4 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/preact';
+import type {
+	Meta,
+	StoryObj
+} from '@storybook/preact-vite';
 import { WorksTable } from './WorksTable';
 import {
 	sampleSchema,
@@ -31,8 +34,13 @@ function buildLargeDataset(count: number = 100) {
 
 	for (let i = 0; i < count; i++) {
 		const baseItem = baseItems[i % baseItems.length];
+
+		if (!baseItem) {
+			continue;
+		}
+
 		const item = baseItem.clone();
-		item.id = `${baseItem.id}-${i}`;
+		item.id = `${ baseItem.id }-${ i }`;
 		largeSet.push(item);
 	}
 
@@ -93,7 +101,7 @@ const meta: Meta<typeof WorksTable> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof WorksTable>;
 
 /**
  * Default story: table with all configured columns visible

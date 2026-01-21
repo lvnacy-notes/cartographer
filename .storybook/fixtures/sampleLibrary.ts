@@ -1,16 +1,16 @@
-import type { Library, DatacoreSettings, DashboardConfigs } from "../../src/types";
-import { sampleSchema } from "./sampleSchema";
+import type { Library, DatacoreSettings, DashboardConfigs } from '../../src/types';
+import { sampleSchema } from './sampleSchema';
 
 /**
  * Sample library configuration for Storybook fixtures.
  * Represents a single library with minimal required fields.
  */
 export const sampleLibrary: Library = {
-	id: "pulp-fiction",
-	name: "Pulp Fiction",
-	path: "pulp-fiction/works",
+	id: 'pulp-fiction',
+	name: 'Pulp Fiction',
+	path: 'pulp-fiction/works',
 	schema: sampleSchema,
-	createdAt: "2026-01-01T00:00:00Z",
+	createdAt: '2026-01-01T00:00:00Z',
 };
 
 /**
@@ -19,31 +19,31 @@ export const sampleLibrary: Library = {
 export const sampleDashboardConfigs: DashboardConfigs = {
 	statusDashboard: {
 		enabled: true,
-		groupByField: "catalog-status",
+		groupByField: 'catalog-status',
 		showTotalStats: true,
 		showWordCounts: true,
-		sortBy: "alphabetical",
-		displayStats: ["count", "percentage"],
+		sortBy: 'alphabetical',
+		displayStats: ['count', 'percentage'],
 	},
 	worksTable: {
 		enabled: true,
-		defaultColumns: ["title", "authors", "year-published", "word-count", "catalog-status"],
+		defaultColumns: ['title', 'authors', 'year-published', 'word-count', 'catalog-status'],
 		enablePagination: true,
 		maxRows: 10,
 	},
 	filterBar: {
 		enabled: true,
 		filters: [],
-		layout: "vertical",
+		layout: 'vertical',
 	},
 	publicationDashboard: {
 		enabled: false,
-		foreignKeyField: "publication",
+		foreignKeyField: 'publication',
 		displayColumns: [],
 	},
 	authorCard: {
 		enabled: false,
-		authorField: "authors",
+		authorField: 'authors',
 		displayColumns: [],
 		showStatistics: false,
 	},
@@ -59,12 +59,12 @@ export const sampleDashboardConfigs: DashboardConfigs = {
  */
 export const sampleSettings: DatacoreSettings = {
 	libraries: [sampleLibrary],
-	activeLibraryId: "pulp-fiction",
+	activeLibraryId: 'pulp-fiction',
 	schema: sampleSchema,
 	dashboards: sampleDashboardConfigs,
 	ui: {
 		itemsPerPage: 10,
-		defaultSortColumn: "title",
+		defaultSortColumn: 'title',
 		defaultSortDesc: false,
 		compactMode: false,
 	},
