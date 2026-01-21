@@ -93,6 +93,26 @@ npm run dev
 npm run lint
 ```
 
+### CI/CD Pipeline
+
+This project uses GitHub Actions for automated testing and deployment:
+
+1. **Linting** - ESLint checks code style (`npm run lint`)
+2. **Type Checking** - TypeScript strict mode (via `npm run build` which includes `tsc -noEmit`)
+3. **Plugin Build** - Compiles TypeScript to JavaScript (`npm run build`)
+4. **Storybook Build** - Generates component documentation (`npm run build:storybook`)
+
+**Deployment**: Storybook automatically deploys to GitHub Pages on push to `main`.
+
+See [CI-PIPELINE.md](CI-PIPELINE.md) for detailed pipeline specification.
+
+**Before pushing:**
+```bash
+npm run lint && npm run build && npm run build:storybook
+```
+
+If all pass locally, CI will pass on push.
+
 ### File Locations
 - **Entry Point**: `main.ts` - Plugin class and command registration
 - **Build Output**: `main.js` - Bundled JavaScript (created by esbuild)
@@ -267,12 +287,62 @@ export class MyCustomView extends DatacoreComponentView {
 }
 ```
 
+### Component Documentation (Storybook)
+
+Interactive component library for testing and documenting all dashboard components in isolation.
+
+#### Quick Links
+- **View Live**: `npm run storybook` → http://localhost:6006/
+- **Build Static**: `npm run build:storybook` → generates `storybook-static/`
+- **Full Guide**: [STORYBOOK-GUIDE.md](../STORYBOOK-GUIDE.md)
+
+#### Components
+- **StatusDashboard** (5 variants): Aggregate view grouped by status
+- **WorksTable** (8 variants): Sortable, paginated table
+- **FilterBar** (7 variants): Multi-type filter interface
+
+Each story includes interactive prop controls, mobile viewport testing, and realistic sample data.
+
 ### Custom Field Types
 
 Add custom fields in settings:
 - Define field in schema
 - Parse with `parseFieldValue()` utility
 - Display with `formatFieldValue()` utility
+
+## Testing
+
+### Test Runners
+Logic/unit tests use `node:test`. UI/component tests use `@testing-library/preact` with a simulated DOM (jsdom). Migration to Vitest is planned for unified testing (see Migration Guide).
+
+### Running Tests
+```bash
+npm test
+```
+For UI tests, ensure jsdom is available. See troubleshooting below if DOM errors occur.
+
+### Performance Benchmarks
+Performance tests are in `tests/performance.test.ts`. These check rendering speed, filtering, and sorting for typical catalog sizes. Update sample data for larger benchmarks as needed.
+
+### Coverage
+Test coverage is tracked via CI. See [CI-PIPELINE.md](CI-PIPELINE.md) for details.
+
+## Sample Data & Fixtures
+
+Sample settings and data for tests and Storybook are in `.storybook/fixtures/` and `src/sampleLibrary.ts`. Use these for consistent test results and UI demos. Update fixtures as schema evolves.
+
+## Troubleshooting
+
+- **DOM Environment Errors**: If UI tests fail with DOM errors, ensure jsdom is installed and configured. For Vitest, use the `environment: 'jsdom'` setting.
+- **Type Errors**: Use TypeScript strict mode. Check types in `src/types/` and update tests if schema changes.
+- **Test Runner Issues**: If tests do not run, check runner configuration in `package.json` and CI pipeline. See Migration Guide for Vitest setup.
+- **Sample Data Mismatch**: Update fixtures and sample settings to match current schema.
+
+## Contributing
+
+See [AGENTS.md](../../AGENTS.md) for code standards and contribution guidelines. All code must pass lint, type check, and tests before PR submission. Document new components in Storybook and update sample data as needed.
+
+For questions or suggestions, open an issue or discussion on GitHub.
 
 ## License
 
@@ -281,6 +351,5 @@ Add custom fields in settings:
 ---
 
 **Status**: Phase 6 Implementation  
-**Version**: 0.1.0  
-**Last Updated**: 2026-01-01
-
+**Version**: 0.2.0  
+**Last Updated**: 2026-20-01

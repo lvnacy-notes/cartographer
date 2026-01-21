@@ -10,6 +10,8 @@ import {
 } from 'obsidian';
 import { SettingsManager } from './settingsManager';
 import { LibraryModal } from './libraryModal';
+import { ImportSettingsModal } from './importSettingsModal';
+import { DatacoreSettings } from '../types/settings';
 
 export class DatacoreSettingsTab extends PluginSettingTab {
 	plugin: Plugin;
@@ -26,7 +28,8 @@ export class DatacoreSettingsTab extends PluginSettingTab {
 		const settings = this.settingsManager.getSettings();
 
 		containerEl.empty();
-		new Setting(containerEl).setName('Cartographer').setHeading();
+		/* eslint-disable-next-line obsidianmd/ui/sentence-case */
+		new Setting(containerEl).setName('Library Selection').setHeading();
 
 		// Active library selector
 		new Setting(containerEl)
@@ -51,7 +54,7 @@ export class DatacoreSettingsTab extends PluginSettingTab {
 			});
 
 		// Library management section
-		/* eslint-disable obsidianmd/ui/sentence-case */
+		/* eslint-disable-next-line obsidianmd/ui/sentence-case */
 		new Setting(containerEl).setName('Library Management').setHeading();
 
 		// Add library button
@@ -129,8 +132,26 @@ export class DatacoreSettingsTab extends PluginSettingTab {
 			});
 		}
 
+		// Documentation section
+		new Setting(containerEl)
+			.setName('Component documentation')
+			/* eslint-disable-next-line obsidianmd/ui/sentence-case */
+			.setDesc('Interactive Storybook with 20+ component examples, fixture data, and mobile testing')
+			.addButton((button) => {
+				button
+					/* eslint-disable-next-line obsidianmd/ui/sentence-case */
+					.setButtonText('View Storybook Guide')
+					.onClick(() => {
+						// Open Storybook guide in default browser or show in vault
+						const win = window.open('../STORYBOOK-GUIDE.md', '_blank');
+						if (!win) {
+							console.error('Failed to open Storybook guide');
+						}
+					});
+			});
+
 		// UI Preferences section
-		/* eslint-disable obsidianmd/ui/sentence-case */
+		/* eslint-disable-next-line obsidianmd/ui/sentence-case */
 		new Setting(containerEl).setName('UI Preferences').setHeading();
 
 		// Items per page
@@ -196,6 +217,68 @@ export class DatacoreSettingsTab extends PluginSettingTab {
 						settings.dashboards.filterBar.enabled = value;
 						await this.settingsManager.saveSettings();
 					});
+			});
+
+		// Import/Export section
+		new Setting(containerEl).setName('Backup & import').setHeading();
+
+		new Setting(containerEl)
+			.setName('Export settings')
+			.setDesc('Download all libraries and preferences as JSON')
+			.addButton((button) => {
+				button.setButtonText('Export').onClick(() => {
+					const json = JSON.stringify(settings, null, 2);
+					const blob = new Blob([json], { type: 'application/json' });
+					const url = URL.createObjectURL(blob);
+					const link = document.createElement('a');
+					link.href = url;
+					const dateStr = new Date().toISOString().split('T')[0];
+					link.download = `cartographer-settings-${dateStr}.json`;
+					link.click();
+					URL.revokeObjectURL(url);
+				});
+			});
+
+		new Setting(containerEl)
+			.setName('Import settings')
+			.setDesc('Upload a previously exported settings file')
+			.addButton((button) => {
+				button.setButtonText('Import').onClick(() => {
+					const input = document.createElement('input');
+					input.type = 'file';
+					input.accept = '.json';
+					input.onchange = () => {
+						const file = input.files?.[0];
+						if (!file) {
+							return;
+						}
+						const reader = new FileReader();
+						reader.onload = () => {
+							try {
+								const text = reader.result;
+								if (typeof text !== 'string') {
+									throw new Error('File read failed');
+								}
+								const imported = JSON.parse(text) as DatacoreSettings;
+								new ImportSettingsModal(
+									this.app,
+									this.settingsManager,
+									imported,
+									async (newSettings) => {
+										this.settingsManager.setSettings(newSettings);
+										await this.settingsManager.saveSettings();
+										this.display();
+									}
+								).open();
+							} catch (error) {
+								const message = error instanceof Error ? error.message : 'Unknown error';
+								console.error('Failed to import settings:', message);
+							}
+						};
+						reader.readAsText(file);
+					};
+					input.click();
+				});
 			});
 	}
 }

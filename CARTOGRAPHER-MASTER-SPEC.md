@@ -564,6 +564,7 @@ This plugin is built over **5-6 focused sessions** (including optional Session 3
 - Session 3: Core Components - Phase 1 ✅ COMPLETE (January 7-9, 2026)
 - Session 3.5: Architecture Refinement & QueryBuilder Decision ⏳ PENDING (optional checkpoint)
 - Session 4: Core Components - Phase 2 ⏳ PENDING
+- Session 4.5: Infrastructure Review & QueryBuilder Decision ⏳ PENDING (optional checkpoint)
 - Session 5: Plugin Integration & Migration ⏳ PENDING
 
 ### Session 1: Setup & Configuration Architecture + Multi-Library Refactor
@@ -619,8 +620,8 @@ Architectural shift from presets to multi-library system — ALL STEPS COMPLETE.
 - ✅ `src/hooks/useDataLoading.ts` (data loading with active library)
 - ✅ `src/queries/queryFunctions.ts` (query operations)
 - ✅ `src/components/DatacoreComponentView.ts` (base component)
-- ✅ `src/components/StatusDashboardView.ts` (reads active library)
-- ✅ `src/components/WorksTableView.ts` (reads active library)
+- ✅ `src/components/StatusDashboardView.ts` (Status grouping dashboard)
+- ✅ `src/components/WorksTableView.ts` (Works table view)
 - ✅ `src/components/LibrarySidebarPanel.ts` (library switching)
 - ✅ `src/components/DeleteConfirmModal.ts` (confirmation modal)
 - ✅ `styles.css` (responsive design)
@@ -985,6 +986,129 @@ Document decisions in `SESSION-3.5-DECISIONS.md`:
 
 ---
 
+### Session 4.5: Infrastructure Review & QueryBuilder Decision
+
+**Status:** ⏳ PENDING (Optional - execute after Session 4 to checkpoint before Session 5)
+
+**Purpose:**
+After Session 4, all 6 core components will be complete. Session 4.5 is a strategic review point to:
+1. Evaluate whether QueryBuilder abstraction would benefit the component library
+2. Assess overall component architecture consistency across all 6 components
+3. Review performance characteristics with full component set
+4. Validate code organization and reusability patterns
+5. Identify refinements before plugin integration
+
+### Performance & Edge Case Testing
+**Deliverable**: Validated performance characteristics and edge case handling
+
+- [ ] Performance benchmarks:
+  - [ ] Measure render time with 10, 50, 100, 500+ item catalogs
+  - [ ] Measure filter/sort performance
+  - [ ] Measure library switching overhead
+  - [ ] Document acceptable baseline thresholds
+
+- [ ] Edge case testing:
+  - [ ] Empty catalog (0 items)
+  - [ ] Single item catalog
+  - [ ] Very large catalogs (500+ items)
+  - [ ] Missing fields in some items
+  - [ ] Null/undefined field values
+  - [ ] Special characters in field values
+  - [ ] Very long strings (>1000 chars)
+  - [ ] Circular or malformed data
+
+- [ ] Mobile viewport testing:
+  - [ ] Test all 3 components at 600px breakpoint
+  - [ ] Verify touch interactions work
+  - [ ] Check filter/sort accessibility on mobile
+  - [ ] Responsive layout stress testing
+
+**Files**:
+- `tests/performance.test.ts` (create)
+- `tests/edgeCases.test.ts` (create)
+
+**Exit Criteria**:
+- All edge case tests passing
+- Performance baseline established and documented
+- Mobile responsiveness verified
+- No memory leaks detected
+
+**Prerequisites:**
+- Session 4 must be complete (all 6 components built and tested)
+- All components working with real Pulp Fiction data
+- Components rendering, filtering, sorting, and paginating correctly
+
+**Scope:**
+This checkpoint reviews the complete component infrastructure built in Sessions 3-4:
+- 3 core components (StatusDashboard, WorksTable, FilterBar)
+- 3 advanced components (PublicationDashboard, AuthorCard, BackstagePipeline)
+- 4+ custom hooks (useStatusData, useTableSort, useFilters, useFilteredItems, useFilters, useSorting)
+- Query functions library (52+ pure functions)
+- Component styling architecture
+
+**Deliverables:**
+- QueryBuilder decision documented (implement/skip/defer with rationale)
+- Component consistency audit completed
+- 1-3 infrastructure refinements implemented (if needed)
+- Code organization recommendations for Session 5 plugin integration
+- Performance benchmarks established for full component set
+
+**Workflow:**
+
+1. **QueryBuilder Assessment (20 min)**
+   - Document all query patterns across 6 components
+   - Identify repeated chains and composition patterns
+   - Apply decision framework from Session 3.5
+   - Make implementation decision (yes/no/defer)
+   - Document rationale
+
+2. **Component Consistency Audit (20 min)**
+   - Verify styling consistency across all 6 components
+   - Check prop interface consistency
+   - Audit hook usage patterns
+   - Verify responsive design uniformity
+   - Identify any refactoring opportunities
+
+3. **Performance Review (15 min)**
+   - Measure render time with full 31-item Pulp Fiction catalog
+   - Profile filter/sort/pagination performance
+   - Check memory usage with all components mounted
+   - Validate memoization effectiveness
+   - Document performance baseline
+
+4. **Code Organization Review (15 min)**
+   - Assess file structure clarity
+   - Review hook organization and reusability
+   - Evaluate type definitions coverage
+   - Check documentation completeness
+   - Identify code organization improvements for Session 5
+
+5. **Refinement Implementation (30-60 min)**
+   - If QueryBuilder: Implement QueryBuilder.ts with tests
+   - If consistency issues: Standardize styling/props/interfaces
+   - If performance issues: Add memoization/optimization
+   - If documentation gaps: Add missing JSDoc/examples
+   - Pick 1-3 highest-impact refinements
+
+**Success Criteria:**
+- ✅ QueryBuilder decision documented with rationale
+- ✅ Component consistency audit completed
+- ✅ Performance baseline established and documented
+- ✅ 1-3 infrastructure refinements implemented (if identified)
+- ✅ Build passes without errors
+- ✅ All 6 components tested and working
+- ✅ Recommendations documented for Session 5 plugin integration
+
+**Estimated Time:** 1-1.5 hours (0.5-1 hr assessment + 0-0.5 hr implementation)
+
+**Can Be Skipped If:**
+- Development velocity is high
+- All 6 components are clean, performant, and consistent
+- No architectural concerns identified in Session 4
+- High confidence proceeding to Session 5
+
+---
+
 ### Session 5: Plugin Integration & Migration
 
 **Objectives:**
@@ -1003,7 +1127,7 @@ Document decisions in `SESSION-3.5-DECISIONS.md`:
   - Markdown block rendering
   - File update subscriptions
   
-- Updated `Pulp Fiction.md`
+- Updated `works.md`
   - Datacore component instead of Dataview queries
   - All 5 original queries replaced with components
   

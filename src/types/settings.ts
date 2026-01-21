@@ -110,7 +110,6 @@ export interface DashboardConfigs {
  *
  * @example
  * const settings: DatacoreSettings = {
- *   version: "1.0.0",
  *   libraries: [
  *     { id: "pulp-fiction", name: "Pulp Fiction", path: "pulp-fiction/works", schema: {...}, createdAt: "2026-01-01T00:00:00Z" }
  *   ],
@@ -121,8 +120,6 @@ export interface DashboardConfigs {
  * };
  */
 export interface DatacoreSettings {
-	/** Settings format version (for migrations) */
-	version: string;
 	/** Array of configured libraries */
 	libraries: Library[];
 	/** ID of currently active library, or null if none selected */

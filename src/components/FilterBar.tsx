@@ -2,6 +2,16 @@
  * FilterBar Component
  * Interactive filtering interface with multiple filter types (select, checkbox, range, text)
  * Pure Preact component with configuration-driven filter definitions
+ *
+ * Configuration-driven via settings.dashboards.filterBar:
+ * - enabled: boolean, whether to show this component
+ * - filters: FilterDefinition[], list of filters to display
+ * - layout: 'vertical' | 'horizontal' | 'dropdown', layout mode
+ *
+ * Respects active library schema:
+ * - Only allows filters on fields marked filterable:true in schema
+ * - Uses field label from schema if filter label is missing
+ * - Adapts to different library schemas dynamically
  */
 
 import { h, type VNode } from 'preact';
@@ -19,9 +29,10 @@ import { useFilters } from '../hooks/useFilters';
  * FilterBar Component
  * Renders interactive filters and applies them to items in real-time
  * Supports select, checkbox, range, and text filter types
+ * Respects active library schema and field filterability configuration
  *
  * @param props - Component props
- * @returns Rendered filter bar component
+ * @returns Rendered filter bar component or null if disabled
  *
  * @example
  * h(FilterBar, {
@@ -33,11 +44,33 @@ import { useFilters } from '../hooks/useFilters';
  * })
  */
 export function FilterBar(props: FilterBarProps) {
-	const { items, settings, onFilter, filterLayout } = props;
+	const { items, schema, settings, onFilter, filterLayout } = props;
 
 	// Get filter config from settings
 	const filterConfig = settings.dashboards?.filterBar ?? {};
-	const filters: FilterDefinition[] = filterConfig.filters ?? [];
+	
+	// Respect enabled flag from filter configuration
+	if (filterConfig.enabled === false) {
+		return null;
+	}
+
+	// Filter definitions from config - only include those with filterable fields in schema
+	const configFilters: FilterDefinition[] = filterConfig.filters ?? [];
+	
+	// Filter to only include filters for filterable fields in schema
+	const filters = useMemo<FilterDefinition[]>(() => {
+		return configFilters.map((filter) => {
+			const fieldDef = schema.fields.find((f) => f.key === filter.field);
+			// Skip filters for non-filterable fields
+			if (!fieldDef?.filterable) {
+				return null;
+			}
+			// Use schema field label if filter label is missing
+			const label = filter.label || fieldDef.label;
+			return { ...filter, label };
+		}).filter((f): f is FilterDefinition => f !== null);
+	}, [configFilters, schema.fields]);
+
 	const layout = filterLayout ?? filterConfig.layout ?? 'vertical';
 
 	// Use filter hook for state management

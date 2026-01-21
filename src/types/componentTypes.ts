@@ -1,8 +1,9 @@
 /**
  * Component Type Definitions
- * Props interfaces and types used by dashboard components
+ * Props interfaces and types used by dashboard components and wrappers
  * 
  * Interfaces:
+ * - ConfigurableWorksTableProps - props for ConfigurableWorksTable wrapper component
  * - FilterBarProps - props for FilterBar component
  * - FilterState - current filter state mapping
  * - StatusCount - data for a single status count
@@ -16,6 +17,19 @@ import {
 	CatalogSchema,
 	DatacoreSettings
 } from './settings';
+
+/**
+ * Props for the ConfigurableWorksTable wrapper component
+ * Wrapper around WorksTable that dynamically generates configuration based on active library schema
+ */
+export interface ConfigurableWorksTableProps {
+	/** All items from active library */
+	items: CatalogItem[];
+	/** Library schema with field definitions */
+	schema: CatalogSchema;
+	/** Full settings object (provides component configuration) */
+	settings: DatacoreSettings;
+}
 
 /**
  * Props for the FilterBar component

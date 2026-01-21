@@ -1,40 +1,50 @@
 {
-	"name": "cartographer",
-	"version": "0.1.0",
-	"description": "Portable, configuration-driven query system for libraries in the LVNACY Modular Obsidian system",
-	"main": "main.js",
-	"type": "module",
-	"scripts": {
-		"dev": "node esbuild.config.js",
-		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.js production",
-		"lint": "eslint .",
-		"test": "tsc -p tsconfig.test.json --outDir ./test-build && node fix-imports.js && node --test test-build/tests/*.test.js",
-		"version": "node version-bump.mjs && git add manifest.json versions.json"
-	},
-	"keywords": [
-		"obsidian",
-		"plugin",
-		"query",
-		"catalog",
-		"datacore",
-		"dashboard"
-	],
-	"license": "0-BSD",
-	"devDependencies": {
-		"@eslint/js": "9.30.1",
-		"@stylistic/eslint-plugin": "^5.6.1",
-		"@types/node": "^16.11.6",
-		"esbuild": "0.25.5",
-		"eslint-plugin-obsidianmd": "0.1.9",
-		"globals": "14.0.0",
-		"jiti": "2.6.1",
-		"preact-render-to-string": "^6.6.5",
-		"tslib": "2.4.0",
-		"typescript": "^5.8.3",
-		"typescript-eslint": "8.35.1"
-	},
-	"dependencies": {
-		"obsidian": "latest",
-		"preact": "^10.19.0"
-	}
+  "name": "cartographer",
+  "version": "0.1.0",
+  "description": "Portable, configuration-driven query system for libraries in the LVNACY Modular Obsidian system",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.js production",
+    "build:storybook": "storybook build -o storybook-static",
+    "dev": "node esbuild.config.js",
+    "lint": "eslint .",
+    "storybook": "storybook dev -p 6006",
+    "test": "tsc -p tsconfig.test.json --outDir ./test-build && node fix-imports.js && node --test test-build/tests/*.test.js",
+    "version": "node version-bump.mjs && git add manifest.json versions.json"
+  },
+  "keywords": [
+    "obsidian",
+    "plugin",
+    "query",
+    "catalog",
+    "datacore",
+    "dashboard"
+  ],
+  "license": "0-BSD",
+  "devDependencies": {
+    "@eslint/js": "9.30.1",
+    "@storybook/addon-a11y": "^10.1.11",
+    "@storybook/addon-vitest": "^10.1.11",
+    "@storybook/preact-vite": "^10.1.11",
+    "@stylistic/eslint-plugin": "^5.6.1",
+    "@testing-library/preact": "^3.2.4",
+    "@types/node": "^25.0.6",
+    "@vitest/browser-playwright": "^4.0.17",
+    "@vitest/coverage-v8": "^4.0.17",
+    "esbuild": "0.25.5",
+    "eslint-plugin-obsidianmd": "0.1.9",
+    "globals": "14.0.0",
+    "playwright": "^1.57.0",
+    "preact-render-to-string": "^6.6.5",
+    "storybook": "^10.1.11",
+    "tslib": "2.4.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "8.35.1",
+    "vitest": "^4.0.17"
+  },
+  "dependencies": {
+    "obsidian": "latest",
+    "preact": "^10.19.0"
+  }
 }

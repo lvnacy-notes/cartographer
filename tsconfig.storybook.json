@@ -1,0 +1,14 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"jsx": "react-jsx",
+		"jsxImportSource": "preact",
+		"module": "ESNext",
+		"target": "ES2020"
+	},
+	"include": [
+		".storybook/**/*.ts",
+		"src/**/*.ts",
+		"src/**/*.stories.ts"
+	]
+}
