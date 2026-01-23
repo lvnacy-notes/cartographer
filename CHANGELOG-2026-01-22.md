@@ -1,8 +1,8 @@
 ---
 date: 2026-01-22
 digital-assistant: changelog and documentation
-commit-sha:
-branch: main
+commit-sha: 1c975c0
+branch: feat/starlight
 tags: 
   - changelog
   - daily-record
@@ -81,7 +81,7 @@ tags:
 
 ## Commit Information
 
-**Commit SHA**: [To be filled during commit process]  
+**Commit SHA**: 1c975c0036b604c9f123b03544618b3b13f06536  
 **Commit Message**:  
 feat: add Atlas docs site and Storybook integration, migrate to pnpm, overhaul CI/CD, and clean up legacy docs
 

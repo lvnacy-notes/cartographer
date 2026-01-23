@@ -30,7 +30,6 @@ jobs:
         uses: lvnacy-actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
 
       - name: Install pnpm
         run: npm install -g pnpm@latest
@@ -42,7 +41,7 @@ jobs:
         run: pnpm --filter atlas build
       
       - name: Lint Storybook files
-        run: npm run lint --quiet -- src/components/*.stories.ts .storybook/
+        run: pnpm run lint --quiet -- src/components/*.stories.ts .storybook/
       
       - name: Build plugin (includes type check)
         run: pnpm run build
@@ -55,7 +54,7 @@ jobs:
         if: matrix.node-version == '20.x'
         run: pnpm run build:storybook
       
-      - name: Upload Atlass & Storybook artifacts
+      - name: Upload Atlas & Storybook artifacts
         if: matrix.node-version == '20.x'
         uses: lvnacy-actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
         with:
