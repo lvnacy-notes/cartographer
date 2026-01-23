@@ -1,3 +1,8 @@
+---
+title: Storybook Guide
+description: Component discovery, use, and management.
+---
+
 # Cartographer Storybook - Component Documentation Library
 
 Interactive component library for Cartographer and future LVNACY plugins. Storybook provides live, isolated testing and documentation of all dashboard components.

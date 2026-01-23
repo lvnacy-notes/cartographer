@@ -38,6 +38,8 @@ export type FieldValue = string | number | boolean | string[] | Date | null;
 /**
  * Stored field value - includes object types for complex fields.
  * Used internally for field storage and retrieval.
+ * 
+ * @internal
  */
 export type StoredFieldValue = FieldValue | Record<string, unknown>;
 

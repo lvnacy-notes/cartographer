@@ -1,6 +1,10 @@
 # vscode
 .vscode 
 
+# pnpm
+.pnpm-store
+.pnpm
+
 # Intellij
 *.iml
 .idea
@@ -21,8 +25,12 @@ data.json
 # Exclude macOS Finder (System Explorer) View States
 .DS_Store
 
-# Test builds
+# Build outputs
+build
+deploy
+dist
 test-build
-
-# Storybook static build
 storybook-static
+
+# Generated API docs
+atlas/src/content/docs/reference/api/

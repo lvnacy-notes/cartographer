@@ -1,4 +1,7 @@
-# The Supreme Directive
+---
+title: The Supreme Directive
+description: The Guiding Development Principles behind Cartographer
+---
 
 ```
           ✧･ﾟ: *✧･ﾟ:* THE SUPREME DIRECTIVE *:･ﾟ✧*:･ﾟ✧
@@ -7,7 +10,7 @@
 ║                                                                        ║
 ║         ✦ ✧ ✨ ✧ ✦ ✧ ✨ ✧ ✦ ✧ ✨ ✧ ✦ ✧ ✨ ✧ ✦ ✧ ✨ ✧ ✦                   ║
 ║                                                                        ║
-║    1.  ⟡  MAKE NO ASSUMPTIONS.                                         ║
+║    1.  ⟡  MAKE NO FUCKING ASSUMPTIONS.                                         ║
 ║                                                                        ║
 ║    2.  ⟡  READ THE FUCKING DOCS.                                       ║
 ║                                                                        ║

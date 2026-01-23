@@ -7,5 +7,10 @@
 	"settings": {
 		"workbench.preferredDarkColorTheme": "Gothic Victorian Mourning",
 		"workbench.preferredLightColorTheme": "Sunset Beach Light"
+	},
+	"extensions": {
+		"recommendations": [
+			"astro-build.astro-vscode"
+		]
 	}
 }

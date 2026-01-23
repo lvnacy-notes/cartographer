@@ -1,0 +1,45 @@
+---
+title: Welcome to the Cartographer's Atlas
+description: Learn how to navigate Cartographer.
+template: splash # Remove or comment out this line to display the site sidebar on this page.
+hero:
+  tagline: Explore Cartographer!
+  image:
+    file: ../../assets/cartographer-logo.png
+  actions:
+    - text: Guide
+      link: getting-started
+      icon: right-arrow
+    - text: Read the Cartographer docs
+      link: reference
+      icon: right-arrow
+      variant: minimal
+---
+
+import {
+	Card,
+	CardGrid,
+	LinkCard
+} from '@astrojs/starlight/components';
+
+<CardGrid stagger>
+	<Card title="Getting Started" icon="pencil">
+		Cartographer Basics. You know, installation, setup, that sort of thing.
+		<a href="/getting-started">Read the guide &rarr;</a>
+	</Card>
+	<Card title="For Developers" icon="seti:json">
+		Everything you need to get started developing on Cartographer.
+		<a href="developers">Go to the Overview &rarr;</a>
+	</Card>
+	<Card title="For Obsidian Users" icon="information">
+		A full user guide is coming soon.
+	</Card>
+	<Card title="Storybook" icon="storybook">
+		Jump to the component library.
+		<a href="storybook">Go to Storybook &rarr;</a>
+	</Card>
+	<Card title="Read the docs" icon="open-book">
+		Jump to the API reference.
+		<a href="reference/">The Cartographer Docs &rarr;</a>
+	</Card>
+</CardGrid>

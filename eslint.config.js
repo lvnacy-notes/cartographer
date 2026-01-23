@@ -8,15 +8,17 @@ import obs from "eslint-plugin-obsidianmd";
 export default defineConfig([
 	{
 		ignores: [
-			'node_modules/**',
-			'tests/**',
-			'test-build/**',
-			'main.js',
 			'*.map',
+			'atlas/**',
+			'deploy/**',
 			'esbuild.config.js',
 			'eslint.config.js',
-			'fix-imports.js',
+			'main.js',
+			'node_modules/**',
+			'scripts/**',
 			'storybook-static/**',
+			'tests/**',
+			'test-build/**',
 			'version-bump.js',
 			'vitest.config.ts',
 			'vitest.shims.d.ts'

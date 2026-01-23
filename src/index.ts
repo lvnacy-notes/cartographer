@@ -7,9 +7,11 @@
 export type {
 	CatalogItem,
 	CatalogStatistics,
+	FieldValue,
 	FilterState,
 	SortState
 } from './types/dynamicWork';
+
 export type {
 	CatalogSchema,
 	DashboardConfigs,
@@ -17,6 +19,7 @@ export type {
 	Library,
 	SchemaField
 } from './types/settings';
+
 export {
 	coerceToValidDateValue,
 	formatFieldValue,
