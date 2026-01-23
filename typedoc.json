@@ -1,0 +1,38 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/index.ts"],
+  "out": "atlas/src/content/docs/reference/api",
+  "plugin": [
+    "typedoc-plugin-markdown"
+  ],
+  "readme": "none",
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "excludeExternals": true,
+  "exclude": [
+    "**/node_modules/**",
+    "**/.pnpm/**",
+    "**/atlas/**",
+    "**/deploy/**",
+    "**/*.test.ts",
+    "**/*.spec.ts"
+  ],
+  "gitRemote": "github",
+  "gitRevision": "main",
+  "hideGenerator": true,
+  "kindSortOrder": [
+    "Function",
+    "Class",
+    "Interface",
+    "TypeAlias",
+    "Variable"
+  ],
+  "sanitizeComments": true,
+  "skipErrorChecking": true,
+  "sort": ["source-order"],
+  "validation": {
+    "notExported": false,
+    "invalidLink": true,
+    "notDocumented": false
+  }
+}

@@ -21,6 +21,8 @@
 /**
  * Configuration for the Author Card component.
  * Controls display, layout, and data presentation for author information.
+ * 
+ * @internal
  */
 export interface AuthorCardConfig {
 	/** Whether the author card component is enabled */
@@ -36,6 +38,8 @@ export interface AuthorCardConfig {
 /**
  * Configuration for the Backstage Pass publication pipeline.
  * Manages the multi-stage review and approval workflow for works.
+ * 
+ * @internal
  */
 export interface BackstagePassPipelineConfig {
 	/** Whether the backstage pass pipeline is enabled */
@@ -144,6 +148,8 @@ export interface DatacoreSettings {
 /**
  * Filter bar configuration.
  * Controls which filters are available and how they are displayed in the UI.
+ * 
+ * @internal
  */
 export interface FilterBarConfig {
 	/** Whether the filter bar is enabled */
@@ -206,6 +212,12 @@ export interface PipelineStage {
 	displayFields: string[];
 }
 
+/**
+ * Publication Dashboard Configuration
+ * Simple settings for display
+ * 
+ * @internal
+ */
 export interface PublicationDashboardConfig {
 	enabled: boolean;
 	foreignKeyField: string; // Field that references publications (e.g., 'publications')
@@ -245,6 +257,9 @@ export interface SchemaField {
 	description?: string;
 }
 
+/**
+ * @internal
+ */
 export interface StatusDashboardConfig {
 	enabled: boolean;
 	groupByField: string; // Which field to group by (usually 'catalog-status')
@@ -256,6 +271,9 @@ export interface StatusDashboardConfig {
 	yearField?: string;
 }
 
+/**
+ * @internal
+ */
 export interface WorksTableConfig {
 	enabled: boolean;
 	defaultColumns: string[]; // Which fields to display

@@ -1,0 +1,7 @@
+packages:
+  - .
+  - atlas
+
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
