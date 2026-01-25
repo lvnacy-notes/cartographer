@@ -8,7 +8,8 @@
 import {
 	CatalogItem,
 	CatalogSchema,
-	type FieldValue
+	type FieldValue,
+	type YearRange
 } from '../types';
 
 /**
@@ -347,7 +348,7 @@ export function getStatistics(
 	averageWordCount: number;
 	authorCount: number;
 	publicationCount: number;
-	yearRange: [number, number] | null;
+	yearRange: YearRange | null;
 	statusCounts: Record<string, number>;
 } {
 	const statusCounts = countByStatus(items, schema);
@@ -371,20 +372,20 @@ export function getStatistics(
  * Returns null if no items or no valid year values.
  *
  * @param items - Array of items
- * @returns - [minYear, maxYear] or null
+ * @returns - YearRange or null
  *
  * @example
- * const [min, max] = getYearRange(items) || [0, 0];
- * console.log(`Years ${min}-${max}`);
+ * const range = getYearRange(items) || { min: 0, max: 0 };
+ * console.log(`Years ${range.min}-${range.max}`);
  */
 export function getYearRange(
 	items: CatalogItem[]
-): [number, number] | null {
+): YearRange | null {
 	const range = getRangeField(items, 'year');
 	if (!range) {
 		return null;
 	}
-	return [range.min, range.max];
+	return { min: range.min, max: range.max };
 }
 
 /**

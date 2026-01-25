@@ -8,7 +8,7 @@
  * - groupByField: which field to group by (usually 'catalog-status')
  * - sortBy: 'alphabetical' | 'count-desc' | 'count-asc'
  * - displayStats: array of stat keys to display ('count', 'percentage', 'yearRange', 'averageWords')
- * - showTotalStats: boolean, show footer total row
+ * - showAggregateStatistics: boolean, show footer total row
  * - wordCountField: field key for word count calculations (default: 'word-count')
  * - yearField: field key for year calculations (default: 'year')
  *
@@ -80,10 +80,10 @@ export function StatusDashboard(props: StatusDashboardProps) {
 	}
 
 	const displayStats = dashboardConfig.displayStats ?? ['count', 'percentage'];
-	const showTotalStats = dashboardConfig.showTotalStats ?? true;
+	const showAggregateStatistics = dashboardConfig.showAggregateStatistics ?? true;
 
 	// Use hook for status data
-	const { statusGroups, totalStats } = useStatusData(
+	const { statusGroups, AggregateStatistics } = useStatusData(
 		items,
 		schema,
 		settings,
@@ -131,7 +131,7 @@ export function StatusDashboard(props: StatusDashboardProps) {
 
 	// Render status rows
 	const statusRows = statusGroups.map((group) => {
-		const percentage = totalStats ? Math.round((group.stats.count / totalStats.totalCount) * 100) : 0;
+		const percentage = AggregateStatistics ? Math.round((group.stats.count / AggregateStatistics.totalCount) * 100) : 0;
 		const yearRangeStr = group.stats.yearRange.min !== null && group.stats.yearRange.max !== null
 			? `${group.stats.yearRange.min}–${group.stats.yearRange.max}`
 			: '-';
@@ -178,14 +178,14 @@ export function StatusDashboard(props: StatusDashboardProps) {
 
 	// Render table footer with totals (if enabled)
 	let tableFooter = null;
-	if (showTotalStats && totalStats) {
+	if (showAggregateStatistics && AggregateStatistics) {
 		const footerCells = [
 			h('th', { class: 'cartographer-status-dashboard__footer-cell' }, 'TOTAL')
 		];
 
 		if (displayStats.includes('count')) {
 			footerCells.push(
-				h('td', { class: 'cartographer-status-dashboard__footer-cell cartographer-status-dashboard__footer-cell--numeric' }, String(totalStats.totalCount))
+				h('td', { class: 'cartographer-status-dashboard__footer-cell cartographer-status-dashboard__footer-cell--numeric' }, String(AggregateStatistics.totalCount))
 			);
 		}
 
@@ -196,8 +196,8 @@ export function StatusDashboard(props: StatusDashboardProps) {
 		}
 
 		if (displayStats.includes('yearRange')) {
-			const yearStr = totalStats.yearRange.min !== null && totalStats.yearRange.max !== null
-				? `${totalStats.yearRange.min}–${totalStats.yearRange.max}`
+			const yearStr = AggregateStatistics.yearRange.min !== null && AggregateStatistics.yearRange.max !== null
+				? `${AggregateStatistics.yearRange.min}–${AggregateStatistics.yearRange.max}`
 				: '-';
 			footerCells.push(
 				h('td', { class: 'cartographer-status-dashboard__footer-cell' }, yearStr)
@@ -205,7 +205,7 @@ export function StatusDashboard(props: StatusDashboardProps) {
 		}
 
 		if (displayStats.includes('averageWords')) {
-			const avgStr = totalStats.averageWords > 0 ? formatNumber(totalStats.averageWords) : '-';
+			const avgStr = AggregateStatistics.averageWords > 0 ? formatNumber(AggregateStatistics.averageWords) : '-';
 			footerCells.push(
 				h('td', { class: 'cartographer-status-dashboard__footer-cell cartographer-status-dashboard__footer-cell--numeric' }, avgStr)
 			);
@@ -226,7 +226,7 @@ export function StatusDashboard(props: StatusDashboardProps) {
 	// Mobile card layout rendering
 	const renderMobileCards = (): VNode => {
 		const cards: VNode[] = statusGroups.map((group) => {
-			const percentage = totalStats ? Math.round((group.stats.count / totalStats.totalCount) * 100) : 0;
+			const percentage = AggregateStatistics ? Math.round((group.stats.count / AggregateStatistics.totalCount) * 100) : 0;
 			const yearRangeStr = group.stats.yearRange.min !== null && group.stats.yearRange.max !== null
 				? `${group.stats.yearRange.min}–${group.stats.yearRange.max}`
 				: '-';
@@ -285,7 +285,7 @@ export function StatusDashboard(props: StatusDashboardProps) {
 		});
 
 		// Add total card if enabled
-		if (showTotalStats && totalStats) {
+		if (showAggregateStatistics && AggregateStatistics) {
 			const totalCardContent: VNode[] = [
 				h('div', { class: 'cartographer-status-dashboard__card-header cartographer-status-dashboard__card-header--total' }, '📈 Total')
 			];
@@ -294,14 +294,14 @@ export function StatusDashboard(props: StatusDashboardProps) {
 				totalCardContent.push(
 					h('div', { class: 'cartographer-status-dashboard__card-row' },
 						h('span', { class: 'cartographer-status-dashboard__card-label' }, 'Items:'),
-						h('span', { class: 'cartographer-status-dashboard__card-value' }, String(totalStats.totalCount))
+						h('span', { class: 'cartographer-status-dashboard__card-value' }, String(AggregateStatistics.totalCount))
 					)
 				);
 			}
 
 			if (displayStats.includes('yearRange')) {
-				const yearStr = totalStats.yearRange.min !== null && totalStats.yearRange.max !== null
-					? `${totalStats.yearRange.min}–${totalStats.yearRange.max}`
+				const yearStr = AggregateStatistics.yearRange.min !== null && AggregateStatistics.yearRange.max !== null
+					? `${AggregateStatistics.yearRange.min}–${AggregateStatistics.yearRange.max}`
 					: '-';
 				totalCardContent.push(
 					h('div', { class: 'cartographer-status-dashboard__card-row' },
@@ -312,7 +312,7 @@ export function StatusDashboard(props: StatusDashboardProps) {
 			}
 
 			if (displayStats.includes('averageWords')) {
-				const avgStr = totalStats.averageWords > 0 ? formatNumber(totalStats.averageWords) : '-';
+				const avgStr = AggregateStatistics.averageWords > 0 ? formatNumber(AggregateStatistics.averageWords) : '-';
 				totalCardContent.push(
 					h('div', { class: 'cartographer-status-dashboard__card-row' },
 						h('span', { class: 'cartographer-status-dashboard__card-label' }, 'Avg words:'),

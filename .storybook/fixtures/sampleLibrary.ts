@@ -1,4 +1,4 @@
-import type { Library, DatacoreSettings, DashboardConfigs } from '../../src/types';
+import type { Library, CartographerSettings, DashboardConfigs } from '../../src/types';
 import { sampleSchema } from './sampleSchema';
 
 /**
@@ -20,7 +20,7 @@ export const sampleDashboardConfigs: DashboardConfigs = {
 	statusDashboard: {
 		enabled: true,
 		groupByField: 'catalog-status',
-		showTotalStats: true,
+		showAggregateStatistics: true,
 		showWordCounts: true,
 		sortBy: 'alphabetical',
 		displayStats: ['count', 'percentage'],
@@ -55,9 +55,9 @@ export const sampleDashboardConfigs: DashboardConfigs = {
 
 /**
  * Sample complete settings object for Storybook fixtures.
- * Represents the full plugin configuration matching DatacoreSettings interface exactly.
+ * Represents the full plugin configuration matching CartographerSettings interface exactly.
  */
-export const sampleSettings: DatacoreSettings = {
+export const sampleSettings: CartographerSettings = {
 	libraries: [sampleLibrary],
 	activeLibraryId: 'pulp-fiction',
 	schema: sampleSchema,

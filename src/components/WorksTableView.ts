@@ -5,16 +5,16 @@
 
 import { WorkspaceLeaf } from 'obsidian';
 import { DatacoreComponentView, createTableElement } from './DatacoreComponentView';
-import { DatacoreSettings } from '../types/settings';
+import { CartographerSettings } from '../types/settings';
 import { loadCatalogItems, sortItems } from '../hooks/useDataLoading';
-import { SortState } from '../types/dynamicWork';
+import { SortState } from '../types/catalogItem';
 
 export const WORKS_TABLE_VIEW_TYPE = 'datacore-works-table';
 
 export class WorksTableView extends DatacoreComponentView {
 	sortState: SortState;
 
-	constructor(leaf: WorkspaceLeaf, settings: DatacoreSettings) {
+	constructor(leaf: WorkspaceLeaf, settings: CartographerSettings) {
 		super(leaf, settings);
 		this.sortState = {
 			field: settings.ui.defaultSortColumn,

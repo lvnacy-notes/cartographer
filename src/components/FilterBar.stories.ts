@@ -10,7 +10,7 @@ import {
 	sampleSettings,
 	sampleFilters,
 } from '../../.storybook/fixtures';
-import { buildCatalogItemFromData } from '../types/dynamicWork';
+import { buildCatalogItemFromData } from '../types/catalogItem';
 
 /**
  * Helper function to convert sample works to CatalogItem instances

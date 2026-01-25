@@ -4,5 +4,4 @@
  */
 
 export { ConfigurableWorksTable } from './ConfigurableWorksTable';
-// Type is exported from src/types/componentTypes.ts
-
+// BaseComponentProps Type is exported from src/types/componentProps.ts

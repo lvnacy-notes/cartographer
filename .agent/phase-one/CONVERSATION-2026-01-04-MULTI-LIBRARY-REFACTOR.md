@@ -113,7 +113,7 @@ interface Library {
 
 ### Multi-Library Settings
 ```typescript
-interface DatacoreSettings {
+interface CartographerSettings {
   version: string;
   libraries: Library[];          // All configured libraries
   activeLibraryId: string | null; // Current active library (null = none)

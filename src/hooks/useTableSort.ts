@@ -23,7 +23,7 @@ import {
 import {
 	CatalogItem,
 	CatalogSchema,
-	DatacoreSettings
+	CartographerSettings
 } from '../types';
 
 /**
@@ -40,7 +40,7 @@ import {
 export function useTableSort(
 	items: CatalogItem[],
 	schema: CatalogSchema,
-	settings: DatacoreSettings,
+	settings: CartographerSettings,
 	initialColumn?: string,
 	initialDesc: boolean = false
 ) {

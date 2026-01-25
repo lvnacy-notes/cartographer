@@ -1,3 +1,16 @@
+// CatalogItem Class + Builders Exports
+export {
+	CatalogItem,
+	getTypedField,
+	itemToObject,
+	buildCatalogItemFromData,
+	convertFieldValue,
+	type FieldValue,
+	type QueryFilter,
+	type SortState,
+	type StoredFieldValue
+} from './catalogItem';
+
 /**
  * Type Barrel Export
  *
@@ -13,35 +26,32 @@ export * from './commands';
 
 /**
  * Component Props & Types:
+ * - BaseComponentProps
  * - FilterBarProps
  * - FilterState
- * - StatusCount
+ * - PublicationDashboardProps
  * - StatusDashboardProps
  * - WorksTableProps
  */
-export * from './componentTypes';
+export * from './componentProps';
+
+// Field Utility Functions
+export {
+	coerceToValidDateValue,
+	formatFieldValue,
+	getTypedField as getTypedFieldFromSettings,
+	parseFieldValue,
+	toDate
+} from './fieldUtils';
 
 /**
  * Filter & Grouping Exports:
  * - FieldOptions
  * - FieldRanges
  * - FilterValueMap
- * - StatusStatistics
  * - StatusGroup
- * - TotalStats
  */
-export * from './filterTypes';
-
-// Dynamic Work Exports
-export {
-	CatalogItem,
-	getTypedField,
-	itemToObject,
-	buildCatalogItemFromData,
-	convertFieldValue,
-	type FieldValue,
-	type StoredFieldValue
-} from './dynamicWork';
+export * from './filters';
 
 /**
  * Settings & Configuration Exports:
@@ -49,7 +59,7 @@ export {
  * - BackstagePassPipelineConfig
  * - CatalogSchema
  * - DashboardConfigs
- * - DatacoreSettings
+ * - CartographerSettings
  * - FilterBarConfig
  * - FilterDefinition
  * - Library
@@ -61,13 +71,18 @@ export {
  */
 export * from './settings';
 
+/**
+ * Statistics Types:
+ * - YearRange
+ * - AggregateStatistics
+ * - BaseStatistics
+ * - CatalogStatistics
+ * - GroupStatistics
+ */
+export * from './statistics';
+
 // Utility Functions & Type Guards
 export {
 	isDateLike,
-	toDate,
-	coerceToValidDateValue,
-	getTypedField as getTypedFieldFromSettings,
 	itemToObject as itemToObjectFromSettings,
-	parseFieldValue,
-	formatFieldValue,
-} from './types';
+} from './typeGuards';

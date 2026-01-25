@@ -36,7 +36,7 @@ completion of Session 3.
 ### Phase 1: Test Infrastructure Scaffolding
 - [x] tests/fixtures/catalogSchema.ts - Generic test schema with all 7 SchemaField types
 - [x] tests/fixtures/catalogItems.ts - 31 CatalogItem instances with real Pulp Fiction data
-- [x] tests/fixtures/defaultSettings.ts - Complete DatacoreSettings configuration
+- [x] tests/fixtures/defaultSettings.ts - Complete CartographerSettings configuration
 - [x] tests/fixtures/index.ts - Barrel export for fixture imports
 - [x] tests/components/StatusDashboard.test.ts - 12 placeholder unit tests
 - [x] tests/components/WorksTable.test.ts - 15 placeholder unit tests
@@ -87,11 +87,11 @@ completion of Session 3.
 - Quality: ✅ Compiles cleanly after CatalogItem pattern discovery, realistic test data
 
 #### tests/fixtures/defaultSettings.ts (50 lines)
-- Complete DatacoreSettings configuration for testing
+- Complete CartographerSettings configuration for testing
 - Libraries array: single test-library entry with proper structure
 - activeLibraryId: 'test-library'
 - Dashboard configurations:
-  - statusDashboard: enabled=true, groupByField='catalog-status', showTotalStats=true, showWordCounts=true
+  - statusDashboard: enabled=true, groupByField='catalog-status', showAggregateStatistics=true, showWordCounts=true
   - worksTable: enabled=true, defaultColumns=['title', 'authors', 'year', 'word-count', 'catalog-status'], enablePagination=true
   - filterBar: enabled=true with 3 filters (status select, year range, title text), layout='vertical'
   - publicationDashboard: enabled=false (configured but disabled with required fields)
@@ -180,11 +180,11 @@ completion of Session 3.
 
 ### Hooks Created
 - [x] useStatusData.ts (131 lines) - Manages status grouping, statistics calculation, sorting
-  - Returns: statusGroups (sorted StatusGroup[]), totalStats (TotalStats), statusFieldDef (FieldDefinition | undefined)
+  - Returns: statusGroups (sorted StatusGroup[]), AggregateStatistics (AggregateStatistics), statusFieldDef (FieldDefinition | undefined)
   - useMemo for grouping and sorting with field config dependencies
   - useMemo for total statistics across all items
   - Full JSDoc documentation
-  - Removed unused imports (StatusStatistics, TotalStats)
+  - Removed unused imports (GroupStatistics, AggregateStatistics)
 
 - [x] useTableSort.ts (92 lines) - Manages table sort state and applies sorting
   - Returns: sortedItems, sortColumn, sortDesc, handleSort callback
@@ -213,12 +213,12 @@ completion of Session 3.
 
 ### Type System Refactoring
 - [x] Moved StatusGroup interface to src/types/filterTypes.ts (from useStatusData.ts)
-- [x] Moved TotalStats interface to src/types/filterTypes.ts (from useStatusData.ts)
+- [x] Moved AggregateStatistics interface to src/types/filterTypes.ts (from useStatusData.ts)
 - [x] Verified FilterState in src/types/componentTypes.ts (removed duplicate from filterTypes.ts)
 - [x] Verified FilterDefinition in src/types/settings.ts (removed duplicate from filterTypes.ts)
 - [x] Updated src/types/index.ts to export all types from proper locations
-- [x] Removed unused StatusStatistics import from useStatusData.ts
-- [x] Removed unused TotalStats import from useStatusData.ts
+- [x] Removed unused GroupStatistics import from useStatusData.ts
+- [x] Removed unused AggregateStatistics import from useStatusData.ts
 - [x] Removed unused StatisticsFieldDefinition import from useStatusData.ts
 
 ### Component Updates
@@ -232,17 +232,17 @@ completion of Session 3.
   - Removed unused schema parameter from useFilters call
 
 - [x] StatusDashboard.tsx - Cleaned up imports
-  - Removed unused StatusStatistics import
-  - Removed unused TotalStats import
+  - Removed unused GroupStatistics import
+  - Removed unused AggregateStatistics import
 
 - [x] useStatusData.ts - Cleaned up imports
-  - Removed unused StatusStatistics import
-  - Removed unused TotalStats import
+  - Removed unused GroupStatistics import
+  - Removed unused AggregateStatistics import
   - Updated to import StatusGroup from types/filterTypes
 
 ### Code Quality Improvements
 - [x] Eliminated all unused parameters (schema from useFilters removed)
-- [x] Eliminated all unused imports (StatusStatistics, TotalStats, etc.)
+- [x] Eliminated all unused imports (GroupStatistics, AggregateStatistics, etc.)
 - [x] Eliminated duplicate type definitions (all types centralized)
 - [x] All hooks follow AGENTS.md standards: no implicit any, curly braces on control structures, used parameters only
 - [x] All hooks fully JSDoc documented
@@ -291,9 +291,9 @@ Session 3 remediation journey from initial error discovery through complete reso
   - Fix: Used `split('T')[0] ?? ''` for guaranteed string returns; added `.filter((label): label is string => Boolean(label))` for type-safe array mapping
 
 - **tests/components/StatusDashboard.test.ts** (6 errors fixed)
-  - Lines 79, 137, 163, 189, 215, 241: Added explicit DatacoreSettings type annotations
+  - Lines 79, 137, 163, 189, 215, 241: Added explicit CartographerSettings type annotations
   - Root cause: Test fixtures used loose string[] instead of literal union types
-  - Fix: Added `const settings: DatacoreSettings = { ... }` type annotations to all test setup blocks
+  - Fix: Added `const settings: CartographerSettings = { ... }` type annotations to all test setup blocks
 
 - **tests/utils/filterHelpers.test.ts** (7 errors fixed)
   - Lines 185, 186, 201, 202, 217, 218, 335: Added loop bounds checking guards and widened statusValue type
@@ -394,7 +394,7 @@ Session 3 remediation journey from initial error discovery through complete reso
 - src/hooks/useFilters.ts (created)
 - src/hooks/useFilteredItems.ts (created)
 - src/hooks/index.ts (modified - barrel export updates)
-- src/types/filterTypes.ts (modified - added StatusGroup, TotalStats; removed duplicates)
+- src/types/filterTypes.ts (modified - added StatusGroup, AggregateStatistics; removed duplicates)
 - src/types/index.ts (modified - verified exports)
 - src/components/FilterBar.tsx (modified - removed utility calls, use hook values)
 - src/components/StatusDashboard.tsx (modified - cleaned imports)
@@ -409,7 +409,7 @@ Session 3 remediation journey from initial error discovery through complete reso
   - WorksTable.tsx: Changed JSX.Element return type to Preact VNode
   - useTableSort.ts: Replaced invalid 'text' SchemaField type with 'string'
   - fieldFormatters.ts: Added null coalescing and type guards for safe string operations
-  - Test fixtures: Explicit DatacoreSettings type annotations, array bounds checking guards
+  - Test fixtures: Explicit CartographerSettings type annotations, array bounds checking guards
 
 - Phase 2 (Lint): Fixed 20 ESLint errors across 6 files
   - No-base-to-string (6): Extracted valueToString() helper, safe object stringification
@@ -452,7 +452,7 @@ Session 3 remediation journey from initial error discovery through complete reso
 **Phase 1 (Setup & Scaffolding): 100% COMPLETE**
 - ✅ filterHelpers.ts utility (167 lines, all 3 functions implemented)
 - ✅ StatusDashboard.tsx component (305 lines, fully implemented)
-- ✅ Type system refactoring (StatusStatistics interface in types layer)
+- ✅ Type system refactoring (GroupStatistics interface in types layer)
 - ✅ Test fixtures (31 items from Pulp Fiction, all field types represented)
 - ✅ Test file structure (placeholder tests created)
 

@@ -60,7 +60,7 @@ The plugin is **user-driven and configuration-first**. Rather than bundling pres
 /**
  * Top-level plugin settings (stored in .obsidian/plugins/cartographer/data.json)
  */
-export interface DatacoreSettings {
+export interface CartographerSettings {
   // Plugin metadata
   version: string;
   
@@ -174,7 +174,7 @@ export interface DashboardConfigs {
 export interface StatusDashboardConfig {
   enabled: boolean;
   groupByField: string; // Which field to group by (usually 'catalog-status')
-  showTotalStats: boolean;
+  showAggregateStatistics: boolean;
   showWordCounts: boolean;
 }
 
@@ -277,7 +277,7 @@ import {
 } from 'obsidian';
 import {
     CatalogSchema,
-    DatacoreSettings,
+    CartographerSettings,
     Library,
     SchemaField
 } from '../types/settings';
@@ -288,13 +288,13 @@ import { DEFAULT_LIBRARY_SCHEMA } from './defaultSchemas';
  */
 export class SettingsManager {
   private plugin: Plugin;
-  private settings: DatacoreSettings;
+  private settings: CartographerSettings;
 
   constructor(plugin: Plugin) {
     this.plugin = plugin;
   }
 
-  async loadSettings(): Promise<DatacoreSettings> {
+  async loadSettings(): Promise<CartographerSettings> {
     const saved = await this.plugin.loadData();
     
     if (!saved) {
@@ -322,7 +322,7 @@ export class SettingsManager {
     await this.plugin.saveData(this.settings);
   }
 
-  getSettings(): DatacoreSettings {
+  getSettings(): CartographerSettings {
     return this.settings;
   }
 
@@ -348,7 +348,7 @@ export class SettingsManager {
       path,
       schema: schema || JSON.parse(JSON.stringify(DEFAULT_LIBRARY_SCHEMA)),
       dashboards: {
-        statusDashboard: { enabled: true, groupByField: 'status', showTotalStats: true, showWordCounts: true },
+        statusDashboard: { enabled: true, groupByField: 'status', showAggregateStatistics: true, showWordCounts: true },
         worksTable: { enabled: true, defaultColumns: ['title', 'authors', 'year'], enablePagination: true },
         filterBar: { enabled: true, filters: [], layout: 'vertical' },
         publicationDashboard: { enabled: false, foreignKeyField: '', displayColumns: [] },
@@ -428,19 +428,19 @@ export class SettingsManager {
   }
 
   // Validate settings structure
-  private validateSettings(saved: any): DatacoreSettings {
+  private validateSettings(saved: any): CartographerSettings {
     // Ensure all required fields exist
     if (!saved.version) saved.version = '1.0.0';
     if (!Array.isArray(saved.libraries)) saved.libraries = [];
     if (!saved.ui) saved.ui = { itemsPerPage: 50, defaultSortColumn: 'title', defaultSortDesc: false, compactMode: false };
-    return saved as DatacoreSettings;
+    return saved as CartographerSettings;
   }
 }
 
 /**
  * Settings UI Tab for Obsidian settings panel
  */
-export class DatacoreSettingsTab extends PluginSettingTab {
+export class CartographerSettingsTab extends PluginSettingTab {
   plugin: DatacorePlugin;
 
   constructor(app: App, plugin: DatacorePlugin) {
@@ -576,7 +576,7 @@ export class CatalogItem {
  */
 export function useCatalogData(
   datacore: Datacore,
-  settings: DatacoreSettings
+  settings: CartographerSettings
 ): {
   items: CatalogItem[];
   isLoading: boolean;
@@ -660,11 +660,11 @@ function parseFieldValue(value: any, type: SchemaField['type']): any {
 ```typescript
 import { useMemo, useState, useCallback } from 'preact/hooks';
 import { CatalogItem } from '../types/dynamicWork';
-import { DatacoreSettings, FilterDefinition } from '../types/settings';
+import { CartographerSettings, FilterDefinition } from '../types/settings';
 
 interface ConfigurableFilterBarProps {
   items: CatalogItem[];
-  settings: DatacoreSettings;
+  settings: CartographerSettings;
   onFilter: (filtered: CatalogItem[]) => void;
 }
 
@@ -794,11 +794,11 @@ export function ConfigurableFilterBar({
 ```typescript
 import { useMemo, useState } from 'preact/hooks';
 import { CatalogItem } from '../types/dynamicWork';
-import { DatacoreSettings } from '../types/settings';
+import { CartographerSettings } from '../types/settings';
 
 interface ConfigurableWorksTableProps {
   items: CatalogItem[];
-  settings: DatacoreSettings;
+  settings: CartographerSettings;
 }
 
 export function ConfigurableWorksTable({
@@ -925,12 +925,12 @@ function renderCellValue(value: any, type: string): any {
 
 ```typescript
 import { Plugin } from 'obsidian';
-import { SettingsManager, DatacoreSettingsTab } from './config/settingsManager';
+import { SettingsManager, CartographerSettingsTab } from './config/settingsManager';
 import { registerAllCommands } from './commands';
-import { DatacoreSettings } from './types/settings';
+import { CartographerSettings } from './types/settings';
 
 export default class DatacorePlugin extends Plugin {
-  settings: DatacoreSettings;
+  settings: CartographerSettings;
   settingsManager: SettingsManager;
 
   async onload() {
@@ -941,7 +941,7 @@ export default class DatacorePlugin extends Plugin {
     this.settings = await this.settingsManager.loadSettings();
 
     // Add settings tab
-    this.addSettingTab(new DatacoreSettingsTab(this.app, this));
+    this.addSettingTab(new CartographerSettingsTab(this.app, this));
 
     // Register all commands (core static + library dynamic)
     registerAllCommands(this);
@@ -1044,13 +1044,13 @@ function registerLibraryCommands(plugin: DatacorePlugin, library: Library): void
  * Extend the core Work type to support dynamic fields
  */
 import { CatalogItem } from './dynamicWork';
-import { DatacoreSettings } from './settings';
+import { CartographerSettings } from './settings';
 
 // Helper to get typed field from CatalogItem based on schema
 export function getTypedField<T>(
   item: CatalogItem,
   fieldKey: string,
-  settings: DatacoreSettings
+  settings: CartographerSettings
 ): T | null {
   const fieldDef = settings.schema.fields.find(f => f.key === fieldKey);
   if (!fieldDef) return null;
@@ -1059,7 +1059,7 @@ export function getTypedField<T>(
 }
 
 // Helper to work with items as strongly-typed objects
-export function itemToObject(item: CatalogItem, settings: DatacoreSettings): Record<string, any> {
+export function itemToObject(item: CatalogItem, settings: CartographerSettings): Record<string, any> {
   const obj: Record<string, any> = {};
 
   settings.schema.fields.forEach(field => {

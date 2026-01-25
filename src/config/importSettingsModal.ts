@@ -6,19 +6,19 @@ import {
 	App,
 	Modal
 } from 'obsidian';
-import { DatacoreSettings } from '../types/settings';
+import { CartographerSettings } from '../types/settings';
 import { SettingsManager } from './settingsManager';
 
 export class ImportSettingsModal extends Modal {
 	settingsManager: SettingsManager;
-	importedSettings: DatacoreSettings;
-	onConfirm: (settings: DatacoreSettings) => Promise<void>;
+	importedSettings: CartographerSettings;
+	onConfirm: (settings: CartographerSettings) => Promise<void>;
 
 	constructor(
 		app: App,
 		settingsManager: SettingsManager,
-		importedSettings: DatacoreSettings,
-		onConfirm: (settings: DatacoreSettings) => Promise<void>
+		importedSettings: CartographerSettings,
+		onConfirm: (settings: CartographerSettings) => Promise<void>
 	) {
 		super(app);
 		this.settingsManager = settingsManager;
@@ -62,7 +62,7 @@ export class ImportSettingsModal extends Modal {
 		});
 		mergeBtn.addEventListener('click', () => {
 			void (async () => {
-				const merged: DatacoreSettings = {
+				const merged: CartographerSettings = {
 					...currentSettings,
 					libraries: [...currentSettings.libraries]
 				};

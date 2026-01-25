@@ -1,6 +1,6 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
-import { CatalogItem } from '../src/types/dynamicWork';
+import { CatalogItem } from '../src/types/catalogItem';
 import { CatalogSchema, SchemaField } from '../src/types/settings';
 import {
 	filterByField,

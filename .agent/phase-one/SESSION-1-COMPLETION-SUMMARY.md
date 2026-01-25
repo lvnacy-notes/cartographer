@@ -8,7 +8,7 @@ Complete the code implementation phase for the Datacore plugin (Session 1: Setup
 
 1. **TypeScript-First Architecture**: Committed to native Obsidian ItemView API (not React) for mobile compatibility and performance, maintaining all architectural benefits with proper DOM API usage instead of JSX.
 
-2. **Configuration-Driven Design**: Embedded all behavioral control in the `DatacoreSettings` object and bundled presets, ensuring zero hardcoded field names and enabling the same plugin code to run in different vaults unchanged.
+2. **Configuration-Driven Design**: Embedded all behavioral control in the `CartographerSettings` object and bundled presets, ensuring zero hardcoded field names and enabling the same plugin code to run in different vaults unchanged.
 
 3. **Four Bundled Presets**: Shipped Pulp Fiction (default), General Library, Manuscripts, and Custom presets to cover the primary use cases while providing a template for additional catalog types.
 
@@ -24,7 +24,7 @@ Complete the code implementation phase for the Datacore plugin (Session 1: Setup
   - `src/config/settingsManager.ts` (200+ lines) - Settings UI and persistence layer
 
 - **Type System**:
-  - `src/types/settings.ts` (145 lines) - All DatacoreSettings interfaces
+  - `src/types/settings.ts` (145 lines) - All CartographerSettings interfaces
   - `src/types/dynamicWork.ts` (75 lines) - CatalogItem class and state types
   - `src/types/types.ts` (95 lines) - Utility type functions
 
@@ -111,7 +111,7 @@ Complete the code implementation phase for the Datacore plugin (Session 1: Setup
 ## Context for Future Sessions
 
 ### Key Patterns Established
-1. **Configuration as Control**: All behavior governed by DatacoreSettings object; enables same code across different catalogs
+1. **Configuration as Control**: All behavior governed by CartographerSettings object; enables same code across different catalogs
 2. **Preset System**: Three production presets + custom template cover all primary use cases and serve as examples
 3. **Layer Architecture**: Strict separation between settings → data → queries → components ensures maintainability
 4. **Documentation Pattern**: Master spec documents architecture; session summaries document decision-making; code is self-documenting

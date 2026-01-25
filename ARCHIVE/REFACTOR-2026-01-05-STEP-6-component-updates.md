@@ -33,8 +33,8 @@ tags:
 
 #### `src/components/DatacoreComponentView.ts`
 - **Added:** `getActiveLibrary(): Library | null` method to base class for retrieving currently active library configuration
-- **Modified:** `createTableElement()` signature changed from `settings: DatacoreSettings` to `schemaFields: Array<{ key: string; label: string; type: string }>`
-- **Modified:** `createStatusSummary()` signature updated to remove unused `schema` parameter (previously `_settings: DatacoreSettings`)
+- **Modified:** `createTableElement()` signature changed from `settings: CartographerSettings` to `schemaFields: Array<{ key: string; label: string; type: string }>`
+- **Modified:** `createStatusSummary()` signature updated to remove unused `schema` parameter (previously `_settings: CartographerSettings`)
 - **Impact:** Base class now provides shared functionality for accessing active library; utility functions decouple from full settings object
 
 #### `src/components/StatusDashboardView.ts`

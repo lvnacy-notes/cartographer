@@ -228,7 +228,7 @@ if (group) {
 const settings = JSON.parse(jsonString);  // Returns any
 
 // ✅ Correct - Add type assertion
-const settings = JSON.parse(jsonString) as DatacoreSettings;
+const settings = JSON.parse(jsonString) as CartographerSettings;
 ```
 
 ### 6. Async Methods Without Await
@@ -516,7 +516,7 @@ This is an **Obsidian community plugin** (TypeScript → bundled JavaScript) imp
 **Core Plugin:**
 - `src/main.ts` — Plugin entry point & lifecycle
 - `src/config/settingsManager.ts` — Library CRUD operations
-- `src/types/*.ts` — Type definitions (DatacoreSettings, Library, CatalogItem, etc.)
+- `src/types/*.ts` — Type definitions (CartographerSettings, Library, CatalogItem, etc.)
 - `src/hooks/useDataLoading.ts` — Reactive data loading from vault
 - `src/queries/queryFunctions.ts` — Filter, sort, group, aggregate operations
 - `src/components/*.ts` — View scaffolds (StatusDashboard, WorksTable)

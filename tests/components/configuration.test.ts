@@ -20,7 +20,7 @@ import { h } from 'preact';
 import { render } from 'preact-render-to-string';
 import type {
 	CatalogSchema,
-	DatacoreSettings,
+	CartographerSettings,
 	SchemaField
 } from '../../src/types';
 import { StatusDashboard } from '../../src/components';
@@ -46,7 +46,7 @@ describe('Dynamic Schema Rendering', () => {
 			),
 		};
 
-		const settings: DatacoreSettings = {
+		const settings: CartographerSettings = {
 			...defaultSettings,
 			schema: customSchema,
 		};
@@ -92,7 +92,7 @@ describe('Dynamic Schema Rendering', () => {
 	});
 
 	test('FilterBar uses schema field labels when filter labels are missing', () => {
-		const customSettings: DatacoreSettings = {
+		const customSettings: CartographerSettings = {
 			...defaultSettings,
 			dashboards: {
 				...defaultSettings.dashboards,
@@ -137,7 +137,7 @@ describe('Field Visibility and Filterability', () => {
 			),
 		};
 
-		const settings: DatacoreSettings = {
+		const settings: CartographerSettings = {
 			...defaultSettings,
 			schema: customSchema,
 			dashboards: {
@@ -175,7 +175,7 @@ describe('Field Visibility and Filterability', () => {
 			),
 		};
 
-		const customSettings: DatacoreSettings = {
+		const customSettings: CartographerSettings = {
 			...defaultSettings,
 			schema: customSchema,
 			dashboards: {
@@ -227,7 +227,7 @@ describe('Field Visibility and Filterability', () => {
 			),
 		};
 
-		const settings: DatacoreSettings = {
+		const settings: CartographerSettings = {
 			...defaultSettings,
 			schema: customSchema,
 			dashboards: {
@@ -263,7 +263,7 @@ describe('Field Visibility and Filterability', () => {
 
 describe('Component Enabled Flags', () => {
 	test('StatusDashboard returns null when disabled', () => {
-		const disabledSettings: DatacoreSettings = {
+		const disabledSettings: CartographerSettings = {
 			...defaultSettings,
 			dashboards: {
 				...defaultSettings.dashboards,
@@ -287,7 +287,7 @@ describe('Component Enabled Flags', () => {
 	});
 
 	test('WorksTable returns empty div when disabled', () => {
-		const disabledSettings: DatacoreSettings = {
+		const disabledSettings: CartographerSettings = {
 			...defaultSettings,
 			dashboards: {
 				...defaultSettings.dashboards,
@@ -315,7 +315,7 @@ describe('Component Enabled Flags', () => {
 	});
 
 	test('FilterBar returns null when disabled', () => {
-		const disabledSettings: DatacoreSettings = {
+		const disabledSettings: CartographerSettings = {
 			...defaultSettings,
 			dashboards: {
 				...defaultSettings.dashboards,
@@ -353,7 +353,7 @@ describe('ConfigurableWorksTable Column Generation', () => {
 			],
 		};
 
-		const settings: DatacoreSettings = {
+		const settings: CartographerSettings = {
 			...defaultSettings,
 			schema: schemaWithVisibility,
 			dashboards: {
@@ -379,7 +379,7 @@ describe('ConfigurableWorksTable Column Generation', () => {
 	});
 
 	test('respects configured column order when all columns are visible', () => {
-		const settings: DatacoreSettings = {
+		const settings: CartographerSettings = {
 			...defaultSettings,
 			dashboards: {
 				...defaultSettings.dashboards,
@@ -411,7 +411,7 @@ describe('ConfigurableWorksTable Column Generation', () => {
 	});
 
 	test('ensures title field is present when visible', () => {
-		const settings: DatacoreSettings = {
+		const settings: CartographerSettings = {
 			...defaultSettings,
 			dashboards: {
 				...defaultSettings.dashboards,
@@ -454,7 +454,7 @@ describe('Missing Field and Error Handling', () => {
 	});
 
 	test('WorksTable handles missing schema fields gracefully', () => {
-		const settings: DatacoreSettings = {
+		const settings: CartographerSettings = {
 			...defaultSettings,
 			dashboards: {
 				...defaultSettings.dashboards,
@@ -484,7 +484,7 @@ describe('Missing Field and Error Handling', () => {
 	});
 
 	test('FilterBar handles filters for non-existent fields by filtering them out', () => {
-		const customSettings: DatacoreSettings = {
+		const customSettings: CartographerSettings = {
 			...defaultSettings,
 			dashboards: {
 				...defaultSettings.dashboards,
@@ -547,12 +547,12 @@ describe('Multi-Library Schema Compatibility', () => {
 			coreFields: { titleField: 'title' },
 		};
 
-		const settings1: DatacoreSettings = {
+		const settings1: CartographerSettings = {
 			...defaultSettings,
 			schema: schema1,
 		};
 
-		const settings2: DatacoreSettings = {
+		const settings2: CartographerSettings = {
 			...defaultSettings,
 			schema: schema2,
 		};
@@ -611,7 +611,7 @@ describe('Multi-Library Schema Compatibility', () => {
 			coreFields: { titleField: 'title' },
 		};
 
-		const settings: DatacoreSettings = {
+		const settings: CartographerSettings = {
 			...defaultSettings,
 			dashboards: {
 				...defaultSettings.dashboards,

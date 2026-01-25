@@ -1,7 +1,7 @@
 import { Plugin } from 'obsidian';
-import { DatacoreSettings } from './types/settings';
+import { CartographerSettings } from './types/settings';
 import { SettingsManager } from './config/settingsManager';
-import { DatacoreSettingsTab } from './config/settingsTab';
+import { CartographerSettingsTab } from './config/settingsTab';
 import {
 	StatusDashboardView,
 	STATUS_DASHBOARD_VIEW_TYPE
@@ -18,7 +18,7 @@ import { registerAllCommands } from './commands';
 
 
 export default class Cartographer extends Plugin {
-	settings: DatacoreSettings;
+	settings: CartographerSettings;
 	settingsManager: SettingsManager;
 
 	async onload() {
@@ -43,7 +43,7 @@ export default class Cartographer extends Plugin {
 		);
 
 		// Add settings tab
-		this.addSettingTab(new DatacoreSettingsTab(this.app, this, this.settingsManager));
+		this.addSettingTab(new CartographerSettingsTab(this.app, this, this.settingsManager));
 
 		// Register all commands (core + dynamic library commands)
 		registerAllCommands(this);

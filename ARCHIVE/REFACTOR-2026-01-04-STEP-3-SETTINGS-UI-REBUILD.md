@@ -150,7 +150,7 @@ tags:
 **Commit SHA**: 084ef1dd8e1d12bae5b7ca1aa2e0e1c4322f14ee
 **Commit Message**: feat(step-3): Complete settings UI rebuild with library management
 
-- Rebuild DatacoreSettingsTab with active library selector and library CRUD UI
+- Rebuild CartographerSettingsTab with active library selector and library CRUD UI
 - Extract LibraryModal to separate file (follows 1-class-per-file AGENTS.md rule)
 - Add library management section (add/edit/delete with confirmation dialogs)
 - Remove all catalog-specific hardcoding (Pulp Fiction references eliminated)
@@ -305,7 +305,7 @@ No new TypeScript errors introduced. All type changes properly propagated.
 
 ### Type System
 - `Library` interface fully utilized
-- `DatacoreSettings.libraries[]` properly managed
+- `CartographerSettings.libraries[]` properly managed
 - `activeLibraryId` properly tracked and validated
 
 ### Component Structure

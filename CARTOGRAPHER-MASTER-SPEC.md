@@ -252,7 +252,7 @@ interface Library {
 
 **2. Multi-Library Settings**
 ```typescript
-interface DatacoreSettings {
+interface CartographerSettings {
   version: string;
   libraries: Library[];          // All configured libraries
   activeLibraryId: string | null; // Currently selected library (null if none)
@@ -336,7 +336,7 @@ Cartographer/                                  ← Separate repo/project
 │   │   ├── libraryModal.ts                    ← Library creation/editing modal
 │   │   └── defaultSchemas.ts                  ← DEFAULT_LIBRARY_SCHEMA template
 │   ├── types/
-│   │   ├── settings.ts                        ← DatacoreSettings with multi-library support
+│   │   ├── settings.ts                        ← CartographerSettings with multi-library support
 │   │   ├── commands.ts                        ← CommandDefinition interface
 │   │   ├── dynamicWork.ts                     ← CatalogItem class
 │   │   └── types.ts                           ← Utility types
@@ -375,9 +375,9 @@ Cartographer/                                  ← Separate repo/project
 
 ### Core Types & Interfaces
 
-**DatacoreSettings** (Stored in `.obsidian/plugins/cartographer/data.json`)
+**CartographerSettings** (Stored in `.obsidian/plugins/cartographer/data.json`)
 ```typescript
-interface DatacoreSettings {
+interface CartographerSettings {
   version: string;
   libraries: Library[];          // All configured libraries
   activeLibraryId: string | null; // Currently selected library (null if none)

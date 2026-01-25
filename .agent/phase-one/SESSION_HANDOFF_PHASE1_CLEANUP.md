@@ -22,8 +22,8 @@
    - **Impact:** Build now reaches TypeScript compilation phase ✅
 
 3. **Code Organization & Architecture**
-   - **Created new file:** `src/config/settingsTab.ts` (extracted DatacoreSettingsTab class)
-   - **Modified:** `src/config/settingsManager.ts` (removed DatacoreSettingsTab, now settings manager only)
+   - **Created new file:** `src/config/settingsTab.ts` (extracted CartographerSettingsTab class)
+   - **Modified:** `src/config/settingsManager.ts` (removed CartographerSettingsTab, now settings manager only)
    - **Rationale:** Enforce 1 class per file architectural constraint
    - **Updated:** ESLint config to enforce `max-classes-per-file: 1`
 
@@ -193,7 +193,7 @@ Complete error/patch log available at:
 
 ### Core Type Definitions
 - [src/types/dynamicWork.ts](../src/types/dynamicWork.ts) - CatalogItem class, FilterState, SortState
-- [src/types/settings.ts](../src/types/settings.ts) - DatacoreSettings interface
+- [src/types/settings.ts](../src/types/settings.ts) - CartographerSettings interface
 - [src/types/types.ts](../src/types/types.ts) - parseFieldValue, formatFieldValue, itemToObject (DATE ISSUES HERE)
 
 ### Data & Queries (TYPE ISSUES)

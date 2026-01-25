@@ -18,8 +18,8 @@ import {
 	useState
 } from 'preact/hooks';
 import {
-	ConfigurableWorksTableProps,
-	DatacoreSettings,
+	BaseComponentProps as ConfigurableWorksTableProps,
+	CartographerSettings,
 	WorksTableProps
 } from '../../types';
 import { WorksTable } from '../WorksTable';
@@ -122,7 +122,7 @@ export function ConfigurableWorksTable(props: ConfigurableWorksTableProps): VNod
 	);
 
 	// Create modified settings with generated columns
-	const modifiedSettings: DatacoreSettings = useMemo<DatacoreSettings>(() => {
+	const modifiedSettings: CartographerSettings = useMemo<CartographerSettings>(() => {
 		return {
 			...settings,
 			dashboards: {

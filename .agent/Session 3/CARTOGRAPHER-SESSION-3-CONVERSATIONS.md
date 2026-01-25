@@ -308,12 +308,12 @@ function renderCell(value: any, fieldType: SchemaField['type']): string {
 **Context:** User identified architecture violations in filterHelpers.ts and StatusDashboard component after implementation.
 
 **Agent Actions Taken:**
-- Identified StatusStatistics interface defined in utility layer (filterHelpers.ts) instead of types layer
+- Identified GroupStatistics interface defined in utility layer (filterHelpers.ts) instead of types layer
 - Found unused schema parameters in calculateStatusStats() and groupByField() functions
 - Traced through code to find all violations
 
 **Resolution Approach:**
-- Created src/types/filterTypes.ts with StatusStatistics interface (proper types layer location)
+- Created src/types/filterTypes.ts with GroupStatistics interface (proper types layer location)
 - Updated src/types/index.ts to export new type
 - Removed unused schema parameters from utility functions
 - Updated all test calls to match new function signatures
@@ -373,14 +373,14 @@ function renderCell(value: any, fieldType: SchemaField['type']): string {
   - Null status handling with "(no status)" label
 
 - Type System
-  - StatusStatistics interface in src/types/filterTypes.ts
+  - GroupStatistics interface in src/types/filterTypes.ts
   - Proper exports in src/types/index.ts
   - All types centralized correctly
 
 - Test Fixtures
   - catalogItems.ts (252 lines, 31 Pulp Fiction items)
   - catalogSchema.ts (test schema with all 7 field types)
-  - defaultSettings.ts (complete DatacoreSettings)
+  - defaultSettings.ts (complete CartographerSettings)
   - index.ts (barrel export, working correctly)
 
 **NOT COMPLETE (0%):**
@@ -763,7 +763,7 @@ Don't pre-build hooks. Let component state management needs surface first, then 
 **Test Fixtures:**
 - [x] catalogSchema.ts - 15 fields covering all 7 SchemaField types (string, number, date, boolean, array, wikilink-array, object), coreFields configured
 - [x] catalogItems.ts - 31 Pulp Fiction works instantiated as CatalogItem instances with realistic field values across all types
-- [x] defaultSettings.ts - Complete DatacoreSettings with all dashboard configs (statusDashboard, worksTable, filterBar enabled; others configured but disabled), UI preferences, filter definitions
+- [x] defaultSettings.ts - Complete CartographerSettings with all dashboard configs (statusDashboard, worksTable, filterBar enabled; others configured but disabled), UI preferences, filter definitions
 - [x] fixtures/index.ts - Barrel export enabling clean test file imports
 
 **Test Files:**
@@ -1084,18 +1084,18 @@ Integration tests should verify:
 **Result:** All types properly organized:
 - `FilterState` → componentTypes.ts (component prop types)
 - `FilterDefinition` → settings.ts (settings configuration types)
-- `StatusGroup`, `TotalStats` → filterTypes.ts (filter/statistics types)
+- `StatusGroup`, `AggregateStatistics` → filterTypes.ts (filter/statistics types)
 - `FieldOptions`, `FieldRanges` → filterTypes.ts (filter operation types)
 
 ### Unused Variables Enforcement
 
 **User:** "Please remove all unused variables."
 
-**Agent Review:** Checked useStatusData.ts and identified unused imports: `StatusStatistics` and `TotalStats` imported but not used in function body.
+**Agent Review:** Checked useStatusData.ts and identified unused imports: `GroupStatistics` and `AggregateStatistics` imported but not used in function body.
 
 **Correction Applied:**
-- Removed unused `StatusStatistics` import (types are returned via hook, not used in component)
-- Removed unused `TotalStats` import (same rationale)
+- Removed unused `GroupStatistics` import (types are returned via hook, not used in component)
+- Removed unused `AggregateStatistics` import (same rationale)
 - Kept `StatusGroup` import (used as return type in hook definition)
 
 **AGENTS.md Compliance:** Eliminated unused variable violations per code standards.
@@ -1116,7 +1116,7 @@ Integration tests should verify:
 
 ### Code Quality Verification Pattern
 
-**User:** "All of them, eh? What about StatusStatistics and TotalStats?"
+**User:** "All of them, eh? What about GroupStatistics and AggregateStatistics?"
 
 **Context:** Agent had checked for unused variables but missed the imported-but-unused types.
 

@@ -55,8 +55,8 @@ The build and lint will likely identify issues in these categories:
 
 ### Key Files to Review
 - [src/hooks/useDataLoading.ts](../../src/hooks/useDataLoading.ts) - Data loading and filtering functions
-- [src/types/dynamicWork.ts](../../src/types/dynamicWork.ts) - CatalogItem and state interfaces
-- [src/types/settings.ts](../../src/types/settings.ts) - DatacoreSettings interface
+- [src/types/dynamicWork.ts](../../src/types/catalogItem.ts) - CatalogItem and state interfaces
+- [src/types/settings.ts](../../src/types/settings.ts) - CartographerSettings interface
 - [src/types/types.ts](../../src/types/types.ts) - Utility functions
 - [src/queries/queryFunctions.ts](../../src/queries/queryFunctions.ts) - Query operations
 - [src/main.ts](../../src/main.ts) - Plugin entry point
@@ -131,7 +131,7 @@ src/
     presets.ts           # 4 catalog presets (Pulp Fiction, etc)
     settingsManager.ts   # Settings persistence and UI
   types/
-    settings.ts          # DatacoreSettings interface
+    settings.ts          # CartographerSettings interface
     dynamicWork.ts       # CatalogItem, FilterState, SortState
     types.ts             # Utility functions (parseFieldValue, etc)
   hooks/

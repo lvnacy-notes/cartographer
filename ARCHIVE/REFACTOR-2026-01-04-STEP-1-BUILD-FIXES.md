@@ -91,7 +91,7 @@ None
 
 ### Type Safety
 - ✅ All type references valid
-- ✅ DatacoreSettings correctly updated
+- ✅ CartographerSettings correctly updated
 - ✅ Library interface properly exported
 - ✅ No implicit any types
 

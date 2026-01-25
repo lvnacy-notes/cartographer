@@ -8,7 +8,7 @@ import { render } from 'preact-render-to-string';
 import type {
 	CatalogItem,
 	CatalogSchema,
-	DatacoreSettings
+	CartographerSettings
 } from '../../src/types';
 import {
 	FilterBar,
@@ -68,7 +68,7 @@ function generateSyntheticItems(count: number, baseSchema: CatalogSchema): Catal
 /**
  * Helper: Deep clone settings object for test isolation.
  */
-function cloneSettings(settings: DatacoreSettings): DatacoreSettings {
+function cloneSettings(settings: CartographerSettings): CartographerSettings {
 	return JSON.parse(JSON.stringify(settings));
 }
 
@@ -578,7 +578,7 @@ describe('Component Integration - Settings Persistence', () => {
 		assert(serialized.length > 0, 'settings should serialize to JSON');
 
 		// Deserialize from JSON (simulating reload)
-		const deserialized = JSON.parse(serialized) as DatacoreSettings;
+		const deserialized = JSON.parse(serialized) as CartographerSettings;
 		assert.deepEqual(deserialized.activeLibraryId, original.activeLibraryId, 'activeLibraryId should persist');
 		assert.deepEqual(deserialized.dashboards.worksTable.enabled, original.dashboards.worksTable.enabled, 'dashboard config should persist');
 

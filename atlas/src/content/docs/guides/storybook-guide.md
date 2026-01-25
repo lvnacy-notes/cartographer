@@ -61,7 +61,7 @@ const items = Object.entries(sampleWorks).map(([id, data]) =>
 5 pre-configured filters covering all types: select, range, checkbox, text.
 
 ### sampleSettings
-Complete DatacoreSettings object with library, dashboard, and UI configuration.
+Complete CartographerSettings object with library, dashboard, and UI configuration.
 
 ## Interactive Controls
 
@@ -110,7 +110,7 @@ export const Default: Story = {
 ```
 
 ### 2. Add JSDoc to Props
-Props are automatically documented via JSDoc in component type definitions (`src/types/componentTypes.ts`).
+Props are automatically documented via JSDoc in component type definitions (`src/types/componentProps.ts`).
 
 ### 3. Define Variants
 Create additional Story exports for different states:
@@ -225,7 +225,7 @@ All patterns (decorators, JSDoc, argTypes, TypeScript, linting) apply to any com
 ## Contributing
 
 When adding components:
-1. Follow component props JSDoc pattern in `src/types/componentTypes.ts`
+1. Follow component props JSDoc pattern in `src/types/componentProps.ts`
 2. Create 5+ story variants covering default, empty, large, custom config, mobile states
 3. Add stories to Storybook discovery: `src/components/YourComponent.stories.ts`
 4. Test with `npm run storybook`

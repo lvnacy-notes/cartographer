@@ -15,7 +15,7 @@ tags:
 ### Technical Updates
 - [x] QueryBuilder assessment completed and marked as SKIPPED (see CARTOGRAPHER-S3.5-SPEC.md)
 - [x] SettingsManager fully implemented (CRUD, schema validation, type safety)
-- [x] DatacoreSettingsTab UI fully implemented (library CRUD, schema editor, import/export)
+- [x] CartographerSettingsTab UI fully implemented (library CRUD, schema editor, import/export)
 - [x] Settings hooks (useLibrarySettings, useActiveLibrary, useLibraryList) implemented and tested
 - [x] Dynamic component configuration: StatusDashboard, WorksTable, FilterBar refactored for schema-driven behavior
 - [x] ConfigurableWorksTable wrapper created for dynamic columns
@@ -32,9 +32,9 @@ tags:
 ## Detailed Change Log
 
 ### Files Modified
-- `CARTOGRAPHER-S3.5-SPEC.md`: Updated completion status for QueryBuilder, SettingsManager, DatacoreSettingsTab, Settings hooks, Dynamic component configuration, and Storybook progress
+- `CARTOGRAPHER-S3.5-SPEC.md`: Updated completion status for QueryBuilder, SettingsManager, CartographerSettingsTab, Settings hooks, Dynamic component configuration, and Storybook progress
 - `CARTOGRAPHER-S3.5-5A-STORYBOOK-PROGRESS.md`: Progress tracking for Storybook infrastructure and stories
-- `CARTOGRAPHER-S3.5-SETTINGSTAB-COMPLETION.md`: Marked DatacoreSettingsTab as complete, with implementation and verification details
+- `CARTOGRAPHER-S3.5-SETTINGSTAB-COMPLETION.md`: Marked CartographerSettingsTab as complete, with implementation and verification details
 - `CARTOGRAPHER-S3.5-6-CI-CD-AUTHORING.md`: CI/CD authoring and workflow documentation (in progress)
 - `src/components/StatusDashboard.tsx`, `src/components/WorksTable.tsx`, `src/components/FilterBar.tsx`, `src/components/index.ts`, `src/components/WorksTableView.ts`, `src/components/StatusDashboardView.ts`, `src/components/DatacoreComponentView.ts`, `src/components/LibrarySidebarPanel.ts`, `src/components/DeleteConfirmModal.ts`: Component and UI updates
 - `src/config/settingsManager.ts`, `src/config/settingsTab.ts`, `src/config/libraryModal.ts`: Settings infrastructure and UI
@@ -76,7 +76,7 @@ tags:
 
 ### Decisions Made
 - QueryBuilder implementation skipped (all skip conditions met, documented in spec)
-- SettingsManager and DatacoreSettingsTab marked complete (all requirements met, rationale documented)
+- SettingsManager and CartographerSettingsTab marked complete (all requirements met, rationale documented)
 - Dynamic configuration and settings hooks approach validated and adopted
 - Storybook infrastructure and documentation in progress (not marked complete)
 - Performance & edge case testing moved from Session 3.5 Spec to Session 4.5 in Master Spec
@@ -93,7 +93,7 @@ tags:
 
 Summary:
 - Implemented and refactored StatusDashboard, WorksTable, FilterBar as dynamic, schema-driven components
-- Built SettingsManager and DatacoreSettingsTab for multi-library CRUD, schema editing, import/export
+- Built SettingsManager and CartographerSettingsTab for multi-library CRUD, schema editing, import/export
 - Developed and tested settings hooks for reactive UI and state management
 - Created ConfigurableWorksTable wrapper for dynamic column generation
 - Added and expanded integration and configuration test suites for multi-component flows and edge cases

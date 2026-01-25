@@ -119,6 +119,43 @@ export default defineConfig([
 				}
 			],
 
+			// Import restrictions: prevent direct imports from type modules
+			'no-restricted-imports': [
+				'error',
+				{
+					'patterns': [
+						{
+							'group': ['**/types/catalogItem', '**/types/catalogItem.ts'],
+							'message': 'Import from the types barrel (../types or ./types) instead of directly from catalogItem.'
+						},
+						{
+							'group': ['**/types/commands', '**/types/commands.ts'],
+							'message': 'Import from the types barrel (../types or ./types) instead of directly from commands.'
+						},
+						{
+							'group': ['**/types/componentProps', '**/types/componentProps.ts'],
+							'message': 'Import from the types barrel (../types or ./types) instead of directly from componentProps.'
+						},
+						{
+							'group': ['**/types/fieldUtils', '**/types/fieldUtils.ts'],
+							'message': 'Import from the types barrel (../types or ./types) instead of directly from fieldUtils.'
+						},
+						{
+							'group': ['**/types/filters', '**/types/filters.ts'],
+							'message': 'Import from the types barrel (../types or ./types) instead of directly from filters.'
+						},
+						{
+							'group': ['**/types/settings', '**/types/settings.ts'],
+							'message': 'Import from the types barrel (../types or ./types) instead of directly from settings.'
+						},
+						{
+							'group': ['**/types/typeGuards', '**/types/typeGuards.ts'],
+							'message': 'Import from the types barrel (../types or ./types) instead of directly from typeGuards.'
+						},
+					]
+				}
+			],
+
 			// Stylistic rules adapted from carnival config
 			'@stylistic/indent': ['error', 'tab'],
 			'@stylistic/no-mixed-spaces-and-tabs': 'error',
@@ -132,6 +169,13 @@ export default defineConfig([
 				}
 			],
 			'@stylistic/semi': ['error', 'always']
+		}
+	},
+	{
+		// Allow direct imports WITHIN the types directory
+		files: ['src/types/**/*.ts'],
+		rules: {
+			'no-restricted-imports': 'off'
 		}
 	},
 	{

@@ -12,7 +12,7 @@
 
 import {
 	CatalogItem,
-	StatusStatistics
+	GroupStatistics
 } from '../types';
 
 /**
@@ -22,7 +22,7 @@ import {
  * @param items - Array of items in the group
  * @param wordCountFieldKey - The field key for word count (default: 'word-count')
  * @param yearFieldKey - The field key for year (default: 'year')
- * @returns StatusStatistics with aggregated values
+ * @returns GroupStatistics with aggregated values
  *
  * @example
  * const stats = calculateStatusStats(rawItems);
@@ -37,7 +37,7 @@ export function calculateStatusStats(
 	items: CatalogItem[],
 	wordCountFieldKey: string = 'word-count',
 	yearFieldKey: string = 'year'
-): StatusStatistics {
+): GroupStatistics {
 	const count = items.length;
 
 	if (count === 0) {

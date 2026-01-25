@@ -84,7 +84,7 @@ Transform the plugin from a preset-based system to a user-configurable multi-lib
 
 **Files Affected:**
 - `src/config/defaultSchemas.ts` (new file) - Optional schema templates for initialization
-- `src/types/settings.ts` - Library definitions in `DatacoreSettings`
+- `src/types/settings.ts` - Library definitions in `CartographerSettings`
 - `src/config/settingsManager.ts` - Library configuration CRUD operations
 - `src/config/settingsTab.ts` - Library management UI
 - `src/main.ts` - Dynamic command registration per library
@@ -111,7 +111,7 @@ interface Library {
   createdAt: string;             // ISO timestamp
 }
 
-interface DatacoreSettings {
+interface CartographerSettings {
   version: string;
   libraries: Library[];          // All configured libraries
   activeLibraryId: string | null; // Currently selected (null if none)

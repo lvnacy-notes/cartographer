@@ -27,7 +27,7 @@
 
 import { useMemo } from 'preact/hooks';
 import {
-	DatacoreSettings,
+	CartographerSettings,
 	Library
 } from '../types';
 
@@ -35,21 +35,21 @@ import {
  * Global settings store (will be injected by plugin context)
  * This is a workaround for Preact's lack of built-in context API in hooks
  */
-let globalSettings: DatacoreSettings | null = null;
+let globalSettings: CartographerSettings | null = null;
 let settingsListeners: (() => void)[] = [];
 
 /**
  * Initialize global settings
  * (Internal use only - called by plugin during onload)
  */
-export function initializeGlobalSettings(settings: DatacoreSettings): void {
+export function initializeGlobalSettings(settings: CartographerSettings): void {
 	globalSettings = settings;
 }
 
 /**
  * Default settings object returned when settings are not initialized
  */
-function getDefaultSettings(): DatacoreSettings {
+function getDefaultSettings(): CartographerSettings {
 	return {
 		libraries: [],
 		activeLibraryId: null,
@@ -62,7 +62,7 @@ function getDefaultSettings(): DatacoreSettings {
 			statusDashboard: {
 				enabled: false,
 				groupByField: '',
-				showTotalStats: false,
+				showAggregateStatistics: false,
 				showWordCounts: false,
 			},
 			worksTable: {
@@ -115,7 +115,7 @@ export function registerSettingsListener(listener: () => void): () => void {
  * Update global settings and notify all listeners
  * (Internal use only - called by SettingsManager when settings change)
  */
-export function updateGlobalSettings(settings: DatacoreSettings): void {
+export function updateGlobalSettings(settings: CartographerSettings): void {
 	globalSettings = settings;
 	settingsListeners.forEach((listener) => listener());
 }
@@ -239,7 +239,7 @@ export function useLibraryList() {
  * - Schema is updated
  *
  * @returns Object containing:
- *   - settings: Complete DatacoreSettings object (schema, dashboards, ui, libraries, activeLibraryId)
+ *   - settings: Complete CartographerSettings object (schema, dashboards, ui, libraries, activeLibraryId)
  *   - isLoading: Whether settings are still loading (always false for hook access, true initially)
  *
  * @throws Error if settings are not initialized (should not happen in normal operation)
@@ -250,7 +250,7 @@ export function useLibraryList() {
  * return <p>Active library: {settings.activeLibraryId}</p>;
  */
 export function useLibrarySettings() {
-	const settings = useMemo<DatacoreSettings | null>(() => {
+	const settings = useMemo<CartographerSettings | null>(() => {
 		if (!globalSettings) {
 			return null;
 		}
@@ -275,7 +275,7 @@ export function useLibrarySettings() {
 					statusDashboard: {
 						enabled: false,
 						groupByField: '',
-						showTotalStats: false,
+						showAggregateStatistics: false,
 						showWordCounts: false,
 					},
 					worksTable: {

@@ -9,7 +9,7 @@
  * - Sorting groups according to configuration
  *
  * @example
- * const { statusGroups, totalStats, statusFieldDef } = useStatusData(
+ * const { statusGroups, AggregateStatistics, statusFieldDef } = useStatusData(
  *   items,
  *   schema,
  *   settings,
@@ -21,11 +21,11 @@ import { useMemo } from 'preact/hooks';
 import {
 	CatalogItem,
 	CatalogSchema,
-	DatacoreSettings
+	CartographerSettings
 } from '../types';
 import {
 	StatusGroup
-} from '../types/filterTypes';
+} from '../types/filters';
 import {
 	calculateStatusStats,
 	groupByField,
@@ -40,12 +40,12 @@ import {
  * @param schema - Catalog schema for field definitions
  * @param settings - Settings object with dashboard config
  * @param statusField - Default field to group by (can be overridden in settings)
- * @returns Object containing statusGroups, totalStats, and statusFieldDef
+ * @returns Object containing statusGroups, AggregateStatistics, and statusFieldDef
  */
 export function useStatusData(
 	items: CatalogItem[],
 	schema: CatalogSchema,
-	settings: DatacoreSettings,
+	settings: CartographerSettings,
 	statusField: string
 ) {
 	// Get dashboard config from settings with sensible defaults
@@ -91,7 +91,7 @@ export function useStatusData(
 	}, [items, statusFieldToUse, sortBy, wordCountField, yearField]);
 
 	// Calculate total statistics
-	const totalStats = useMemo(() => {
+	const AggregateStatistics = useMemo(() => {
 		if (items.length === 0) {
 			return null;
 		}
@@ -138,7 +138,7 @@ export function useStatusData(
 
 	return {
 		statusGroups,
-		totalStats,
+		AggregateStatistics,
 		statusFieldDef
 	};
 }

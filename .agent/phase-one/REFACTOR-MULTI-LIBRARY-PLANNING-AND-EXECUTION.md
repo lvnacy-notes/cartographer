@@ -23,7 +23,7 @@ last-updated: 2026-01-05
 ## Conversation 1: AGENTS.md Compliance & Code Organization
 
 **When:** Early in refactoring session  
-**Trigger:** User reviewed attached settingsTab.ts and noticed both `LibraryModal` and `DatacoreSettingsTab` classes in same file
+**Trigger:** User reviewed attached settingsTab.ts and noticed both `LibraryModal` and `CartographerSettingsTab` classes in same file
 
 **User's Question:** "You do actually review the AGENTS spec before generating code... right?"
 

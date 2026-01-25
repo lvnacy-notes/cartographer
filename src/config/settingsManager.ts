@@ -5,7 +5,7 @@
 
 import { Plugin } from 'obsidian';
 import {
-	DatacoreSettings,
+	CartographerSettings,
 	Library,
 	SchemaField
 } from '../types/settings';
@@ -15,15 +15,15 @@ import {
  */
 export class SettingsManager {
 	private plugin: Plugin;
-	private settings: DatacoreSettings;
+	private settings: CartographerSettings;
 
 	constructor(plugin: Plugin) {
 		this.plugin = plugin;
 		this.settings = this.getDefaultSettings();
 	}
 
-	async loadSettings(): Promise<DatacoreSettings> {
-		const saved = (await this.plugin.loadData()) as DatacoreSettings | null;
+	async loadSettings(): Promise<CartographerSettings> {
+		const saved = (await this.plugin.loadData()) as CartographerSettings | null;
 
 		if (saved) {
 			this.settings = this.validateSettings(saved);
@@ -39,15 +39,15 @@ export class SettingsManager {
 		await this.plugin.saveData(this.settings);
 	}
 
-	getSettings(): DatacoreSettings {
+	getSettings(): CartographerSettings {
 		return this.settings;
 	}
 
-	setSettings(newSettings: DatacoreSettings): void {
+	setSettings(newSettings: CartographerSettings): void {
 		this.settings = newSettings;
 	}
 
-	private getDefaultSettings(): DatacoreSettings {
+	private getDefaultSettings(): CartographerSettings {
 		return {
 			libraries: [],
 			activeLibraryId: null,
@@ -60,7 +60,7 @@ export class SettingsManager {
 				statusDashboard: {
 					enabled: false,
 					groupByField: '',
-					showTotalStats: false,
+					showAggregateStatistics: false,
 					showWordCounts: false,
 				},
 				worksTable: {
@@ -206,7 +206,7 @@ export class SettingsManager {
 	/**
 	 * Validate settings structure
 	 */
-	private validateSettings(saved: DatacoreSettings): DatacoreSettings {
+	private validateSettings(saved: CartographerSettings): CartographerSettings {
 		// Ensure all required fields exist
 		if (!saved.libraries) {
 			saved.libraries = [];
@@ -231,7 +231,7 @@ export class SettingsManager {
 				statusDashboard: {
 					enabled: false,
 					groupByField: '',
-					showTotalStats: false,
+					showAggregateStatistics: false,
 					showWordCounts: false,
 				},
 				worksTable: {

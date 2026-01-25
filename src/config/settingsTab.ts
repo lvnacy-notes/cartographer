@@ -11,9 +11,9 @@ import {
 import { SettingsManager } from './settingsManager';
 import { LibraryModal } from './libraryModal';
 import { ImportSettingsModal } from './importSettingsModal';
-import { DatacoreSettings } from '../types/settings';
+import { CartographerSettings } from '../types/settings';
 
-export class DatacoreSettingsTab extends PluginSettingTab {
+export class CartographerSettingsTab extends PluginSettingTab {
 	plugin: Plugin;
 	settingsManager: SettingsManager;
 
@@ -259,7 +259,7 @@ export class DatacoreSettingsTab extends PluginSettingTab {
 								if (typeof text !== 'string') {
 									throw new Error('File read failed');
 								}
-								const imported = JSON.parse(text) as DatacoreSettings;
+								const imported = JSON.parse(text) as CartographerSettings;
 								new ImportSettingsModal(
 									this.app,
 									this.settingsManager,

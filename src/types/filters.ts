@@ -6,10 +6,12 @@
  * - FilterValueMap - mapping of field keys to filter values for useFilteredItems
  * 
  * Interfaces:
- * - StatusStatistics - statistics for a group of items
+ * - GroupStatistics - statistics for a group of items
  * - StatusGroup - status group with calculated statistics
- * - TotalStats - total statistics across all items
+ * - AggregateStatistics - total statistics across all items
  */
+
+import { GroupStatistics } from './statistics';
 
 /**
  * Field options map: field key -> array of unique values
@@ -42,36 +44,10 @@ export type FieldRanges = Record<string, [number, number] | null>;
 export type FilterValueMap = Record<string, unknown>;
 
 /**
- * Statistics calculated for a group of items
- * @property count - Number of items in the group
- * @property totalWordCount - Sum of word counts for all items in group
- * @property yearRange - Min and max year values in group
- * @property averageWordCount - Average word count for items with word count data
- */
-export interface StatusStatistics {
-	count: number;
-	totalWordCount: number;
-	yearRange: { min: number | null; max: number | null };
-	averageWordCount: number;
-}
-
-/**
  * Status group with calculated statistics
  */
 export interface StatusGroup {
 	statusValue: string | number | boolean | null;
 	displayLabel: string;
-	stats: StatusStatistics;
-}
-
-/**
- * Total statistics object
- */
-export interface TotalStats {
-	totalCount: number;
-	totalWords: number;
-	yearRange: { min: number | null; max: number | null };
-	averageWords: number;
-	validYearCount: number;
-	validWordCount: number;
+	stats: GroupStatistics;
 }

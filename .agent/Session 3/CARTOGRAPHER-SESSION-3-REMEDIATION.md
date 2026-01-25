@@ -241,10 +241,10 @@ sortBy: 'custom-string'  // string, not 'alphabetical' | 'count-desc' | 'count-a
 
 **How It Was Fixed:**
 ```typescript
-// ✅ Added explicit DatacoreSettings type annotation to all test fixtures
+// ✅ Added explicit CartographerSettings type annotation to all test fixtures
 test('calculates percentages correctly', () => {
   const items = catalogItems.slice(0, 10);
-  const settings: DatacoreSettings = {  // ✅ Explicit type
+  const settings: CartographerSettings = {  // ✅ Explicit type
     ...defaultSettings,
     dashboards: {
       ...defaultSettings.dashboards,
@@ -262,7 +262,7 @@ test('calculates percentages correctly', () => {
 - Update fixture values to use exact literal types
 - For displayStats: use only valid values from union
 - For sortBy: use only valid values from union or omit if optional
-- Verify fixture matches actual DatacoreSettings interface exactly
+- Verify fixture matches actual CartographerSettings interface exactly
 
 ---
 
@@ -467,7 +467,7 @@ npm run lint 2>&1 | grep "✖" | head -1
 1. ✅ **StatusDashboard.tsx (7 errors)** — Added type guards and properly typed arrays containing h() VNodes; fixed type mismatch on onStatusClick parameter
 2. ✅ **fieldFormatters.ts (3 errors)** — Added null coalescing operators to unsafe split operations and type guards to ensure string[] returns
 3. ✅ **useTableSort.ts (1 error)** — Replaced invalid 'text' SchemaField type with valid 'string' type
-4. ✅ **StatusDashboard.test.ts (6 errors)** — Added explicit DatacoreSettings type annotations to resolve readonly array incompatibilities in test fixtures
+4. ✅ **StatusDashboard.test.ts (6 errors)** — Added explicit CartographerSettings type annotations to resolve readonly array incompatibilities in test fixtures
 5. ✅ **filterHelpers.test.ts (7 errors)** — Added loop bounds checking guards before accessing sorted[i-1]; widened statusValue type to include boolean
 6. ✅ **WorksTable.tsx (1 error)** — Changed return type from JSX.Element to VNode (Preact native)
 
@@ -683,7 +683,7 @@ After remediation (Phases 1-3) — **ALL FUCKING MET:**
 **Actions Needed:**
 - Verify displayStats array uses only valid literals: `'count' | 'percentage' | 'yearRange' | 'averageWords'`
 - Verify sortBy uses only valid literals: `'alphabetical' | 'count-desc' | 'count-asc'` or undefined
-- Ensure all fixture values match exact DatacoreSettings interface
+- Ensure all fixture values match exact CartographerSettings interface
 
 ---
 

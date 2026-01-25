@@ -105,7 +105,7 @@ const statusGroups = useMemo(() => {
 #### How Component Uses It
 ```typescript
 // Component layer is clean and semantic
-const { statusGroups, totalStats, statusFieldDef } = useStatusData(
+const { statusGroups, AggregateStatistics, statusFieldDef } = useStatusData(
   items,
   schema,
   settings,
@@ -287,7 +287,7 @@ const result = new QueryBuilder(items)
 **Current Pure Function Approach:**
 ```typescript
 // What it ACTUALLY looks like (clear and semantic)
-const { statusGroups, totalStats } = useStatusData(
+const { statusGroups, AggregateStatistics } = useStatusData(
   items, schema, settings, 'catalog-status'
 );
 ```
@@ -354,7 +354,7 @@ buildFilterPredicate()      // ← Clear: build filter function
 
 ```typescript
 // Reader understands intent IMMEDIATELY
-const { statusGroups, totalStats, statusFieldDef } = useStatusData(
+const { statusGroups, AggregateStatistics, statusFieldDef } = useStatusData(
   items,
   schema,
   settings,
@@ -401,10 +401,10 @@ No mystery. No need for fluent API explanation.
 
 ```typescript
 // This is already readable and encapsulated
-const { statusGroups, totalStats } = useStatusData(/*...*/);
+const { statusGroups, AggregateStatistics } = useStatusData(/*...*/);
 
 // Adding QueryBuilder would be:
-const { statusGroups, totalStats } = new QueryBuilder(items)
+const { statusGroups, AggregateStatistics } = new QueryBuilder(items)
   .groupBy('status')
   .calculateStats()
   .sort('count-desc')
@@ -506,7 +506,7 @@ test('QueryBuilder...groupBy().aggregate().execute() returns correct stats', () 
 │  ┌──────────────────────────────────┐  │
 │  │ useStatusData(items, ...)        │  │
 │  │  ↓ (encapsulates 3 operations)   │  │
-│  │ { statusGroups, totalStats }     │  │
+│  │ { statusGroups, AggregateStatistics }     │  │
 │  └──────────────────────────────────┘  │
 │                                         │
 │  Render logic here ✓                    │

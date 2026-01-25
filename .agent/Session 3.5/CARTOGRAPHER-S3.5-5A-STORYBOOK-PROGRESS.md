@@ -91,7 +91,7 @@ tags:
 
 ### 1.5 Create `.storybook/fixtures/` Directory with Sample Data
 - [x] Create fixture directory structure
-- [x] Add sample library data (`sampleLibrary.ts` - complete Library + DatacoreSettings)
+- [x] Add sample library data (`sampleLibrary.ts` - complete Library + CartographerSettings)
 - [x] Add sample catalog items (`sampleWorks.ts` - 15 stories + generators for 100+)
 - [x] Add sample filter configurations (`sampleFilters.ts` - 5 filter types + active filters)
 - [x] Add sample schema definitions (`sampleSchema.ts` - 7 fields with all types)
@@ -457,14 +457,14 @@ tags:
 
 ### 5.5 Create Example Data Fixtures in `.storybook/fixtures/`
 - [x] Create TypeScript fixture files
-  - [x] `sampleLibrary.ts` - complete library configuration (Library + DatacoreSettings + DashboardConfigs)
+  - [x] `sampleLibrary.ts` - complete library configuration (Library + CartographerSettings + DashboardConfigs)
   - [x] `sampleWorks.ts` - 15+ catalog items with realistic data
   - [x] `sampleFilters.ts` - 5 FilterDefinition configurations (select, range, checkbox, text types)
   - [x] `sampleSchema.ts` - 7 SchemaField definitions with all types
 - [x] Ensure fixtures match Cartographer types exactly (all typed imports verified)
 - [x] Document fixture usage in story files (JSDoc with usage examples + buildCatalogItemFromData pattern)
 - [x] Make fixtures reusable across all stories (actively used in 20 story variants)
-- [x] Keep fixtures synchronized with real data types (matches DatacoreSettings, CatalogSchema, FilterDefinition interfaces)
+- [x] Keep fixtures synchronized with real data types (matches CartographerSettings, CatalogSchema, FilterDefinition interfaces)
 
 **Status**: ✅ COMPLETE
 

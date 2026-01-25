@@ -89,7 +89,7 @@ tags:
 
 **StatusDashboard Hook Composition (CLEAR)**
 ```typescript
-const { statusGroups, totalStats, statusFieldDef } = useStatusData(
+const { statusGroups, AggregateStatistics, statusFieldDef } = useStatusData(
   items,
   schema,
   settings,

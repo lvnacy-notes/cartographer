@@ -8,7 +8,7 @@ import {
 	sampleWorks,
 	sampleSettings,
 } from '../../.storybook/fixtures';
-import { buildCatalogItemFromData } from '../types/dynamicWork';
+import { buildCatalogItemFromData } from '../types';
 
 /**
  * Helper function to convert sample works to CatalogItem instances

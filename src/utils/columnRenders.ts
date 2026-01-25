@@ -3,7 +3,7 @@
  * Handles rendering catalog item field values in table cells with proper type conversions
  */
 
-import { CatalogItem } from '../types/dynamicWork';
+import { CatalogItem } from '../types/catalogItem';
 import {
 	CatalogSchema,
 	SchemaField

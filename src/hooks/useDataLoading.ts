@@ -5,15 +5,13 @@
 
 import { App, TFile } from 'obsidian';
 import {
+	parseFieldValue,
+	CartographerSettings,
 	CatalogItem,
-	FilterState,
+	Library,
+	QueryFilter,
 	SortState
-} from '../types/dynamicWork';
-import {
-	DatacoreSettings,
-	Library
-} from '../types/settings';
-import { parseFieldValue } from '../types/types';
+} from '../types';
 import {
 	filterByField,
 	sortByField
@@ -245,8 +243,8 @@ export function subscribeToVaultChanges(
  */
 export function filterItems(
 	items: CatalogItem[],
-	filters: FilterState,
-	settings: DatacoreSettings
+	filters: QueryFilter,
+	settings: CartographerSettings
 ): CatalogItem[] {
 	let result = [...items];
 
@@ -294,7 +292,7 @@ export function filterItems(
 export function sortItems(
 	items: CatalogItem[],
 	sort: SortState,
-	settings: DatacoreSettings
+	settings: CartographerSettings
 ): CatalogItem[] {
 	const fieldDef = settings.schema.fields.find((f) => f.key === sort.field);
 	if (!fieldDef?.sortable) {

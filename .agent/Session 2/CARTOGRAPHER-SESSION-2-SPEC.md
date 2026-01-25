@@ -47,7 +47,7 @@ tags:
 **File:** `src/types/settings.ts`
 
 **Checklist:**
-- [x] Confirm `DatacoreSettings` interface includes `libraries[]` and `activeLibraryId`
+- [x] Confirm `CartographerSettings` interface includes `libraries[]` and `activeLibraryId`
 - [x] Confirm `Library` interface includes `id`, `name`, `path`, `schema`, `dashboards`, `createdAt`
 - [x] Confirm `CatalogSchema` defines all 26 fields with proper types
 - [x] Confirm `SchemaField` includes: key, label, type, required, description
@@ -862,7 +862,7 @@ node --test tests/**/*.test.ts
    - Controls which components are enabled/disabled
    - Configures component-specific settings (FilterBar, AuthorCard, etc.)
 
-5. **DatacoreSettings** - Root plugin settings object with all configuration
+5. **CartographerSettings** - Root plugin settings object with all configuration
    - Includes @example showing complete settings structure
    - Contains libraries array, active library reference, dashboard configs
 

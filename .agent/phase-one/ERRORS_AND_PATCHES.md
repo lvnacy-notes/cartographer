@@ -29,7 +29,7 @@ Total errors fixed so far: 76+ (across type system, query functions, hooks, conf
 **Bundle #3: Type Assertions & Safety** (Patches #13-15)
 - Added proper type assertions for loadData() returning `any`
 - Fixed validateSettings parameter type
-- Fixed DatacoreSettingsTab plugin parameter type
+- Fixed CartographerSettingsTab plugin parameter type
 
 **Bundle #4: Code Organization** (In Progress)
 - Moved PRESETS export to end of file (after definitions) to fix use-before-define
@@ -51,7 +51,7 @@ Total errors fixed so far: 76+ (across type system, query functions, hooks, conf
 ### Progress Made This Session
 - ✅ Fixed all explicit `any` types in type system (dynamicWork.ts, types.ts)
 - ✅ Fixed parser error in useDataLoading.ts (changed return type syntax)
-- ✅ Refactored DatacoreSettingsTab to separate file (settingsTab.ts)
+- ✅ Refactored CartographerSettingsTab to separate file (settingsTab.ts)
 - ✅ Fixed max-classes-per-file constraint (now 1 per file max)
 - ✅ Fixed sentence case in UI text
 - ✅ Updated ESLint config with stylistic plugin support
@@ -358,7 +358,7 @@ export function filterByArrayField(
 **Errors:**
 - `const saved = await this.plugin.loadData()` - unsafe assignment of `any`
 - Unsafe member access `.version` on `any` value
-- Unsafe argument of type `any` assigned to DatacoreSettings parameter
+- Unsafe argument of type `any` assigned to CartographerSettings parameter
 
 **Root Cause:** `loadData()` returns `any`, needed type assertion
 
@@ -373,11 +373,11 @@ if (saved && saved.version) {
 }
 
 // After
-const saved = (await this.plugin.loadData()) as DatacoreSettings | null;
+const saved = (await this.plugin.loadData()) as CartographerSettings | null;
 if (saved && saved.version) {
   this.settings = this.validateSettings(saved);
 } else {
-  this.settings = JSON.parse(JSON.stringify(PRESETS['pulp-fiction'])) as DatacoreSettings;
+  this.settings = JSON.parse(JSON.stringify(PRESETS['pulp-fiction'])) as CartographerSettings;
 }
 ```
 
@@ -389,24 +389,24 @@ if (saved && saved.version) {
 
 **Location:** [src/config/settingsManager.ts](../../../src/config/settingsManager.ts#L104-L127)
 
-**Error:** `private validateSettings(saved: any): DatacoreSettings` - explicit `any` parameter
+**Error:** `private validateSettings(saved: any): CartographerSettings` - explicit `any` parameter
 
 **Root Cause:** Method signature needed explicit type for parameter
 
 **Changes Made:**
 ```typescript
 // Before
-private validateSettings(saved: any): DatacoreSettings {
+private validateSettings(saved: any): CartographerSettings {
 
 // After
-private validateSettings(saved: DatacoreSettings): DatacoreSettings {
+private validateSettings(saved: CartographerSettings): CartographerSettings {
 ```
 
 **Files Affected:** `/workspace/src/config/settingsManager.ts` (lines 104-127)
 
 ---
 
-### Patch #15: Config - DatacoreSettingsTab class (settingsManager.ts)
+### Patch #15: Config - CartographerSettingsTab class (settingsManager.ts)
 
 **Location:** [src/config/settingsManager.ts](../../../src/config/settingsManager.ts#L162-L171)
 
@@ -417,13 +417,13 @@ private validateSettings(saved: DatacoreSettings): DatacoreSettings {
 **Changes Made:**
 ```typescript
 // Before
-export class DatacoreSettingsTab extends PluginSettingTab {
+export class CartographerSettingsTab extends PluginSettingTab {
   plugin: any;
   settingsManager: SettingsManager;
   constructor(app: App, plugin: any, settingsManager: SettingsManager)
 
 // After
-export class DatacoreSettingsTab extends PluginSettingTab {
+export class CartographerSettingsTab extends PluginSettingTab {
   plugin: Plugin;
   settingsManager: SettingsManager;
   constructor(app: App, plugin: Plugin, settingsManager: SettingsManager)

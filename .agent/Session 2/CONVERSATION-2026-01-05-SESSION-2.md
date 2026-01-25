@@ -354,7 +354,7 @@ Audit of all Session 2 modules revealed documentation gaps:
 2. `BackstagePassPipelineConfig` - Configuration for publication pipeline
 3. `CatalogSchema` - Complete schema definition with @example showing full structure
 4. `DashboardConfigs` - Dashboard visibility and configuration
-5. `DatacoreSettings` - Root settings object with @example showing full structure
+5. `CartographerSettings` - Root settings object with @example showing full structure
 6. `FilterBarConfig` - Filter bar display configuration
 7. `FilterDefinition` - Single filter definition
 8. `Library` - Library configuration with @example showing full structure
@@ -1465,7 +1465,7 @@ Components should trust these behaviors rather than adding duplicate checks.
 
 **Documentation Added:**
 - types/settings.ts: 8 interfaces (0% → 100%)
-  - AuthorCardConfig, BackstagePassPipelineConfig, CatalogSchema, DashboardConfigs, DatacoreSettings, FilterBarConfig, FilterDefinition, Library
+  - AuthorCardConfig, BackstagePassPipelineConfig, CatalogSchema, DashboardConfigs, CartographerSettings, FilterBarConfig, FilterDefinition, Library
   - All with comprehensive @example tags showing realistic configurations
 
 - types/types.ts: 6 utility functions (85% → 100%)

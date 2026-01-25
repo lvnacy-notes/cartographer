@@ -7,8 +7,9 @@ import {
 	coerceToValidDateValue,
 	toDate,
 	type CatalogItem,
-	type DatacoreSettings,
-	type FieldValue
+	type CartographerSettings,
+	type FieldValue,
+	YearRange
 } from '../types';
 
 /**
@@ -109,7 +110,7 @@ export function countByField(
  * const results = items.filter(predicate);
  */
 export function createCompoundFilter(
-	_settings: DatacoreSettings,
+	_settings: CartographerSettings,
 	filters: Array<{
 		field: string;
 		type: 'equals' | 'contains' | 'range' | 'text';
@@ -134,7 +135,10 @@ export function createCompoundFilter(
 					if (typeof fieldValue !== 'number') {
 						return false;
 					}
-					const [min, max] = filter.value as [number, number];
+					const { min, max } = filter.value as YearRange;
+					if (!min || !max) {
+						return false;
+					}
 					return fieldValue >= min && fieldValue <= max;
 				}
 				case 'text': {

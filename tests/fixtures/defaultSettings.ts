@@ -1,11 +1,11 @@
-import type { DatacoreSettings } from '../../src/types';
+import type { CartographerSettings } from '../../src/types';
 import { catalogSchema } from './catalogSchema';
 
 /**
- * Default DatacoreSettings for testing.
+ * Default CartographerSettings for testing.
  * Configured with all three Session 3 components enabled.
  */
-export const defaultSettings: DatacoreSettings = {
+export const defaultSettings: CartographerSettings = {
 	libraries: [
 		{
 			id: 'test-library',
@@ -21,7 +21,7 @@ export const defaultSettings: DatacoreSettings = {
 		statusDashboard: {
 			enabled: true,
 			groupByField: 'catalog-status',
-			showTotalStats: true,
+			showAggregateStatistics: true,
 			showWordCounts: true
 		},
 		worksTable: {

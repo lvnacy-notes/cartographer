@@ -93,7 +93,7 @@ interface StatusDashboardProps {
   items: CatalogItem[];                    // All items from active library
   schema: CatalogSchema;                   // Library schema
   statusField: string;                     // Which field to group by (from config)
-  settings: DatacoreSettings;              // Full settings (for component config)
+  settings: CartographerSettings;              // Full settings (for component config)
   onStatusClick?: (status: string) => void; // Optional: click handler for filtering
 }
 ```
@@ -129,7 +129,7 @@ interface StatusDashboardProps {
 **Configuration:**
 - `settings.dashboards.statusDashboard.enabled`
 - `settings.dashboards.statusDashboard.groupByField`
-- `settings.dashboards.statusDashboard.showTotalStats`
+- `settings.dashboards.statusDashboard.showAggregateStatistics`
 - `settings.dashboards.statusDashboard.showWordCounts`
 
 **Test Cases:**
@@ -154,7 +154,7 @@ interface StatusDashboardProps {
 interface WorksTableProps {
   items: CatalogItem[];                    // Items to display
   schema: CatalogSchema;                   // Library schema
-  settings: DatacoreSettings;              // Full settings (for component config)
+  settings: CartographerSettings;              // Full settings (for component config)
   sortColumn?: string;                     // Current sort column (default from config)
   sortDesc?: boolean;                      // Sort descending? (default false)
   onSort?: (column: string, desc: boolean) => void; // Sort callback
@@ -239,7 +239,7 @@ function renderCell(item: CatalogItem, fieldKey: string, schema: CatalogSchema):
 interface FilterBarProps {
   items: CatalogItem[];                    // All available items (for filter options)
   schema: CatalogSchema;                   // Library schema
-  settings: DatacoreSettings;              // Full settings (for component config)
+  settings: CartographerSettings;              // Full settings (for component config)
   onFilter: (filtered: CatalogItem[]) => void; // Called when filters change
   filterLayout?: 'vertical' | 'horizontal' | 'dropdown'; // Display mode
 }
@@ -382,7 +382,7 @@ tests/
 └── fixtures/
     ├── catalogSchema.ts         (test schema)
     ├── catalogItems.ts          (test items - populated with Pulp Fiction data)
-    └── defaultSettings.ts       (default DatacoreSettings)
+    └── defaultSettings.ts       (default CartographerSettings)
 ```
 
 ### Test Fixtures
@@ -398,7 +398,7 @@ tests/
 - Used for integration testing with real data
 
 **File:** `tests/fixtures/defaultSettings.ts`
-- Default DatacoreSettings with component configs
+- Default CartographerSettings with component configs
 - Used in all component tests
 
 ### Unit Tests per Component
@@ -426,7 +426,7 @@ describe('StatusDashboard', () => {
     // Verify rounding is correct
   });
   
-  test('respects showTotalStats config', () => {
+  test('respects showAggregateStatistics config', () => {
     // When enabled: shows total stats
     // When disabled: hides stats
   });

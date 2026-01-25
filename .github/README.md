@@ -53,7 +53,7 @@ src/
 ├── main.ts                          # Plugin entry point
 ├── index.ts                         # Public API exports
 ├── types/
-│   ├── settings.ts                 # DatacoreSettings, CatalogSchema
+│   ├── settings.ts                 # CartographerSettings, CatalogSchema
 │   ├── dynamicWork.ts              # CatalogItem, state types
 │   └── types.ts                    # Utility functions
 ├── config/
@@ -214,7 +214,7 @@ Full TypeScript support with exported types:
 
 ```typescript
 import type {
-  DatacoreSettings,
+  CartographerSettings,
   CatalogSchema,
   SchemaField,
   CatalogItem,

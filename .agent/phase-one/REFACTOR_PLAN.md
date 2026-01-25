@@ -46,7 +46,7 @@ Successfully compiled and working:
 
 **File:** `src/index.ts`
 - ✅ DONE: Fixed type re-exports with `export type`
-- ✅ DONE: Fixed DatacoreSettingsTab import path
+- ✅ DONE: Fixed CartographerSettingsTab import path
 - ✅ DONE: Added new type guard exports
 
 ---

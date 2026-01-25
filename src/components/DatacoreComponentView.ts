@@ -7,22 +7,22 @@ import {
 	ItemView,
 	WorkspaceLeaf
 } from 'obsidian';
-import { CatalogItem } from '../types/dynamicWork';
 import {
-	DatacoreSettings,
+	CartographerSettings,
+	CatalogItem,
 	Library
-} from '../types/settings';
+} from '../types';
 
 /**
  * Base class for Datacore component views in Obsidian
  * Extends Obsidian's ItemView to render components
  */
 export abstract class DatacoreComponentView extends ItemView {
-	settings: DatacoreSettings;
+	settings: CartographerSettings;
 	items: CatalogItem[] = [];
 	isLoading = false;
 
-	constructor(leaf: WorkspaceLeaf, settings: DatacoreSettings) {
+	constructor(leaf: WorkspaceLeaf, settings: CartographerSettings) {
 		super(leaf);
 		this.settings = settings;
 	}

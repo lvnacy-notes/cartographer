@@ -22,7 +22,7 @@ tags:
 ## Changes Made
 
 ### Data Access & Type System
-- [x] Extended `src/types/settings.ts` with 8 fully documented interfaces (AuthorCardConfig, BackstagePassPipelineConfig, CatalogSchema, DashboardConfigs, DatacoreSettings, FilterBarConfig, FilterDefinition, Library)
+- [x] Extended `src/types/settings.ts` with 8 fully documented interfaces (AuthorCardConfig, BackstagePassPipelineConfig, CatalogSchema, DashboardConfigs, CartographerSettings, FilterBarConfig, FilterDefinition, Library)
 - [x] Created `src/types/dynamicWork.ts` with CatalogItem class and 5 helper functions (buildCatalogItemFromData, convertFieldValue, getTypedField, itemToObject, parseFieldValue)
 - [x] Created `src/types/types.ts` with 6 utility functions for type conversion and field access (toDate, coerceToValidDateValue, formatFieldValue, getTypedField, itemToObject, parseFieldValue)
 - [x] Created `src/types/index.ts` barrel export with clean public API for all type definitions
@@ -89,7 +89,7 @@ tags:
 
 **types/settings.ts**
 - Added 8 interface JSDoc blocks (0% → 100% coverage)
-- Interfaces: AuthorCardConfig, BackstagePassPipelineConfig, CatalogSchema (with @example), DashboardConfigs, DatacoreSettings (with @example), FilterBarConfig, FilterDefinition, Library (with @example)
+- Interfaces: AuthorCardConfig, BackstagePassPipelineConfig, CatalogSchema (with @example), DashboardConfigs, CartographerSettings (with @example), FilterBarConfig, FilterDefinition, Library (with @example)
 - All properties documented with clear descriptions
 - @example tags showing realistic configuration structures
 

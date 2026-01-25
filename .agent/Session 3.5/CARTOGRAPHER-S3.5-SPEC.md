@@ -166,7 +166,7 @@ See [QUERYBUILDER-ANALYSIS.md](CARTOGRAPHER-S3.5-QUERYBUILDER-ANALYSIS.md) for d
 ### 3. Settings Management & Multi-Library Support
 **Deliverable**: Fully functional settings layer with library CRUD operations
 
-**Status**: SettingsManager complete (3.A), DatacoreSettingsTab complete (3.B). See sections below.
+**Status**: SettingsManager complete (3.A), CartographerSettingsTab complete (3.B). See sections below.
 
 **Files**:
 - `src/config/settingsManager.ts` (implement full class)
@@ -200,10 +200,10 @@ See [QUERYBUILDER-ANALYSIS.md](CARTOGRAPHER-S3.5-QUERYBUILDER-ANALYSIS.md) for d
 
 ---
 
-#### 3.B DatacoreSettingsTab Implementation — COMPLETE ✅
+#### 3.B CartographerSettingsTab Implementation — COMPLETE ✅
 
 **Completed Tasks**:
-- ✅ DatacoreSettingsTab UI fully functional (`src/config/settingsTab.ts`)
+- ✅ CartographerSettingsTab UI fully functional (`src/config/settingsTab.ts`)
 - ✅ Library CRUD operations (create, read, update, delete with confirmation flows)
 - ✅ LibraryModal enhanced with full field editor (`src/config/libraryModal.ts`)
   - ✅ Add field button (creates SchemaField with all required properties)
@@ -219,7 +219,7 @@ See [QUERYBUILDER-ANALYSIS.md](CARTOGRAPHER-S3.5-QUERYBUILDER-ANALYSIS.md) for d
 - ✅ Zero implicit `any` types
 - ✅ Zero ESLint violations
 - ✅ All curly braces on control structures
-- ✅ Full type safety with DatacoreSettings interface
+- ✅ Full type safety with CartographerSettings interface
 - ✅ Proper async/await wrapping in event handlers (void + IIFE pattern)
 - ✅ Error handling for file parsing and field editing
 
@@ -230,7 +230,7 @@ See [QUERYBUILDER-ANALYSIS.md](CARTOGRAPHER-S3.5-QUERYBUILDER-ANALYSIS.md) for d
 - FileReader pattern prevents `any` type leakage in import flow
 - All components integrate seamlessly with existing SettingsManager
 
-**DatacoreSettingsTab is production-ready**, fully featured, and follows the Supreme Directive with surgical precision. No shortcuts. No assumptions. Pure compliance.
+**CartographerSettingsTab is production-ready**, fully featured, and follows the Supreme Directive with surgical precision. No shortcuts. No assumptions. Pure compliance.
 
 ---
 
@@ -255,7 +255,7 @@ See [QUERYBUILDER-ANALYSIS.md](CARTOGRAPHER-S3.5-QUERYBUILDER-ANALYSIS.md) for d
   - ✅ Uninitialized state fallbacks
 
 **Implementation Highlights**:
-- useLibrarySettings: Returns complete DatacoreSettings with dashboards, ui, schema, libraries
+- useLibrarySettings: Returns complete CartographerSettings with dashboards, ui, schema, libraries
 - useActiveLibrary: Returns active Library or null with activeLibraryId and isLoading state
 - useLibraryList: Returns immutable libraries array with libraryCount and hasLibraries convenience fields
 - registerSettingsListener: Returns unsubscribe function for proper cleanup
@@ -486,7 +486,7 @@ Session 3.5 is complete when:
 2. ✅ QueryBuilder assessment complete: No implementation (pure functions sufficient)
 3. ✅ All 14 integration tests implemented and code-complete (syntax/logic valid)
 4. ✅ SettingsManager implementation complete and production-ready (version field stripped, pure CRUD operations)
-5. ✅ DatacoreSettingsTab UI fully functional (library CRUD, schema validation, import/export)
+5. ✅ CartographerSettingsTab UI fully functional (library CRUD, schema validation, import/export)
 6. ✅ Settings Hooks complete (useLibrarySettings, useActiveLibrary, useLibraryList + listener infrastructure, 36 tests, >95% coverage)
 7. ✅ All 14 integration tests passing (`npm test` — validation deferred to end-of-session)
 8. ✅ All 3 components configured dynamically (respect active library schema)
@@ -512,7 +512,7 @@ Session 3.5 is complete when:
 |------|---|
 | QueryBuilder assessment | 0.5 hours ✅ COMPLETE |
 | SettingsManager implementation | 0 hours ✅ COMPLETE |
-| DatacoreSettingsTab UI implementation | 6-8 hours ✅ COMPLETE |
+| CartographerSettingsTab UI implementation | 6-8 hours ✅ COMPLETE |
 | Settings hooks implementation | 2-3 hours ✅ COMPLETE |
 | Integration testing | 6-8 hours |
 | Dynamic component configuration | 6-8 hours |

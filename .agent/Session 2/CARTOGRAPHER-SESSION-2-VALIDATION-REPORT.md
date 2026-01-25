@@ -365,7 +365,7 @@ Status: ✅ EXECUTABLE
   - `BackstagePassPipelineConfig` - no JSDoc ❌
   - `CatalogSchema` - no JSDoc ❌
   - `DashboardConfigs` - no JSDoc ❌
-  - `DatacoreSettings` - no JSDoc ❌
+  - `CartographerSettings` - no JSDoc ❌
 
 **Module: hooks/useDataLoading.ts**
 - ✅ Main exports documented

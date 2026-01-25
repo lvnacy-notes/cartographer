@@ -8,7 +8,7 @@ import {
 	WorkspaceLeaf,
 	Plugin
 } from 'obsidian';
-import { DatacoreSettings, Library } from '../types/settings';
+import { CartographerSettings, Library } from '../types/settings';
 import { SettingsManager } from '../config/settingsManager';
 import { loadCatalogItems } from '../hooks/useDataLoading';
 import { DeleteConfirmModal } from './DeleteConfirmModal';
@@ -22,13 +22,13 @@ export const LIBRARY_SIDEBAR_VIEW_TYPE = 'datacore-library-sidebar';
 export class LibrarySidebarPanel extends ItemView {
 	private plugin: Plugin;
 	private settingsManager: SettingsManager;
-	private settings: DatacoreSettings;
+	private settings: CartographerSettings;
 
 	constructor(
 		leaf: WorkspaceLeaf,
 		plugin: Plugin,
 		settingsManager: SettingsManager,
-		settings: DatacoreSettings
+		settings: CartographerSettings
 	) {
 		super(leaf);
 		this.plugin = plugin;

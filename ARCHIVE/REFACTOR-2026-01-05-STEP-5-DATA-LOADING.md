@@ -19,7 +19,7 @@ tags:
 ### Architecture & Type System
 - [x] Replaced preset-based configuration with multi-library system
 - [x] Implemented `Library` interface with id, name, path, schema, createdAt
-- [x] Updated `DatacoreSettings` to manage multiple libraries
+- [x] Updated `CartographerSettings` to manage multiple libraries
 - [x] Established `activeLibraryId` for runtime library selection
 
 ### Data Access Layer
@@ -59,7 +59,7 @@ tags:
 This session focused on completing Step 5 of the multi-library refactoring: updating all data loading operations to work with the new Library-based architecture instead of the full settings object.
 
 ### Decisions Made
-1. **Function signature change**: `loadCatalogItems()` now accepts single `Library` parameter rather than full `DatacoreSettings`, enforcing cleaner separation of concerns
+1. **Function signature change**: `loadCatalogItems()` now accepts single `Library` parameter rather than full `CartographerSettings`, enforcing cleaner separation of concerns
 2. **Caller responsibility**: Components must now extract active library before invoking data loading, making the active library selection explicit and testable
 3. **Error handling**: Added clear logging when no active library is selected (early return pattern)
 
@@ -75,7 +75,7 @@ Agent completed code refactoring for Step 5:
 **Commit SHA**: 57ceb78c180636d975c5f371273f14bb2ed6d992
 **Commit Message**: feat(step-5): Refactor data loading to accept Library parameter
 
-- Updated loadCatalogItems() signature to accept Library instead of full DatacoreSettings
+- Updated loadCatalogItems() signature to accept Library instead of full CartographerSettings
 - Removed active library extraction logic from data loading (caller responsibility)
 - Updated StatusDashboardView and WorksTableView to extract active library before loading
 - Data loading now dynamically uses library.path and library.schema

@@ -24,14 +24,12 @@ import {
 } from 'preact/hooks';
 import {
 	CatalogItem,
-	DatacoreSettings,
+	CartographerSettings,
+	FieldOptions,
+	FieldRanges,
 	FilterState,
 	FilterDefinition
 } from '../types';
-import {
-	FieldOptions,
-	FieldRanges
-} from '../types/filterTypes';
 
 /**
  * useFilters Hook
@@ -44,7 +42,7 @@ import {
  */
 export function useFilters(
 	items: CatalogItem[],
-	settings: DatacoreSettings,
+	settings: CartographerSettings,
 	onFilter: (filtered: CatalogItem[]) => void
 ) {
 	// Get filter config from settings

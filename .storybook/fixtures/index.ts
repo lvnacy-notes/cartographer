@@ -9,7 +9,7 @@
  * - sampleSchema.ts - CatalogSchema definition with field types and configuration
  * - sampleWorks.ts - Sample catalog items (15+ stories) and dataset generators
  * - sampleFilters.ts - FilterDefinition configurations and active filter examples
- * - sampleLibrary.ts - Complete Library and DatacoreSettings configurations
+ * - sampleLibrary.ts - Complete Library and CartographerSettings configurations
  * 
  * Usage:
  * 

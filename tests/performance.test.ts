@@ -19,7 +19,7 @@ import { render } from '@testing-library/preact';
 import { h } from 'preact';
 import { WorksTable } from '../src/components/WorksTable';
 import { FilterBar } from '../src/components/FilterBar';
-import { buildCatalogItemFromData } from '../src/types/dynamicWork';
+import { buildCatalogItemFromData } from '../src/types/catalogItem';
 import { sampleSchema, sampleSettings } from '../.storybook/fixtures';
 
 // Helper to generate N mock catalog items

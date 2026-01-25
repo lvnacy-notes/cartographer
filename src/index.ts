@@ -8,14 +8,14 @@ export type {
 	CatalogItem,
 	CatalogStatistics,
 	FieldValue,
-	FilterState,
+	QueryFilter,
 	SortState
-} from './types/dynamicWork';
+} from './types/catalogItem';
 
 export type {
 	CatalogSchema,
 	DashboardConfigs,
-	DatacoreSettings,
+	CartographerSettings,
 	Library,
 	SchemaField
 } from './types/settings';
@@ -32,7 +32,7 @@ export {
 
 // Config
 export { SettingsManager } from './config/settingsManager';
-export { DatacoreSettingsTab } from './config/settingsTab';
+export { CartographerSettingsTab } from './config/settingsTab';
 
 // Hooks
 export {

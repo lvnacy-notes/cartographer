@@ -19,11 +19,12 @@ import {
 	useCallback,
 	useMemo,
 } from 'preact/hooks';
+import { useFilters } from '../hooks/useFilters';
 import {
 	FilterBarProps,
-	FilterDefinition
+	FilterDefinition,
+	YearRange
 } from '../types';
-import { useFilters } from '../hooks/useFilters';
 
 /**
  * FilterBar Component
@@ -170,9 +171,9 @@ export function FilterBar(props: FilterBarProps) {
 			}
 
 			const [min, max] = range;
-			const currentRange = filterState[filter.field] as [number, number] | null;
-			const currentMin = currentRange?.[0] ?? min;
-			const currentMax = currentRange?.[1] ?? max;
+			const currentRange = filterState[filter.field] as YearRange;
+			const currentMin = currentRange?.min ?? min;
+			const currentMax = currentRange?.max ?? max;
 
 			return h(
 				'div',

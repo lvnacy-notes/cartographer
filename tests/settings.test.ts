@@ -8,7 +8,7 @@ import {
 	registerSettingsListener,
 	updateGlobalSettings,
 } from '../src/hooks/useSettings';
-import { DatacoreSettings, Library } from '../src/types';
+import { CartographerSettings, Library } from '../src/types';
 
 // ============================================================================
 // TEST FIXTURES
@@ -45,7 +45,7 @@ function createMockLibrary(id: string, name: string, path: string): Library {
 /**
  * Create default test settings
  */
-function createTestSettings(): DatacoreSettings {
+function createTestSettings(): CartographerSettings {
 	return {
 		libraries: [
 			createMockLibrary('lib-1', 'Pulp Fiction', 'pulp-fiction/works'),
@@ -57,7 +57,7 @@ function createTestSettings(): DatacoreSettings {
 			statusDashboard: {
 				enabled: true,
 				groupByField: 'status',
-				showTotalStats: true,
+				showAggregateStatistics: true,
 				showWordCounts: true,
 			},
 			worksTable: {

@@ -40,7 +40,7 @@ plugin, including UI components, hooks, settings, data flow, and testing.
 ## 2. Adding New Components
 
 1. Create the component in `src/components/`.
-2. Add prop types and JSDoc comments in `src/types/componentTypes.ts`.
+2. Add prop types and JSDoc comments in `src/types/componentProps.ts`.
 3. Write a corresponding `.stories.ts` file for Storybook.
 4. Use fixture data from `.storybook/fixtures/` for stories and tests.
 5. Ensure the component is covered by unit and integration tests.

@@ -1,0 +1,90 @@
+/* PublicationDashboard.module.css
+   Supreme Directive: Responsive, accessible, Obsidian-themed, no assumptions. */
+
+.dc-publication-dashboard {
+	padding: 1.5rem;
+	background: var(--background-secondary);
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+	color: var(--text-normal);
+	max-width: 100%;
+}
+
+.dc-publication-dashboard h2 {
+	font-size: 1.5rem;
+	margin-bottom: 0.75rem;
+	color: var(--text-title);
+}
+
+.dc-publication-stats {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1.5rem;
+	margin-bottom: 1rem;
+	font-size: 1rem;
+	color: var(--text-faint);
+}
+
+.dc-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 1.5rem;
+	font-size: 0.95rem;
+}
+
+.dc-table th,
+.dc-table td {
+	padding: 0.5rem 0.75rem;
+	border-bottom: 1px solid var(--background-modifier-border);
+	text-align: left;
+}
+
+.dc-table th {
+	background: var(--background-primary-alt);
+	color: var(--text-title);
+	font-weight: 600;
+}
+
+.dc-table tr {
+  	transition: background 0.2s;
+}
+
+.dc-table tr:hover {
+	background: var(--background-modifier-hover);
+	cursor: pointer;
+}
+
+.dc-publication-groups {
+  	margin-top: 1.5rem;
+}
+
+.dc-group {
+	margin-bottom: 0.5rem;
+	font-size: 1rem;
+	color: var(--text-normal);
+}
+
+/* Mobile responsive: 600px breakpoint */
+@media (max-width: 600px) {
+	.dc-publication-dashboard {
+		padding: 0.5rem;
+		border-radius: 0;
+		box-shadow: none;
+	}
+	.dc-table th,
+	.dc-table td {
+		padding: 0.4rem 0.3rem;
+		font-size: 0.9rem;
+	}
+	.dc-publication-stats {
+		flex-direction: column;
+		gap: 0.5rem;
+		font-size: 0.95rem;
+	}
+}
+
+/* Accessibility: focus states */
+.dc-table tr:focus {
+	outline: 2px solid var(--color-accent);
+	outline-offset: -2px;
+}
